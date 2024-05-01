@@ -4,48 +4,55 @@
 
 // Desktop mode
 @include media-breakpoint-up(lg) {
+  .app-sidebar-toggle {
+    box-shadow: var(
+      --#{$prefix}app-sidebar-base-toggle-btn-box-shadow
+    ) !important;
+    background-color: var(
+      --#{$prefix}app-sidebar-base-toggle-btn-bg-color
+    ) !important;
+    right: -30px;
+
+    .active .svg-icon {
+      transform: rotateZ(0deg) !important;
+    }
+  }
+
+  [dir="rtl"] {
     .app-sidebar-toggle {
-        box-shadow: var(--#{$prefix}app-sidebar-base-toggle-btn-box-shadow) !important; 
-        background-color: var(--#{$prefix}app-sidebar-base-toggle-btn-bg-color) !important; 
+      left: 0;
+      right: initial;
+      .svg-icon {
+        transform: rotateZ(180deg);
+      }
 
-        .active .svg-icon {
-            transform: rotateZ(0deg) !important;
-        }        
+      &.active .svg-icon {
+        transform: rotateZ(0deg) !important;
+      }
     }
+  }
 
-    [dir="rtl"] {
-        .app-sidebar-toggle {
-            .svg-icon {
-                transform: rotateZ(180deg);
-            }
+  .app-sidebar-logo {
+    // height: var(--#{$prefix}app-header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    flex-shrink: 0;
+  }
 
-            &.active .svg-icon {
-                transform: rotateZ(0deg) !important;
-            }
-        }
+  .app-sidebar-menu {
+    .menu {
+      & > .menu-item {
+        margin-left: 0.115rem;
+      }
     }
-        
-    .app-sidebar-logo {
-        height: var(--#{$prefix}app-header-height); 
-        display: flex;
-        align-items: center;
-        justify-content: space-between;        
-        position: relative;
-        flex-shrink: 0;
-    }
-        
-    .app-sidebar-menu {
-        .menu  {
-            & > .menu-item {
-                margin-left: 0.115rem;  
-            }    
-        }    
-    }
+  }
 }
 
 // Tablet & mobile modes
 @include media-breakpoint-down(lg) {
-    .app-sidebar-logo {
-        display: none;
-    }
+  .app-sidebar-logo {
+    display: none;
+  }
 }

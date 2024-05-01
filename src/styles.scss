@@ -1,7 +1,294 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@ng-select/ng-select/themes/default.theme.css";
 @import "./assets/sass/style.scss";
-// Replace above style with this css file to enable RTL styles
-// @import "./assets/css/style.rtl";
-@import './assets/sass/plugins.scss';
-// @import "./assets/css/style.rtl.css";
+@import "./assets/sass/plugins.scss";
 @import "./assets/sass/style.angular.scss";
+@import "../node_modules/flatpickr/dist/flatpickr.css";
+@import "../node_modules/ngx-spinner/animations/ball-fussion.css";
+/* Importing Datepicker SCSS file. */
+@import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";
+
+//custom
+@import "./assets/sass/rtl-styles.scss";
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+}
+
+.offcanvas {
+  display: block;
+}
+.offcanvs-header {
+  padding: 2.25rem 2.25rem 0;
+}
+.offcanvs-body {
+  height: calc(100% - 145px);
+  padding: 2rem 2.25rem;
+  > .overflow-auto {
+    // padding: 0 30px;
+    overflow-x: hidden !important;
+  }
+}
+
+
+.card-label {
+  [dir="rtl"] & {
+    margin: 0 0 0 0.75rem !important;
+  }
+}
+
+
+//ng-select
+.ng-select .ng-placeholder {
+  color: var(--bs-gray-500) !important;
+}
+.ng-input,
+.ng-placeholder {
+  top: 12px !important;
+}
+.ng-select {
+  .ng-select-container {
+    min-height: 43.2px;
+    border: 1px solid var(--bs-gray-300);
+    color: var(--bs-text-dark);
+    transition: 0.3s;
+    border-radius: 0.475rem;
+    font-size: 1.1rem !important;
+    background: var(--bs-body-bg) !important;
+  }
+  &.ng-select-disabled {
+    .ng-select-container {
+      background-color: var(--bs-gray-200) !important;
+      border-color: var(--bs-gray-300) !important;
+    }
+  }
+}
+.ng-select.ng-select-opened > .ng-select-container,
+.ng-select.ng-select-focused:not(.ng-select-opened) > .ng-select-container {
+  box-shadow: none !important;
+  outline: none !important;
+  border: 1px solid var(--bs-gray-300);
+}
+.ng-dropdown-panel {
+  border-radius: 0.475rem;
+  background: transparent;
+  border: 1px solid var(--bs-gray-300);
+}
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+  transition: 0.3s;
+  [data-bs-theme="dark"] & {
+    color: var(--bs-gray-700);
+    background-color: var(--bs-app-bg-color);
+  }
+  &:hover {
+    background-color: #f5faff;
+  }
+}
+.ng-select {
+  &.ng-invalid.ng-touched .ng-select-container {
+    border-color: $red;
+  }
+}
+
+.ng-select .ng-select-container .ng-value-container .ng-input > input {
+  color: var(--bs-text-dark) !important;
+}
+
+.container-xxl,
+.container-xl,
+.container-lg,
+.container-md,
+.container-sm,
+.container {
+  max-width: 100% !important;
+}
+.form-check-green {
+  &:checked {
+    background-color: var(--bs-success) !important;
+  }
+}
+.timepicker-overlay,
+.timepicker-backdrop-overlay {
+  z-index: 100000 !important;
+}
+
+.form-control {
+  color: var(--bs-text-dark) !important;
+  min-height: 43.2px;
+
+  ngx-intl-tel-input.ng-invalid.ng-touched & {
+    border-color: $red;
+  }
+}
+
+.drag-preview {
+  z-index: 1000000 !important;
+  color: var(--bs-body-bg);
+}
+
+.modal-dialog {
+  &.medium {
+    max-width: 1000px;
+  }
+}
+.apexcharts-legend {
+  display: none !important;
+}
+
+// Timepicker
+.clock-face {
+  width: 200px !important;
+  height: 200px !important;
+
+  .hide-clock-face & {
+    display: none !important;
+  }
+}
+
+.clock-face__number--outer {
+  height: calc(200px / 2 - 20px) !important;
+}
+
+.timepicker__header {
+  padding: 5px 30px !important;
+}
+
+.timepicker-dial__time,
+.timepicker-dial__control {
+  font-size: 30px !important;
+}
+.timepicker-dial__control {
+  width: 55px !important;
+}
+.clock-face__clock-hand {
+  height: 63px !important;
+  top: calc(50% - 63px) !important;
+}
+
+.hide-clock-face {
+  .timepicker__body {
+    display: none !important;
+  }
+  &.timepicker {
+    width: 230px !important;
+  }
+}
+
+.timepicker__body,
+.timepicker-dial__time {
+  direction: ltr !important;
+}
+
+.timepicker-dial__period {
+  margin-inline-start: 10px !important;
+}
+
+.dropdown-item {
+  text-align: start !important;
+}
+
+.video-wrapper {
+  position: relative;
+
+  &::before {
+    content: "";
+    width: 100%;
+    padding-bottom: 56.25%;
+    display: block;
+  }
+
+  > video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: initial;
+  }
+}
+
+.custom-file-field {
+  position: relative;
+  > input {
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+  > div {
+    display: flex;
+    border: 1px solid var(--bs-gray-300);
+    color: var(--bs-text-dark);
+    border-radius: 0.475rem;
+
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--bs-gray-100);
+    }
+
+    span {
+      padding: 0.775rem 1rem;
+      white-space: nowrap;
+      & + span {
+        border-inline-start: 1px solid var(--bs-gray-300);
+      }
+    }
+  }
+}
+
+.filteration-tabs {
+  > li + li {
+    margin-inline-start: 10px;
+  }
+}
+
+.pac-container {
+  text-align: left;
+  direction: ltr;
+  z-index: 999999;
+}
+
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.7;
+}
+.cdk-drag-preview {
+  background-color: white;
+  padding: 10px 20px;
+  font-weight: 600;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.theme-green .bs-datepicker-head,
+.theme-green .bs-datepicker-body table td span.selected {
+  background-color: #57d278 !important;
+}
+
+.apexcharts-xaxistooltip {
+  color: transparent !important;
+}
+
+.nav-link {
+  font-size: 15px;
+}

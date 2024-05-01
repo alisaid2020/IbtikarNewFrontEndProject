@@ -1,0 +1,105 @@
+<label
+  *ngIf="label"
+  class="form-label fs-6 fw-bolder text-dark"
+  [class.required]="control.hasValidator(validators.required)"
+>
+  {{ label | translate }}
+</label>
+
+<ng-select
+  *ngIf="!hasStaticValues && !apiUrl"
+  appendTo="body"
+  [items]="items"
+  [multiple]="IsMultiple"
+  [disabled]="disabled"
+  [searchable]="searchable"
+  [hideSelected]="true"
+  [clearable]="clearable"
+  [formControl]="formControl"
+  [bindLabel]="bindLabel"
+  [bindValue]="bindValue"
+  [editableSearchTerm]="true"
+  [placeholder]="placeholder | translate"
+  [closeOnSelect]="!IsMultiple"
+  [addTag]="isAddTag"
+  (change)="getChangedItem($event)"
+  [searchFn]="searchByLabelInDynamic"
+  #select
+>
+  <!-- <ng-template
+    *ngIf="hasMultipleLabels"
+    ng-label-tmp
+    ng-option-tmp
+    let-item="item"
+  >
+    {{ item[secondLabel] }}
+  </ng-template> -->
+</ng-select>
+<ng-select
+  *ngIf="apiUrl"
+  appendTo="body"
+  [items]="asyncedItems$ | async"
+  [multiple]="IsMultiple"
+  [disabled]="disabled"
+  [searchable]="searchable"
+  [hideSelected]="true"
+  [trackByFn]="trackByFn"
+  [loading]="loading"
+  [typeahead]="searchInput$"
+  [minTermLength]="2"
+  [clearable]="clearable"
+  [formControl]="formControl"
+  [editableSearchTerm]="true"
+  [bindLabel]="bindLabel"
+  [bindValue]="bindValue"
+  [placeholder]="placeholder | translate"
+  [closeOnSelect]="!IsMultiple"
+  [typeToSearchText]="'pleaseEnterMoreCharacters' | translate"
+  [addTag]="isAddTag"
+  (change)="getChangedItem($event)"
+  [searchFn]="searchByLabelInDynamic"
+  #select
+>
+  <!-- <ng-template
+    *ngIf="hasMultipleLabels"
+    ng-label-tmp
+    ng-option-tmp
+    let-item="item"
+  >
+    {{ item[secondLabel] }}
+  </ng-template> -->
+</ng-select>
+
+<ng-select
+  *ngIf="hasStaticValues"
+  [items]="items"
+  appendTo="body"
+  [multiple]="IsMultiple"
+  [formControl]="formControl"
+  [hideSelected]="true"
+  [bindValue]="'value'"
+  [bindLabel]="'translatedName'"
+  [clearable]="clearable"
+  [placeholder]="placeholder | translate"
+  [disabled]="disabled"
+  [closeOnSelect]="!IsMultiple"
+  [addTag]="isAddTag"
+  (change)="getChangedItem($event)"
+  [searchFn]="searchByLabelInStatic"
+>
+  <!-- <ng-template ng-label-tmp ng-option-tmp let-item="item">
+    {{ item.name | translate }}
+  </ng-template> -->
+</ng-select>
+
+<div
+  class="invalid-feedback d-block"
+  *ngIf="control?.touched && control?.invalid"
+>
+  <p *ngIf="formControl.hasError('required')">
+    {{ "fieldIsRequired" | translate }}
+  </p>
+  <p *ngIf="patternMessage && formControl.hasError('pattern')">
+    {{ patternMessage | translate }}
+  </p>
+</div>

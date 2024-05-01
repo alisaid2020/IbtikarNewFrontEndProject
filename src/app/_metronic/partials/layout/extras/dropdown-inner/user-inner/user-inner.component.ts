@@ -1,6 +1,9 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/auth.service';
+import { HelpersService } from 'src/app/shared/services/helpers.service';
 
 @Component({
   selector: 'app-user-inner',
@@ -11,22 +14,27 @@ export class UserInnerComponent implements OnInit, OnDestroy {
   class = `menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg menu-state-primary fw-bold py-4 fs-6 w-275px`;
   @HostBinding('attr.data-kt-menu') dataKtMenu = 'true';
 
-  user$: Observable<any>;
   private unsubscribe: Subscription[] = [];
+  userAccount: any;
 
-  constructor(  private authService: AuthService,
+  constructor(
+    private router: Router,
+    public translate: TranslateService,
+    private authService: AuthService,
+    public helpers: HelpersService
   ) {}
 
-  ngOnInit(): void {
-    // this.user$ = this.auth.currentUserSubject.asObservable();
+  ngOnInit(): void {}
+
+  logout(): void {
+    this.authService.logout();
   }
 
-  logout() {
-    this.authService.logout();
+  changeLanguage(value: string): void {
+    this.translate.use(value);
   }
 
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
 }
-

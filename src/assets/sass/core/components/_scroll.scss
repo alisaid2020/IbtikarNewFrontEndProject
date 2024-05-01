@@ -15,7 +15,7 @@
         scrollbar-width: thin;
 
         // Webkit
-        &::-webkit-scrollbar {            
+        &::-webkit-scrollbar {
             width: var(--#{$prefix}scrollbar-size);
             height: var(--#{$prefix}scrollbar-size);
         }
@@ -65,12 +65,12 @@
 }
 
 .hover-scroll,
-.hover-scroll-overlay {    
+.hover-scroll-overlay {
     position: relative;
-    
+
     // Desktop mode
     @include media-breakpoint-up(lg) {
-        overflow: hidden;       
+        overflow: hidden;
 
         @include for-firefox {
             overflow: scroll;
@@ -99,16 +99,16 @@
     // Tablet & mobile modes
     @include media-breakpoint-down(lg) {
         overflow: auto;
-    }   
+    }
 }
 
 .hover-scroll-y,
-.hover-scroll-overlay-y {    
+.hover-scroll-overlay-y {
     position: relative;
-    
+
     // Desktop mode
     @include media-breakpoint-up(lg) {
-        overflow-y: hidden;       
+        overflow-y: hidden;
 
         @include for-firefox {
             overflow-y: scroll;
@@ -136,16 +136,16 @@
     // Tablet & mobile modes
     @include media-breakpoint-down(lg) {
         overflow-y: auto;
-    }   
+    }
 }
 
 .hover-scroll-x,
-.hover-scroll-overlay-x {    
+.hover-scroll-overlay-x {
     position: relative;
-    
+
     // Desktop mode
     @include media-breakpoint-up(lg) {
-        overflow-x: hidden;       
+        overflow-x: hidden;
 
         @include for-firefox {
             overflow-x: scroll;
@@ -173,10 +173,10 @@
     // Tablet & mobile modes
     @include media-breakpoint-down(lg) {
         overflow-x: auto;
-    }   
+    }
 }
 
-// Utilities  
+// Utilities
 .scroll-ps {
     padding-left: var(--#{$prefix}scrollbar-size) !important;
 }

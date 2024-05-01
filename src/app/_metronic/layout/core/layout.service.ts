@@ -72,7 +72,10 @@ export class LayoutService {
 
   constructor(private activatedRoute: ActivatedRoute) {}
 
-  getProp(path: string, config?: ILayout): string | boolean | undefined | Object {
+  getProp(
+    path: string,
+    config?: ILayout
+  ): string | boolean | undefined | Object {
     if (config) {
       return objectPath.get(config, path);
     }
@@ -144,7 +147,6 @@ export class LayoutService {
       if (layoutType) {
         return layoutType as LayoutType;
       }
-
       this.setBaseLayoutType(defaultBaseLayoutType);
     }
     return defaultBaseLayoutType;

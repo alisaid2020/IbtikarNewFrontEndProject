@@ -1,23 +1,47 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-
-// const BODY_CLASSES = ['bgi-size-cover', 'bgi-position-center', 'bgi-no-repeat'];
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
   selector: '<body[root]>',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss'],
 })
 export class AuthComponent implements OnInit, OnDestroy {
   today: Date = new Date();
+  // @HostBinding('class')
+  // class = `menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg menu-state-primary fw-bold py-4 fs-6 w-275px`;
+  @HostBinding('attr.data-kt-menu') dataKtMenu = 'true';
+  isLogin: boolean;
+  subs: Subscription[] = [];
 
-  constructor() {}
+  constructor(public translate: TranslateService, private router: Router) {}
 
-  ngOnInit(): void {
-    // BODY_CLASSES.forEach((c) => document.body.classList.add(c));
+  changeLanguage(value: string): void {
+    this.translate.use(value);
   }
 
-  ngOnDestroy() {
-    // BODY_CLASSES.forEach((c) => document.body.classList.remove(c));
+  ngOnInit(): void {
+    this.detectRoute();
+    this.subs.push(
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.detectRoute();
+        }
+      })
+    );
+  }
+
+  detectRoute(): void {
+    if (this.router.url.includes('login')) {
+      this.isLogin = true;
+      return;
+    }
+    this.isLogin = false;
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach((sub) => sub.unsubscribe());
   }
 }

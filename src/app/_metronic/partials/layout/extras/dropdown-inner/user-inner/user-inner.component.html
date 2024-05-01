@@ -1,41 +1,23 @@
-<ng-container *ngIf="user$ | async as _user">
+<!-- *ngIf="user$ | async as _user" -->
+<ng-container>
   <div class="menu-item px-3">
     <div class="menu-content d-flex align-items-center px-3">
       <div class="symbol symbol-50px me-5">
-        <img alt="Logo" [src]="_user.pic" />
+        <!-- [src]="_user.pic" -->
+        <img alt="Logo" src="./assets/media/avatars/blank.png" />
       </div>
-
       <div class="d-flex flex-column">
         <div class="fw-bolder d-flex align-items-center fs-5">
-          Admin user Name
-          <span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2"
-            >Pro</span
-          >
+          {{ userAccount?.fullName }}
         </div>
         <a class="fw-bold text-muted text-hover-primary fs-7 cursor-pointer">
-         test@test.com
+          <!-- {{ _user.email }} -->
+          {{ "memberSince" | translate }} {{ userAccount?.createdOnString }}
         </a>
       </div>
     </div>
   </div>
-
   <div class="separator my-2"></div>
-
-  <div class="menu-item px-5">
-    <a routerLink="/crafted/pages/profile" class="menu-link px-5">
-      My Profile
-    </a>
-  </div>
-
-  <div class="menu-item px-5">
-    <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">
-      <span class="menu-text">My Projects</span>
-      <span class="menu-badge">
-        <span class="badge badge-light-danger badge-circle fw-bolder fs-7">3</span>
-      </span>
-    </a>
-  </div>
-
   <div
     class="menu-item px-5"
     data-kt-menu-trigger="hover"
@@ -43,89 +25,29 @@
     data-kt-menu-flip="bottom"
   >
     <a class="menu-link px-5 cursor-pointer">
-      <span class="menu-title">My Subscription</span>
-      <span class="menu-arrow"></span>
-    </a>
-
-    <div class="menu-sub menu-sub-dropdown w-175px py-4">
-      <div class="menu-item px-3">
-        <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">Referrals</a>
-      </div>
-
-      <div class="menu-item px-3">
-        <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">Billing</a>
-      </div>
-
-      <div class="menu-item px-3">
-        <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">Payments</a>
-      </div>
-
-      <div class="menu-item px-3">
-        <a class="menu-link d-flex flex-stack px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">
-          Statements
-          <i
-            class="fas fa-exclamation-circle ms-2 fs-7"
-            data-bs-toggle="tooltip"
-            title="View your statements"
-          ></i>
-        </a>
-      </div>
-
-      <div class="separator my-2"></div>
-
-      <div class="menu-item px-3">
-        <div class="menu-content px-3">
-          <label
-            class="form-check form-switch form-check-custom form-check-solid"
-          >
-            <input
-              class="form-check-input w-30px h-20px"
-              type="checkbox"
-              value="1"
-              defaultChecked="{true}"
-              name="notifications"
-            />
-            <span class="form-check-label text-muted fs-7">Notifications</span>
-          </label>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="menu-item px-5">
-    <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">My Statements</a>
-  </div>
-
-  <div class="separator my-2"></div>
-
-  <!-- translation menu here -->
-  <!-- <div
-    class="menu-item px-5"
-    data-kt-menu-trigger="hover"
-    data-kt-menu-placement="left-start"
-    data-kt-menu-flip="bottom"
-  >
-    <a class="menu-link px-5 cursor-pointer">
       <span class="menu-title position-relative">
-        Language
+        {{ "language" | translate }}
         <span
-          class="
-            fs-8
-            rounded
-            bg-light
-            px-3
-            py-2
-            position-absolute
-            translate-middle-y
-            top-50
-            end-0
-          "
+          class="fs-8 rounded bg-light px-3 py-2 position-absolute translate-middle-y top-50 end-50"
+          *ngIf="translate.currentLang === 'ar'"
         >
-          {{ language.name }}{{ " " }}
+          {{ "languages.ar" | translate }}
           <img
             class="w-15px h-15px rounded-1 ms-2"
-            [src]="language.flag"
-            alt="metronic"
+            src="assets/media/flags/saudi-arabia.svg"
+            alt="Merchant"
+          />
+        </span>
+        <span
+          class="fs-8 rounded bg-light px-3 py-2 position-absolute translate-middle-y top-50 end-0"
+          *ngIf="translate.currentLang === 'en'"
+        >
+          {{ "languages.en" | translate }}
+
+          <img
+            class="w-15px h-15px rounded-1 ms-2"
+            src="assets/media/flags/united-states.svg"
+            alt="Merchant"
           />
         </span>
       </span>
@@ -133,30 +55,46 @@
 
     <div class="menu-sub menu-sub-dropdown w-175px py-4">
       <div
-        *ngFor="let l of langs"
         class="menu-item px-3 cursor-pointer"
-        (click)="selectLanguage(l.lang)"
+        aria-labelledby="dropdownMenuButton"
       >
-        <a
-          class="menu-link d-flex px-5"
-          [ngClass]="l.lang === language.lang ? 'active' : ''"
+        <button
+          class="dropdown-item menu-link d-flex px-5"
+          (click)="changeLanguage('ar')"
         >
-          <span class="symbol symbol-20px me-4">
-            <img class="rounded-1" [src]="l.flag" alt="metronic" />
+          <span class="symbol symbol-20px mx-4">
+            <img
+              class="rounded-1"
+              src="assets/media/flags/saudi-arabia.svg"
+              alt=""
+            />
           </span>
-          {{ l.name }}
-        </a>
+          {{ "languages.ar" | translate }}
+        </button>
+        <button
+          class="dropdown-item menu-link d-flex px-5"
+          (click)="changeLanguage('en')"
+        >
+          <span class="symbol symbol-20px mx-4">
+            <img
+              class="rounded-1"
+              src="assets/media/flags/united-states.svg"
+              alt=""
+            />
+          </span>
+          {{ "languages.en" | translate }}
+        </button>
       </div>
     </div>
-  </div> -->
-
-  <div class="menu-item px-5 my-1">
-    <a routerLink="/crafted/account/settings" class="menu-link px-5">
-      Account Settings
-    </a>
   </div>
-
+  <!-- <div class="menu-item px-5 my-1">
+    <a routerLink="/messages" class="menu-link px-5">
+      {{ "messages" | translate }}
+    </a>
+  </div> -->
   <div class="menu-item px-5">
-    <a (click)="logout()" class="menu-link px-5 cursor-pointer"> Sign Out </a>
+    <a (click)="logout()" class="menu-link px-5 cursor-pointer">
+      {{ "signOut" | translate }}
+    </a>
   </div>
 </ng-container>

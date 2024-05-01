@@ -1,77 +1,104 @@
-<!-- <div class="d-flex flex-column flex-center flex-column-fluid">
-  <div class="d-flex flex-column flex-center text-center p-10">
-    <div class="card card-flush  w-lg-650px py-5">
-      <div class="card-body py-15 py-lg-20">
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-  </div>
-</div> -->
-
+<app-scripts-init></app-scripts-init>
 <div class="d-flex flex-column flex-lg-row flex-column-fluid">
-
-  <!--begin::Body-->
-  <div class="d-flex flex-column flex-lg-row-fluid w-lg-50 p-10 order-2 order-lg-1">
-    <!--begin::Form-->
+  <div
+    class="d-flex flex-column flex-lg-row-fluid w-lg-50 p-10 order-2 order-lg-1"
+  >
     <div class="d-flex flex-center flex-column flex-lg-row-fluid">
-      <!--begin::Wrapper-->
       <div class="<?php echo $params['wrapperClass']?> p-10">
         <router-outlet></router-outlet>
       </div>
-      <!--end::Wrapper-->
     </div>
-    <!--end::Form-->
-
-    <!--begin::Footer-->
     <div class="d-flex flex-center flex-wrap px-5">
-      <!--begin::Links-->
-      <div class="d-flex fw-semibold text-primary fs-base">
-        <a href="#" class="px-5" target="_blank">Terms</a>
+      <div class="me-10 position-relative">
+        <button
+          class="btn btn-flex btn-link btn-color-gray-700 btn-active-color-primary rotate fs-base"
+          data-kt-menu-trigger="hover"
+          data-kt-menu-placement="bottom-start"
+          data-kt-menu-offset="0px, 0px"
+        >
+          <ng-container *ngIf="translate.currentLang === 'ar'">
+            <img
+              data-kt-element="current-lang-flag"
+              class="w-20px h-20px rounded me-3"
+              src="/assets/media/flags/saudi-arabia.svg"
+              alt=""
+            />
+            <span data-kt-element="current-lang-name" class="me-1">{{
+              "languages.ar" | translate
+            }}</span>
+          </ng-container>
+          <ng-container *ngIf="translate.currentLang === 'en'">
+            <img
+              data-kt-element="current-lang-flag"
+              class="w-20px h-20px rounded me-3"
+              src="/assets/media/flags/united-states.svg"
+              alt=""
+            />
+            <span data-kt-element="current-lang-name" class="me-1">{{
+              "languages.en" | translate
+            }}</span>
+          </ng-container>
 
-        <a href="#" class="px-5" target="_blank">Plans</a>
-
-        <a href="#" class="px-5" target="_blank">Contact Us</a>
+          <i class="ki-duotone ki-down fs-5 text-muted rotate-180 m-0"></i>
+        </button>
+        <div
+          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-4 fs-7"
+          data-kt-menu="true"
+          id="kt_auth_lang_menu"
+        >
+          <div class="menu-item px-3">
+            <a
+              href="#"
+              (click)="$event.preventDefault(); changeLanguage('ar')"
+              class="menu-link d-flex px-5"
+            >
+              <span class="symbol symbol-20px me-3">
+                <img
+                  data-kt-element="lang-flag"
+                  class="rounded-1"
+                  src="/assets/media/flags/saudi-arabia.svg"
+                  alt=""
+                />
+              </span>
+              <span data-kt-element="lang-name">{{
+                "languages.ar" | translate
+              }}</span>
+            </a>
+          </div>
+          <div class="menu-item px-3">
+            <a
+              href="#"
+              (click)="$event.preventDefault(); changeLanguage('en')"
+              class="menu-link d-flex px-5"
+            >
+              <span class="symbol symbol-20px me-3">
+                <img
+                  data-kt-element="lang-flag"
+                  class="rounded-1"
+                  src="/assets/media/flags/united-states.svg"
+                  alt=""
+                />
+              </span>
+              <span data-kt-element="lang-name">{{
+                "languages.en" | translate
+              }}</span>
+            </a>
+          </div>
+        </div>
       </div>
-      <!--end::Links-->
     </div>
-    <!--end::Footer-->
   </div>
-  <!--end::Body-->
 
-  <!--begin::Aside-->
-  <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2"
-    [ngStyle]="{'background-image': 'url(./assets/media/misc/auth-bg.png)'}">
-    <!--begin::Content-->
+  <div
+    class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2"
+    [ngStyle]="{ 'background-image': 'url(./assets/media/misc/auth-bg.png)' }"
+  >
     <div class="d-flex flex-column flex-center py-15 px-5 px-md-15 w-100">
-      <!--begin::Logo-->
-      <a routerLink="/" class="mb-12">
-        <img alt="Logo" src="./assets/media/logos/custom-1.png" class="h-75px" />
-      </a>
-      <!--end::Logo-->
-
-      <!--begin::Image-->
-      <img class="mx-auto w-275px w-md-50 w-xl-500px mb-10 mb-lg-20" src="./assets/media/misc/auth-screens.png"
-        alt="" />
-      <!--end::Image-->
-
-      <!--begin::Title-->
-      <h1 class="text-white fs-2qx fw-bolder text-center mb-7">
-        Fast, Efficient and Productive
-      </h1>
-      <!--end::Title-->
-
-      <!--begin::Text-->
-      <div class="text-white fs-base text-center">
-        In this kind of post, <a href="#" class="opacity-75-hover text-warning fw-bold me-1">the blogger</a>
-
-        introduces a person they’ve interviewed <br /> and provides some background information about
-
-        <a href="#" class="opacity-75-hover text-warning fw-bold me-1">the interviewee</a>
-        and their <br /> work following this is a transcript of the interview.
-      </div>
-      <!--end::Text-->
+      <img
+        class="mx-auto w-275px w-md-50 w-xl-500px mb-10 mb-lg-20"
+        src="./assets/media/misc/auth-screens.png"
+        alt=""
+      />
     </div>
-    <!--end::Content-->
   </div>
-  <!--end::Aside-->
 </div>

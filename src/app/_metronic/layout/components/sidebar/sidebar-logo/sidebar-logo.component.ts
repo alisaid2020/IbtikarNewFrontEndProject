@@ -1,4 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { LayoutType } from '../../../core/configs/config';
 import { LayoutService } from '../../../core/layout.service';
@@ -18,7 +19,7 @@ export class SidebarLogoComponent implements OnInit, OnDestroy {
 
   toggleAttr: string;
 
-  constructor(private layout: LayoutService) {}
+  constructor(private layout: LayoutService, public translate: TranslateService) {}
 
   ngOnInit(): void {
     this.toggleAttr = `app-sidebar-${this.toggleType}`;

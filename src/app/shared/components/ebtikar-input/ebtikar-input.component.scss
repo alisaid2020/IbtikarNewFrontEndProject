@@ -1,0 +1,159 @@
+:host {
+  ::ng-deep {
+    ngb-datepicker {
+      padding: 1rem 1rem !important;
+    }
+    .ngb-dp-arrow {
+      align-items: center !important;
+      font-weight: 500 !important;
+      color: #3f4254 !important;
+      font-size: 1rem !important;
+      .ngb-dp-navigation-chevron {
+        [dir="rtl"] & {
+          transform: rotate(45deg) !important;
+        }
+      }
+      &.right {
+        .ngb-dp-navigation-chevron {
+          [dir="rtl"] & {
+            transform: rotate(229deg) !important;
+          }
+        }
+      }
+    }
+
+    .ngb-dp-day {
+      width: 33px !important;
+      height: 33px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 5px !important;
+      font-size: 1rem !important;
+      font-weight: 600 !important;
+      color: #7e8299 !important;
+    }
+    .ngb-dp-weekdays {
+      justify-content: center !important;
+      padding: 5px 0 !important;
+      background: none !important;
+      border: none !important;
+    }
+    .ngb-dp-weekday {
+      width: 33px !important;
+      height: 33px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-weight: 500 !important;
+      color: #3f4254 !important;
+      font-size: 1rem !important;
+    }
+    .ngb-dp-header {
+      background: none !important;
+    }
+    .ngb-dp-navigation-select {
+      flex: 1 1 11rem !important;
+      gap: 3px !important;
+    }
+    .ngb-dp-arrow {
+      .btn-link {
+        &:active,
+        &:hover {
+          color: #fd8101 !important ;
+        }
+      }
+    }
+    .ngb-dp-day:has(div[ng-reflect-selected="true"]) {
+      background-color: #fd8101 !important ;
+    }
+    .form-select {
+      background-position: right 1rem center !important;
+      :host-context([dir="rtl"]) & {
+        background-position: left 1rem center;
+      }
+    }
+    .country-dropdown {
+      max-width: 300px;
+      :host-context([dir="rtl"]) & {
+        direction: ltr;
+      }
+    }
+    .iti {
+      display: block;
+    }
+    .iti__flag {
+      margin-inline-end: 5px;
+    }
+    .search-container input {
+      padding: 0.77rem 1rem;
+      outline: none;
+    }
+
+    .ck-toolbar {
+      border: 1px solid var(--bs-gray-300);
+      border-bottom-right-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      border-bottom: 0;
+    }
+    .ck-content {
+      display: block;
+      width: 100%;
+      padding: 0.775rem 1rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      line-height: 1.5;
+      color: var(--bs-gray-700);
+      background-color: var(--bs-body-bg);
+      background-clip: padding-box;
+      border: 1px solid var(--bs-gray-300);
+      -webkit-appearance: none;
+      appearance: none;
+      border-radius: 0.475rem;
+      box-shadow: false;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      border-top-left-radius: 0 !important;
+      border-top-right-radius: 0 !important;
+
+      &.ck-focused {
+        color: var(--bs-gray-700);
+        background-color: var(--bs-body-bg);
+        border-color: var(--bs-gray-400);
+        outline: 0;
+        box-shadow: false,
+          0 0 0 0.25rem rgba(var(--bs-component-active-bg), 0.25);
+      }
+
+      &.ck-read-only {
+        background-color: var(--bs-gray-200);
+        border-color: var(--bs-gray-300);
+      }
+    }
+  }
+}
+
+input[type="number"],
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.has-addon {
+  position: relative;
+  input {
+    padding-inline-end: 25px;
+  }
+  .addon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    color: #999;
+    transform: translateY(-50%);
+  }
+}
+
+
+.invalid-feedback {
+  display: block;
+}

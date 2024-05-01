@@ -4,6 +4,11 @@ import { Subscription } from 'rxjs';
 import { LayoutService } from '../../core/layout.service';
 import { MenuComponent } from '../../../kt/components';
 import { ILayout, LayoutType } from '../../core/configs/config';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
+import { FormControl } from '@angular/forms';
+import { DataService } from 'src/app/shared/services/data.service';
+import { HelpersService } from 'src/app/shared/services/helpers.service';
 
 @Component({
   selector: 'app-header',
@@ -35,6 +40,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     private layout: LayoutService,
     private router: Router,
+    private offcanvasService: NgbOffcanvas,
+    private translate: TranslateService,
+    private dataService: DataService,
+    private helpers: HelpersService
   ) {
     this.routingChanges();
   }

@@ -3,7 +3,7 @@
 //
 
 // General mode
-.app-sidebar {    
+.app-sidebar {
     transition: $app-sidebar-base-transition;
     background-color: var(--#{$prefix}app-sidebar-base-bg-color);
     box-shadow: var(--#{$prefix}app-sidebar-base-box-shadow);
@@ -17,23 +17,23 @@
 .app-sidebar-collapse-d-flex,
 .app-sidebar-minimize-mobile-d-flex,
 .app-sidebar-collapse-mobile-d-flex {
-    display: none;    
+    display: none;
 }
 
 // Desktop mode
 @include media-breakpoint-up(lg) {
     // Base
-    .app-sidebar {        
-        display: flex;    
+    .app-sidebar {
+        display: flex;
         flex-shrink: 0;
-        width: var(--#{$prefix}app-sidebar-width);      
+        width: var(--#{$prefix}app-sidebar-width);
 
         @include property( z-index, $app-sidebar-base-z-index);
         @include property( margin-left, $app-sidebar-base-gap-start);
         @include property( margin-right, $app-sidebar-base-gap-end);
         @include property( margin-top, $app-sidebar-base-gap-top);
         @include property( margin-bottom, $app-sidebar-base-gap-bottom);
-    }    
+    }
 
     // Vars
     :root {
@@ -66,10 +66,10 @@
         --#{$prefix}app-sidebar-gap-end: #{$app-sidebar-sticky-gap-end};
         --#{$prefix}app-sidebar-gap-top: #{$app-sidebar-sticky-gap-top};
         --#{$prefix}app-sidebar-gap-bottom: #{$app-sidebar-sticky-gap-bottom};
-    }    
+    }
 
     [data-kt-app-sidebar-collapse="on"] {
-        --#{$prefix}app-sidebar-width: 0px;  
+        --#{$prefix}app-sidebar-width: 0px;
     }
 
     // States
@@ -82,16 +82,23 @@
             display: none;
         }
 
-        [data-kt-app-sidebar-fixed="true"] & {
+        [data-kt-app-sidebar-fixed="true"]:not([dir="rtl"]) & {
             position: fixed;
             @include property( z-index, $app-sidebar-fixed-z-index);
             @include property( top, $app-sidebar-fixed-top);
             @include property( bottom, $app-sidebar-fixed-bottom);
             @include property( left, $app-sidebar-fixed-left);
-        }  
+        }
+        [data-kt-app-sidebar-fixed="true"][dir="rtl"] & {
+            position: fixed;
+            @include property( z-index, $app-sidebar-fixed-z-index);
+            @include property( top, $app-sidebar-fixed-top);
+            @include property( bottom, $app-sidebar-fixed-bottom);
+            @include property( right, $app-sidebar-fixed-right);
+        }
 
         [data-kt-app-sidebar-stacked="true"] & {
-            align-items: stretch; 
+            align-items: stretch;
         }
 
         [data-kt-app-sidebar-sticky="on"] & {
@@ -123,7 +130,7 @@
 
         [data-kt-app-sidebar-hoverable="true"] & {
             .app-sidebar-wrapper {
-                width: var(--#{$prefix}app-sidebar-width-actual); 
+                width: var(--#{$prefix}app-sidebar-width-actual);
             }
         }
 
@@ -143,31 +150,31 @@
     // Utilities
     [data-kt-app-sidebar-minimize="on"] {
         .app-sidebar-minimize-d-none {
-            display: none !important;    
+            display: none !important;
         }
 
         .app-sidebar-minimize-d-flex {
-            display: flex !important;    
+            display: flex !important;
         }
     }
 
     [data-kt-app-sidebar-sticky="on"] {
         .app-sidebar-sticky-d-none {
-            display: none !important;    
+            display: none !important;
         }
 
         .app-sidebar-sticky-d-flex {
-            display: flex !important;    
+            display: flex !important;
         }
-    } 
+    }
 
     [data-kt-app-sidebar-collapse="on"] {
         .app-sidebar-collapse-d-none {
-            display: none !important;    
+            display: none !important;
         }
 
         .app-sidebar-collapse-d-flex {
-            display: flex !important;    
+            display: flex !important;
         }
     }
 
@@ -230,9 +237,9 @@
     // States
     .app-sidebar {
         [data-kt-app-sidebar-stacked="true"] & {
-            align-items: stretch; 
+            align-items: stretch;
         }
-            
+
         [data-kt-app-sidebar-minimize-mobile="on"] & {
             transition: $app-sidebar-base-transition;
 
@@ -244,14 +251,14 @@
 
         [data-kt-app-sidebar-hoverable-mobile="true"] & {
             .app-sidebar-wrapper {
-                width: var(--#{$prefix}app-sidebar-width-actual); 
+                width: var(--#{$prefix}app-sidebar-width-actual);
             }
         }
 
         [data-kt-app-sidebar-hoverable-mobile="true"][data-kt-app-sidebar-minimize-mobile="on"] &:hover:not(.animating) {
             transition: $app-sidebar-base-transition;
 			width: var(--#{$prefix}app-sidebar-width-actual);
-            box-shadow: var(--#{$prefix}app-sidebar-minimize-hover-box-shadow-mobile); 
+            box-shadow: var(--#{$prefix}app-sidebar-minimize-hover-box-shadow-mobile);
         }
 
         [data-kt-app-sidebar-collapse-mobile="on"] & {
@@ -264,21 +271,21 @@
     // Utilities
     [data-kt-app-sidebar-minimize-mobile="on"] {
         .app-sidebar-minimize-mobile-d-none {
-            display: none !important;    
+            display: none !important;
         }
 
         .app-sidebar-minimize-mobile-d-flex {
-            display: flex !important;    
+            display: flex !important;
         }
     }
 
     [data-kt-app-sidebar-collapse-mobile="on"] {
         .app-sidebar-collapse-mobile-d-none {
-            display: none !important;    
+            display: none !important;
         }
 
         .app-sidebar-collapse-mobile-d-flex {
-            display: flex !important;    
+            display: flex !important;
         }
     }
 }

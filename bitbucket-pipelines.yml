@@ -1,0 +1,20 @@
+image: node:10-alpine
+
+options:
+  docker: true
+
+pipelines:
+  branches:
+    master:
+      - step:
+          caches: 
+            - node
+          script:            
+            - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+            - docker build -f ./Dockerfile . -t motamarat/vrtualacademyadmin
+            - docker push motamarat/vrtualacademyadmin
+
+definitions:
+  services:
+    docker:
+      memory: 3072

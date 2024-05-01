@@ -1,0 +1,144 @@
+<label
+  class="form-label fs-6 fw-bolder text-dark"
+  [class.required]="control.hasValidator(validators.required)"
+  *ngIf="label"
+>
+  {{ label | translate }}
+</label>
+
+<ng-container [ngSwitch]="type">
+  <div [class.has-addon]="addon">
+    <input
+      *ngSwitchDefault
+      [type]="type || 'text'"
+      class="form-control"
+      autocomplete="off"
+      [ngClass]="{
+        'is-invalid': control && control.invalid && control.touched
+      }"
+      [readonly]="readonly"
+      [formControl]="formControl"
+      [placeholder]="placeholder | translate"
+      (input)="getChangedItem($event)"
+    />
+    <span *ngIf="addon" class="addon">{{ addon }}</span>
+  </div>
+
+  <ng-container *ngSwitchCase="'datepicker'">
+    <input
+      class="form-control"
+      type="text"
+      mwlFlatpickr
+      [formControl]="formControl"
+      [altInput]="true"
+      [nextArrow]="nextArrow"
+      [prevArrow]="prevArrow"
+      [convertModelValue]="true"
+      [monthSelectorType]="'dropdown'"
+      dateFormat="d/m/Y"
+      altFormat="d/m/Y"
+      [placeholder]="placeholder | translate"
+      [ngClass]="{
+        'is-invalid': control && control.invalid && control.touched
+      }"
+    />
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'timepicker'">
+    <input
+      class="form-control"
+      type="text"
+      mwlFlatpickr
+      [formControl]="formControl"
+      [altInput]="true"
+      [nextArrow]="nextArrow"
+      [prevArrow]="prevArrow"
+      [convertModelValue]="true"
+      [noCalendar]="true"
+      [enableTime]="true"
+      [monthSelectorType]="'dropdown'"
+      dateFormat="H:i"
+      altFormat="H:i"
+      [placeholder]="placeholder | translate"
+      [ngClass]="{
+        'is-invalid': control && control.invalid && control.touched
+      }"
+    />
+  </ng-container>
+  <ng-container *ngSwitchCase="'dateTimepicker'">
+    <input
+      class="form-control"
+      type="text"
+      mwlFlatpickr
+      [formControl]="formControl"
+      [altInput]="true"
+      [nextArrow]="nextArrow"
+      [prevArrow]="prevArrow"
+      [convertModelValue]="true"
+      [enableTime]="true"
+      [monthSelectorType]="'dropdown'"
+      dateFormat="d/m/Y H:i"
+      altFormat="d/m/Y H:i"
+      [placeholder]="placeholder | translate"
+      [ngClass]="{
+        'is-invalid': control && control.invalid && control.touched
+      }"
+    />
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'phoneNumber'">
+    <ngx-intl-tel-input
+      [cssClass]="'form-control'"
+      [ngClass]="{
+        'is-invalid': control.status === 'INVALID' && control.touched
+      }"
+      [preferredCountries]="preferredCountries"
+      [enableAutoCountrySelect]="true"
+      [enablePlaceholder]="true"
+      customPlaceholder="5XXXXXXXX"
+      [searchCountryFlag]="true"
+      [searchCountryField]="[SearchCountryField.All]"
+      [selectFirstCountry]="false"
+      [selectedCountryISO]="CountryISO.SaudiArabia"
+      [maxLength]="15"
+      [separateDialCode]="true"
+      [phoneValidation]="phoneValidation"
+      [numberFormat]="PhoneNumberFormat.International"
+      [formControl]="formControl"
+    ></ngx-intl-tel-input>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'editor'">
+    <ckeditor
+      [editor]="Editor"
+      (ready)="onReady($event)"
+      [formControl]="formControl"
+    ></ckeditor>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'textArea'">
+    <textarea
+      class="form-control"
+      [formControl]="formControl"
+      [placeholder]="placeholder | translate"
+      autocomplete="off"
+      rows="5"
+      [ngClass]="{
+        'is-invalid': control && control.invalid && control.touched
+      }"
+    >
+    </textarea>
+  </ng-container>
+</ng-container>
+
+<div class="invalid-feedback" *ngIf="control?.touched && control?.invalid">
+  <p class="text-start" *ngIf="formControl.hasError('required')">
+    {{ "fieldIsRequired" | translate }}
+  </p>
+  <p *ngIf="formControl.hasError('validatePhoneNumber')">
+    {{ "validPhoneNumber" | translate }}
+  </p>
+  <p *ngIf="formControl.hasError('pattern')">
+    {{ patternMessage! | translate }}
+  </p>
+</div>

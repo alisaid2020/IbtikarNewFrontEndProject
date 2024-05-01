@@ -1,0 +1,25 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    {{ modalInfo.title | translate }}
+  </h4>
+  <button
+    type="button"
+    class="btn-close m-0"
+    aria-label="Close"
+    (click)="modal.close(false)"
+  ></button>
+</div>
+<div class="modal-body">
+  <p>
+    {{ modalInfo.description | translate }}
+    <ng-container *ngIf="modalInfo?.name"> {{ modalInfo.name }}</ng-container>?
+  </p>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="modal.close(false)">
+    {{ "cancel" | translate }}
+  </button>
+  <button type="button" class="btn btn-danger" (click)="modal.close(true)">
+    {{ "yesSure" | translate }}
+  </button>
+</div>

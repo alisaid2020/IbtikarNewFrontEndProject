@@ -1,20 +1,39 @@
-<!--begin::Quick links-->
-<!-- <div class="app-navbar-item" [ngClass]="itemClass">
+<!--begin::Search-->
+<!-- <div class="app-navbar-item align-items-stretch" [ngClass]="itemClass">
   <div
-    [ngClass]="btnClass"
-    data-kt-menu-trigger="click"
-    data-kt-menu-attach="parent"
+    id="kt_header_search"
+    class="header-search d-flex align-items-stretch"
+    data-kt-search-keypress="true"
+    data-kt-search-min-length="2"
+    data-kt-search-enter="enter"
+    data-kt-search-layout="menu"
+    data-kt-menu-trigger="{default: 'click'}"
+    data-kt-menu-overflow="false"
+    data-kt-menu-permanent="true"
     data-kt-menu-placement="bottom-end"
+    data-kt-search="true"
   >
-    <span
-      [inlineSVG]="'./assets/media/icons/duotune/general/gen025.svg'"
-      class="svg-icon"
-      [ngClass]="btnIconClass"
-    ></span>
+    <div
+      class="d-flex align-items-center"
+      data-kt-search-element="toggle"
+      id="kt_header_search_toggle"
+    >
+      <div [ngClass]="btnClass">
+        <span
+          [inlineSVG]="'./assets/media/icons/duotune/general/gen021.svg'"
+          class="svg-icon"
+          [ngClass]="btnIconClass"
+        ></span>
+      </div>
+    </div>
+    <app-search-result-inner
+      data-kt-search-element="content"
+      data-kt-menu="true"
+      class="menu menu-sub menu-sub-dropdown p-7 w-325px w-md-375px"
+    ></app-search-result-inner>
   </div>
-  <app-quick-links-inner></app-quick-links-inner>
 </div> -->
-<!--end::Quick links-->
+<!--end::Search-->
 
 <!--begin::Theme mode-->
 <div class="app-navbar-item" [ngClass]="itemClass">
@@ -30,15 +49,17 @@
 <div class="app-navbar-item" [ngClass]="itemClass">
   <!--begin::Menu wrapper-->
   <div
-    class="cursor-pointer symbol"
+    class="btn btn-icon"
     [ngClass]="userAvatarClass"
-    data-kt-menu-trigger="{default: 'click'}"
+    data-kt-menu-trigger="{default: 'hover'}"
     data-kt-menu-attach="parent"
     data-kt-menu-placement="bottom-end"
+    data-kt-menu-flip="bottom"
   >
-    <img src="assets/media/avatars/blank.png" />
+    <!-- <img src="./assets/media/avatars/blank.png" /> -->
+    <i class="fa fa-user fs-3"></i>
   </div>
-  <app-user-inner data-kt-menu="true"></app-user-inner>
+  <app-user-inner></app-user-inner>
   <!--end::Menu wrapper-->
 </div>
 <!--end::User menu-->

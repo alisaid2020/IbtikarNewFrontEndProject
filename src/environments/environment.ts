@@ -6,8 +6,11 @@ export const environment = {
   production: false,
   appVersion: 'v8.1.7',
   USERDATA_KEY: 'authf649fc9a5f55',
+  email: 'Admin',
+  password: 'Admin',
   isMockEnabled: true,
-  apiUrl: 'api',
+  apiUrl: 'https://api.motamarat.live',
+  // apiUrl: 'https://api-motamarat.kfshrc.edu.sa', // For production only
   appThemeName: 'Metronic',
   appPurchaseUrl: 'https://1.envato.market/EA4JP',
   appHTMLIntegration:

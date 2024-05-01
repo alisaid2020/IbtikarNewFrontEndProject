@@ -1,3 +1,11 @@
 :host {
   height: 100%;
 }
+
+.menu-column {
+  position: absolute !important;
+  bottom: 50px !important;
+  left: 0 !important;
+  top: inherit !important;
+  transform: none !important;
+}

@@ -9,7 +9,7 @@
 	transform: translateY(-50%);
 	display: flex;
 	flex-direction: column;
-	align-items: end;
+	align-items: flex-end;
 	z-index: 5;
 	padding-right: 12px;
 
@@ -29,12 +29,12 @@
 		height: 70px;
 
 		@include button-custom-variant(
-			$color: var(--#{$prefix}engage-btn-color), 
-			$icon-color: var(--#{$prefix}engage-btn-icon-color), 
-			$border-color: var(--#{$prefix}engage-btn-border-color), 
-			$bg-color: var(--#{$prefix}engage-btn-bg), 
-			$color-active: null, 
-			$icon-color-active: null, 
+			$color: var(--#{$prefix}engage-btn-color),
+			$icon-color: var(--#{$prefix}engage-btn-icon-color),
+			$border-color: var(--#{$prefix}engage-btn-border-color),
+			$bg-color: var(--#{$prefix}engage-btn-bg),
+			$color-active: null,
+			$icon-color-active: null,
 			$border-color-active: null,
 			$bg-color-active: null
 		);
@@ -96,7 +96,7 @@
 				visibility: visible;
 				display: flex;
 			}
-		}		
+		}
 	}
 }
 
@@ -106,12 +106,12 @@
 	height: 35px !important;
 
 	@include button-custom-variant(
-		$color: var(--#{$prefix}engage-btn-color), 
-		$icon-color: var(--#{$prefix}engage-btn-color), 
-		$border-color: var(--#{$prefix}engage-btn-bg), 
-		$bg-color: var(--#{$prefix}engage-btn-bg), 
-		$color-active: var(--#{$prefix}engage-btn-color-active), 
-		$icon-color-active: var(--#{$prefix}engage-btn-color-active), 
+		$color: var(--#{$prefix}engage-btn-color),
+		$icon-color: var(--#{$prefix}engage-btn-color),
+		$border-color: var(--#{$prefix}engage-btn-bg),
+		$bg-color: var(--#{$prefix}engage-btn-bg),
+		$color-active: var(--#{$prefix}engage-btn-color-active),
+		$icon-color-active: var(--#{$prefix}engage-btn-color-active),
 		$border-color-active: var(--#{$prefix}engage-btn-bg),
 		$bg-color-active: var(--#{$prefix}engage-btn-bg)
 	);

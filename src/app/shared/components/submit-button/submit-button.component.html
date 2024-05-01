@@ -1,0 +1,16 @@
+<button
+  type="submit"
+  class="btn btn-primary w-100"
+  [disabled]="isDisabled"
+  (click)="onClick()"
+>
+  <ng-container *ngIf="(loadingService.isLoading$ | async) === false">
+    <span class="indicator-label">{{ buttonText | translate }}</span>
+  </ng-container>
+  <ng-container *ngIf="loadingService.isLoading$ | async">
+    <span class="indicator-progress" [style.display]="'block'">
+      Please wait...
+      <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+    </span>
+  </ng-container>
+</button>

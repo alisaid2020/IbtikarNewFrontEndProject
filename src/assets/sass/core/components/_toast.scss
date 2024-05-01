@@ -1,0 +1,13 @@
+.toast {
+  position: relative;
+  box-shadow: none;
+  border: 0;
+  color: white;
+
+  &.toast-error {
+    background-color: rgba($color: $danger, $alpha: 1);
+  }
+  &.toast-success {
+    background-color: rgba($color: $success, $alpha: 1);
+  }
+}

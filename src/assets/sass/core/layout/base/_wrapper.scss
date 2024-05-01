@@ -12,7 +12,7 @@
     // Integration
     .app-wrapper {
         transition: $app-wrapper-transition;
-        
+
         // Header
         [data-kt-app-header-sticky="on"] & {
             margin-top: var(--#{$prefix}app-header-height-actual);
@@ -36,10 +36,17 @@
         }
 
         // Sidebar
-        [data-kt-app-sidebar-fixed="true"] & {
+        [data-kt-app-sidebar-fixed="true"]:not([dir="rtl"]) & {
             margin-left: calc(
-                var(--#{$prefix}app-sidebar-width) + 
-                var(--#{$prefix}app-sidebar-gap-start, 0px) + 
+                var(--#{$prefix}app-sidebar-width) +
+                var(--#{$prefix}app-sidebar-gap-start, 0px) +
+                var(--#{$prefix}app-sidebar-gap-end, 0px)
+            );
+        }
+        [data-kt-app-sidebar-fixed="true"][dir="rtl"] & {
+            margin-right: calc(
+                var(--#{$prefix}app-sidebar-width) +
+                var(--#{$prefix}app-sidebar-gap-start, 0px) +
                 var(--#{$prefix}app-sidebar-gap-end, 0px)
             );
         }
@@ -47,11 +54,11 @@
         // Sidebar Panel
         [data-kt-app-sidebar-panel-fixed="true"] & {
             margin-left: calc(
-                var(--#{$prefix}app-sidebar-width) + 
-                var(--#{$prefix}app-sidebar-gap-start, 0px) + 
+                var(--#{$prefix}app-sidebar-width) +
+                var(--#{$prefix}app-sidebar-gap-start, 0px) +
                 var(--#{$prefix}app-sidebar-gap-end, 0px) +
-                var(--#{$prefix}app-sidebar-panel-width) + 
-                var(--#{$prefix}app-sidebar-panel-gap-start, 0px) + 
+                var(--#{$prefix}app-sidebar-panel-width) +
+                var(--#{$prefix}app-sidebar-panel-gap-start, 0px) +
                 var(--#{$prefix}app-sidebar-panel-gap-end, 0px)
             );
         }
@@ -59,8 +66,8 @@
         // Aside
         [data-kt-app-aside-fixed="true"] & {
             margin-right: calc(
-                var(--#{$prefix}app-aside-width) + 
-                var(--#{$prefix}app-aside-gap-start, 0px) + 
+                var(--#{$prefix}app-aside-width) +
+                var(--#{$prefix}app-aside-gap-start, 0px) +
                 var(--#{$prefix}app-aside-gap-end, 0px)
             );
         }
@@ -68,7 +75,7 @@
         // Footer
         [data-kt-app-footer-fixed="true"] & {
             margin-bottom: var(--#{$prefix}app-footer-height);
-        }  
+        }
     }
 }
 
@@ -77,7 +84,7 @@
     // Integration
     .app-wrapper {
         transition: $app-wrapper-transition;
-        
+
         // Header
         [data-kt-app-header-sticky="on"] & {
             margin-top: var(--#{$prefix}app-header-height-actual);
@@ -95,6 +102,6 @@
         // Footer
         [data-kt-app-footer-fixed-mobile="true"] & {
             margin-bottom: var(--#{$prefix}app-footer-height);
-        }  
+        }
     }
 }

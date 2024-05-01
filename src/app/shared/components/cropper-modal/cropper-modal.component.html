@@ -1,0 +1,68 @@
+<div class="modal-body">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <image-cropper
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="false"
+        format="png"
+        [canvasRotation]="canvasRotation"
+        [transform]="transform"
+        (imageCropped)="imageCropped($event)"
+      ></image-cropper>
+
+      <div class="d-flex justify-content-center mt-5">
+        <button
+          class="btn btn-sm mx-2 btn-icon btn-bg-light btn-active-color-primary"
+          (click)="resetImage()"
+        >
+          <span
+            [inlineSVG]="'./assets/media/icons/duotune/arrows/arr029.svg'"
+            class="svg-icon svg-icon-2"
+          ></span>
+        </button>
+        <button
+          class="btn btn-sm mx-2 btn-icon btn-bg-light btn-active-color-primary"
+          (click)="zoomIn()"
+        >
+          <span
+            [inlineSVG]="'./assets/media/icons/duotune/general/gen035.svg'"
+            class="svg-icon svg-icon-2"
+          ></span>
+        </button>
+        <button
+          class="btn btn-sm mx-2 btn-icon btn-bg-light btn-active-color-primary"
+          (click)="zoomOut()"
+        >
+          <span
+            [inlineSVG]="'./assets/media/icons/duotune/general/gen036.svg'"
+            class="svg-icon svg-icon-2"
+          ></span>
+        </button>
+        <button
+          class="btn btn-sm mx-2 btn-icon btn-bg-light btn-active-color-primary"
+          (click)="rotateLeft()"
+        >
+          <span
+            [inlineSVG]="'./assets/media/icons/duotune/arrows/arr059.svg'"
+            class="svg-icon svg-icon-2"
+          ></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="
+      activeModal.close({
+        croppedImage: croppedImage,
+        fileToReturn: fileToReturn
+      })
+    "
+  >
+    {{ "save" | translate }}
+  </button>
+</div>

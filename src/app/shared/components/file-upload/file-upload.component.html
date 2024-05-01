@@ -1,0 +1,26 @@
+<label *ngIf="label" class="form-label fs-6 fw-bolder text-dark">
+  {{ label | translate }}
+</label>
+<div class="row mb-7 align-items-center" *ngIf="filePath">
+  <label class="col-lg-4 fw-semibold text-muted">{{
+    "uploadedFile" | translate
+  }}</label>
+  <div class="col-lg-8">
+    <a [href]="filePath" class="btn btn-primary" target="_blank">{{ 'preview' | translate }}</a>
+  </div>
+</div>
+<div class="custom-file-field">
+  <input
+    type="file"
+    class="form-control"
+    (change)="uploadFiles($event)"
+    accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.png,.jpg,.jpeg"
+    #filesInput
+  />
+  <div>
+    <span>{{ "chooseFile" | translate }}</span>
+    <span>{{
+      selectedFile ? selectedFile.name : ("noFileChosen" | translate)
+    }}</span>
+  </div>
+</div>

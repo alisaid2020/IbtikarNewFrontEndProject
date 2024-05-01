@@ -1,0 +1,21 @@
+:host {
+  ::ng-deep {
+    .red-dot {
+      position: absolute;
+      right: 35%;
+      top: 35%;
+      background-color: var(--bs-danger);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--bs-border-color);
+      transform: translate(50%, -50%);
+
+      [dir="rtl"] & {
+        right: unset !important;
+        left: 35% !important;
+        transform: translate(-50%, -50%) !important;
+      }
+    }
+  }
+}

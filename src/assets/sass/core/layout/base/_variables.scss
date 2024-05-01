@@ -271,9 +271,9 @@ $app-hero-border-bottom-dark: null !default;
 // Sidebar base
 $app-sidebar-base-transition: width $app-general-transition-duration $app-general-transition-timing !default;
 $app-sidebar-base-width: 300px !default;
-$app-sidebar-base-width-mobile: 275px !default;      
+$app-sidebar-base-width-mobile: 275px !default;
 $app-sidebar-base-z-index: null !default;
-$app-sidebar-base-z-index-mobile: 106 !default; 
+$app-sidebar-base-z-index-mobile: 106 !default;
 $app-sidebar-base-bg-color: null !default;
 $app-sidebar-base-bg-color-dark: null !default;
 $app-sidebar-base-box-shadow: null !default;
@@ -294,6 +294,7 @@ $app-sidebar-base-gap-bottom-mobile: 0px !default;
 // Sidebar fixed
 $app-sidebar-fixed-z-index: 105 !default;
 $app-sidebar-fixed-left: 0 !default;
+$app-sidebar-fixed-right: 0 !default;
 $app-sidebar-fixed-top: 0 !default;
 $app-sidebar-fixed-bottom: 0 !default;
 
@@ -434,7 +435,7 @@ $app-sidebar-secondary-minimize-gap-bottom-mobile: 0px !default;
 // Sidebar panel base
 $app-sidebar-panel-base-transition: none !default;
 $app-sidebar-panel-base-width: 300px !default;
-$app-sidebar-panel-base-width-mobile: 300px !default;    
+$app-sidebar-panel-base-width-mobile: 300px !default;
 $app-sidebar-panel-base-z-index: null !default;
 $app-sidebar-panel-base-z-index-mobile: null !default;
 $app-sidebar-panel-base-bg-color: null !default;
@@ -523,9 +524,9 @@ $app-sidebar-panel-minimize-gap-bottom-mobile: 0px !default;
 // Aside base
 $app-aside-base-transition: none;
 $app-aside-base-width: 300px !default;
-$app-aside-base-width-mobile: 275px !default;      
+$app-aside-base-width-mobile: 275px !default;
 $app-aside-base-z-index: null !default;
-$app-aside-base-z-index-mobile: 106 !default; 
+$app-aside-base-z-index-mobile: 106 !default;
 $app-aside-base-bg-color: null !default;
 $app-aside-base-bg-color-dark: null !default;
 $app-aside-base-bg-color-mobile: null !default;

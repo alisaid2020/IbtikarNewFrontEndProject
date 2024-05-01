@@ -2,21 +2,17 @@ import { Routes } from '@angular/router';
 
 const Routing: Routes = [
   {
-    path: 'builder',
-    loadChildren: () =>
-      import('./builder/builder.module').then((m) => m.BuilderModule),
-  },
-  {
     path: '',
-    loadChildren: () =>
-      import('./builder/builder.module').then((m) => m.BuilderModule),
+    redirectTo: '/departments',
+    pathMatch: 'full',
   },
 
   {
-    path: '',
-    redirectTo: '/builder',
-    pathMatch: 'full',
+    path: 'departments',
+    loadChildren: () =>
+      import('./general/general.module').then((m) => m.GeneralModule),
   },
+
   {
     path: '**',
     redirectTo: 'error/404',

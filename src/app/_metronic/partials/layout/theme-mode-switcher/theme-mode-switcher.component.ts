@@ -10,7 +10,7 @@ export class ThemeModeSwitcherComponent implements OnInit {
   @Input() toggleBtnClass: string = '';
   @Input() toggleBtnIconClass: string = 'svg-icon-2';
   @Input() menuPlacement: string = 'bottom-end';
-  @Input() menuTrigger: string = "{default: 'click', lg: 'hover'}";
+  @Input() menuTrigger: string = "{default: 'hover'}";
   mode$: Observable<ThemeModeType>;
   menuMode$: Observable<ThemeModeType>;
 

@@ -9,13 +9,13 @@
 
         .btn-custom {
             @include button-custom-variant(
-                $color:#B5B5C3, 
-                $icon-color: #B5B5C3, 
-                $border-color: null, 
-                $bg-color: null, 
-                $color-active: #B5B5C3, 
-                $icon-color-active: var(--#{$prefix}primary), 
-                $border-color-active: null, 
+                $color:#B5B5C3,
+                $icon-color: #B5B5C3,
+                $border-color: null,
+                $bg-color: null,
+                $color-active: #B5B5C3,
+                $icon-color-active: var(--#{$prefix}primary),
+                $border-color-active: null,
                 $bg-color-active: rgba(63, 66, 84, 0.35)
             );
         }
@@ -25,50 +25,50 @@
     @include media-breakpoint-up(lg) {
         // General mode
         .app-header-menu {
-            .menu {                  
-                // Menu root links          
+            .menu {
+                // Menu root links
                 > .menu-item {
-                    @include menu-link-default-state( 
-                        $title-color: #9D9DA6, 
-                        $icon-color:#C5C5D8, 
-                        $bullet-color:#787887, 
-                        $arrow-color: #787887, 
+                    @include menu-link-default-state(
+                        $title-color: #9D9DA6,
+                        $icon-color:#C5C5D8,
+                        $bullet-color:#787887,
+                        $arrow-color: #787887,
                         $bg-color: null,
                         $all-links: false
                     );
 
-                    @include menu-link-hover-state( 
-                        $title-color: var(--#{$prefix}primary-inverse), 
-                        $icon-color: var(--#{$prefix}primary-inverse), 
-                        $bullet-color: var(--#{$prefix}primary-inverse), 
-                        $arrow-color: var(--#{$prefix}primary-inverse), 
+                    @include menu-link-hover-state(
+                        $title-color: var(--#{$prefix}primary-inverse),
+                        $icon-color: var(--#{$prefix}primary-inverse),
+                        $bullet-color: var(--#{$prefix}primary-inverse),
+                        $arrow-color: var(--#{$prefix}primary-inverse),
                         $bg-color: $app-sidebar-dark-menu-link-bg-color-active,
                         $all-links: false
                     );
 
-                    @include menu-link-show-state( 
-                        $title-color: var(--#{$prefix}primary-inverse), 
-                        $icon-color: var(--#{$prefix}primary-inverse), 
-                        $bullet-color: var(--#{$prefix}primary-inverse), 
-                        $arrow-color: var(--#{$prefix}primary-inverse), 
+                    @include menu-link-show-state(
+                        $title-color: var(--#{$prefix}primary-inverse),
+                        $icon-color: var(--#{$prefix}primary-inverse),
+                        $bullet-color: var(--#{$prefix}primary-inverse),
+                        $arrow-color: var(--#{$prefix}primary-inverse),
                         $bg-color: null,
                         $all-links: false
                     );
 
-                    @include menu-link-here-state( 
-                        $title-color: var(--#{$prefix}primary-inverse), 
-                        $icon-color: var(--#{$prefix}primary-inverse), 
-                        $bullet-color: var(--#{$prefix}primary-inverse), 
-                        $arrow-color: var(--#{$prefix}primary-inverse), 
+                    @include menu-link-here-state(
+                        $title-color: var(--#{$prefix}primary-inverse),
+                        $icon-color: var(--#{$prefix}primary-inverse),
+                        $bullet-color: var(--#{$prefix}primary-inverse),
+                        $arrow-color: var(--#{$prefix}primary-inverse),
                         $bg-color: $app-sidebar-dark-menu-link-bg-color-active,
                         $all-links: false
-                    );   
-                    
-                    @include menu-link-active-state( 
-                        $title-color: var(--#{$prefix}primary-inverse), 
-                        $icon-color: var(--#{$prefix}primary-inverse), 
-                        $bullet-color: var(--#{$prefix}primary-inverse), 
-                        $arrow-color: var(--#{$prefix}primary-inverse), 
+                    );
+
+                    @include menu-link-active-state(
+                        $title-color: var(--#{$prefix}primary-inverse),
+                        $icon-color: var(--#{$prefix}primary-inverse),
+                        $bullet-color: var(--#{$prefix}primary-inverse),
+                        $arrow-color: var(--#{$prefix}primary-inverse),
                         $bg-color: $app-sidebar-dark-menu-link-bg-color-active,
                         $all-links: false
                     );
