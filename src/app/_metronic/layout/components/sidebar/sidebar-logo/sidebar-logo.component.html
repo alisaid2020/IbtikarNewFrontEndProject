@@ -1,15 +1,8 @@
 <!--begin::Logo image-->
-<a routerLink="/dashboard">
-  <ng-container *ngIf="currentLayoutType === 'dark-sidebar'">
-    <img alt="Logo" src="./assets/media/logos/default-dark.svg" class="h-25px app-sidebar-logo-default" />
-  </ng-container>
-  <ng-container *ngIf="currentLayoutType !== 'dark-sidebar'">
-    <img alt="Logo" src="./assets/media/logos/default.svg" class="h-25px app-sidebar-logo-default theme-light-show" />
-    <img alt="Logo" src="./assets/media/logos/default-dark.svg"
-      class="h-25px app-sidebar-logo-default theme-dark-show" />
-  </ng-container>
-
-  <img alt="Logo" src="./assets/media/logos/default-small.svg" class="h-20px app-sidebar-logo-minimize" />
+<a routerLink="/dashboard" class="d-flex align-items-center">
+  <img alt="Logo" src="assets/media/logos/Ebtikar logo.jpg" class="h-50px app-sidebar-logo-default" />
+  <img alt="Logo" src="assets/media/logos/Ebtikar logo.jpg" class="h-20px app-sidebar-logo-minimize" />
+  <span class="text-white fs-1 fw-bold ms-3">Ebtikar</span>
 </a>
 <!--end::Logo image-->
 

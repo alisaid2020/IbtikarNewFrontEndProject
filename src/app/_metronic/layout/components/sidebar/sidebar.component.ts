@@ -71,10 +71,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
   toggleEnabled: boolean;
   toggleType: string;
   toggleState: string;
+  toggleAttr: string;
 
   constructor(private layout: LayoutService) {}
 
   ngOnInit(): void {
+
     const subscr = this.layout.layoutConfigSubject
       .asObservable()
       .subscribe((config: ILayout) => {
@@ -433,6 +435,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
       this.toggleType = 'collapse';
       this.toggleState = '';
     }
+
+    this.toggleAttr = `app-sidebar-${this.toggleType}`;
 
     document.body.setAttribute('data-kt-app-sidebar-enabled', 'true');
     document.body.setAttribute(

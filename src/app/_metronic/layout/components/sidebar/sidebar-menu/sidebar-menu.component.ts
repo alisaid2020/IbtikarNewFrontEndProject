@@ -6,6 +6,25 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sidebar-menu.component.scss']
 })
 export class SidebarMenuComponent implements OnInit {
+  navItems: any = [
+    {
+      name: 'sideBarMenu.departments',
+      route: '/departments',
+      icon: 'fa-users-viewfinder',
+    },
+    {
+      name: 'Dashboards',
+      route: '/',
+      icon: 'fa-bar-chart',
+      children: [
+        {
+          title: 'general',
+          route: '/',
+        },
+      ],
+    },
+  ];
+
 
   constructor() { }
 

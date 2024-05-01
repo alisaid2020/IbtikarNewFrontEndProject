@@ -11,7 +11,7 @@ import { ILayout, LayoutType } from '../../core/configs/config';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  private unsubscribe: Subscription[] = [];
+  subs: Subscription[] = [];
   // Public props
   currentLayoutType: LayoutType | null;
 
@@ -32,7 +32,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   appHeaderDefaulMenuDisplay: boolean;
   appPageTitleDisplay: boolean;
 
-  constructor(private layout: LayoutService, private router: Router) {
+  constructor(
+    private layout: LayoutService,
+    private router: Router,
+  ) {
     this.routingChanges();
   }
 
@@ -104,36 +107,39 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.appHeaderDefaultStacked) {
       document.body.setAttribute('data-kt-app-header-stacked', 'true');
     }
-
-    // Primary header
-    // Secondary header
   }
 
   ngOnInit(): void {
-    const subscr = this.layout.layoutConfigSubject
-      .asObservable()
-      .subscribe((config: ILayout) => {
-        this.updateProps(config);
-      });
-    this.unsubscribe.push(subscr);
-    const layoutSubscr = this.layout.currentLayoutTypeSubject
-      .asObservable()
-      .subscribe((layout) => {
-        this.currentLayoutType = layout;
-      });
-    this.unsubscribe.push(layoutSubscr);
+    this.subs.push(
+      this.layout.layoutConfigSubject
+        .asObservable()
+        .subscribe((config: ILayout) => {
+          this.updateProps(config);
+        })
+    );
+    this.subs.push(
+      this.layout.currentLayoutTypeSubject
+        .asObservable()
+        .subscribe((layout) => {
+          this.currentLayoutType = layout;
+        })
+    );
   }
 
   routingChanges() {
-    const routerSubscription = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd || event instanceof NavigationCancel) {
-        MenuComponent.reinitialization();
-      }
-    });
-    this.unsubscribe.push(routerSubscription);
+    this.subs.push(
+      this.router.events.subscribe((event) => {
+        if (
+          event instanceof NavigationEnd ||
+          event instanceof NavigationCancel
+        ) {
+          MenuComponent.reinitialization();
+        }
+      })
+    );
   }
 
   ngOnDestroy() {
-    this.unsubscribe.forEach((sb) => sb.unsubscribe());
+    this.subs.forEach((sub) => sub.unsubscribe());
   }
 }
