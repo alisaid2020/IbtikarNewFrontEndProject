@@ -33,6 +33,8 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { EbtikarInputComponent } from './components/ebtikar-input/ebtikar-input.component';
 import { AppArrowFocusDirective } from './directives/app-arrow-focus.directive';
 import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 const sharedModules: any[] = [
   NgApexchartsModule,
@@ -63,6 +65,8 @@ const sharedModules: any[] = [
   NgxMaterialTimepickerModule,
   TranslateModule,
   TableModule,
+  ButtonModule,
+  MultiSelectModule,
 ];
 const sharedComponents: any[] = [
   EbtikarInputComponent,

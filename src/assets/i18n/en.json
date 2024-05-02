@@ -1,10 +1,11 @@
 {
   "language": "Language",
   "signIn": "Sign In",
-  "userName":"UserName",
-  "password":"Password",
-  "branch":"Branch",
-  "chooseBranch":"Choose Branch",
+  "userName": "UserName",
+  "password": "Password",
+  "branch": "Branch",
+  "chooseBranch": "Choose Branch",
+  "hideShowColumns": "Show / Hide Columns",
   "rightsReserved": "All rights reserved for EBTIKAR",
   "languages": {
     "en": "English",
@@ -17,5 +18,5 @@
   },
   "sideBarMenu": {
     "dashboard": "Dashboard"
- }
+  }
 }

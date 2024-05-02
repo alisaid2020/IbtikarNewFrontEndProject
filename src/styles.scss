@@ -15,10 +15,21 @@ html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
 }
 
+.container-xxl,
+.container-xl,
+.container-lg,
+.container-md,
+.container-sm,
+.container {
+  max-width: 100% !important;
+}
+
+//offcanvs styles
 .offcanvas {
   display: block;
 }
@@ -34,13 +45,11 @@ body {
   }
 }
 
-
 .card-label {
   [dir="rtl"] & {
     margin: 0 0 0 0.75rem !important;
   }
 }
-
 
 //ng-select
 .ng-select .ng-placeholder {
@@ -98,48 +107,11 @@ body {
   color: var(--bs-text-dark) !important;
 }
 
-.container-xxl,
-.container-xl,
-.container-lg,
-.container-md,
-.container-sm,
-.container {
-  max-width: 100% !important;
-}
-.form-check-green {
-  &:checked {
-    background-color: var(--bs-success) !important;
-  }
-}
+// timepicker styles
 .timepicker-overlay,
 .timepicker-backdrop-overlay {
   z-index: 100000 !important;
 }
-
-.form-control {
-  color: var(--bs-text-dark) !important;
-  min-height: 43.2px;
-
-  ngx-intl-tel-input.ng-invalid.ng-touched & {
-    border-color: $red;
-  }
-}
-
-.drag-preview {
-  z-index: 1000000 !important;
-  color: var(--bs-body-bg);
-}
-
-.modal-dialog {
-  &.medium {
-    max-width: 1000px;
-  }
-}
-.apexcharts-legend {
-  display: none !important;
-}
-
-// Timepicker
 .clock-face {
   width: 200px !important;
   height: 200px !important;
@@ -185,6 +157,35 @@ body {
 
 .timepicker-dial__period {
   margin-inline-start: 10px !important;
+}
+
+// form styles
+.form-check-green {
+  &:checked {
+    background-color: var(--bs-success) !important;
+  }
+}
+.form-control {
+  color: var(--bs-text-dark) !important;
+  min-height: 43.2px;
+
+  ngx-intl-tel-input.ng-invalid.ng-touched & {
+    border-color: $red;
+  }
+}
+
+.drag-preview {
+  z-index: 1000000 !important;
+  color: var(--bs-body-bg);
+}
+
+.modal-dialog {
+  &.medium {
+    max-width: 1000px;
+  }
+}
+.apexcharts-legend {
+  display: none !important;
 }
 
 .dropdown-item {
@@ -291,4 +292,79 @@ body {
 
 .nav-link {
   font-size: 15px;
+}
+
+//table styles
+.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even) {
+  background-color: #eff9ff;
+}
+.p-datatable {
+  width: 100% !important;
+  min-width: 100% !important;
+  table {
+    width: auto !important;
+    min-width: 100% !important;
+  }
+  th,
+  td {
+    [dir="rtl"] & {
+      text-align: right !important;
+    }
+  }
+}
+
+.overlay-box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: none;
+  &.show {
+    display: block;
+  }
+}
+
+.p-multiselect {
+  display: none !important;
+}
+.p-overlay:has(.p-multiselect-panel) {
+  position: fixed !important;
+  width: 100%;
+  height: 100%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.p-multiselect-items-wrapper {
+  height: 400px;
+  max-height: 400px !important;
+}
+.p-multiselect-items {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  @media screen and (max-width: 1024px) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  @media screen and (max-width: 870px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @media screen and (max-width: 700px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media screen and (max-width: 699px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media screen and (max-width: 400px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.p-button {
+  border-radius: 0.475rem;
+  background-color: #2057ad;
+  border: 0;
 }

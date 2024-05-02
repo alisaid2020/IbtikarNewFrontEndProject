@@ -2,10 +2,11 @@
   "language": "اللغة",
   "signIn": "تسجيل الدخول",
   "userName": "اسم المستخدم",
-  "password":"كلمة السر",
-  "branch":"الفرع",
-  "chooseBranch":"اختر الفرع",
-  "rightsReserved":"جميع الحقوق محفوظة لبرمجيات الابتكار",
+  "password": "كلمة السر",
+  "branch": "الفرع",
+  "chooseBranch": "اختر الفرع",
+  "hideShowColumns": "إظهار / إخفاء أعمدة",
+  "rightsReserved": "جميع الحقوق محفوظة لبرمجيات الابتكار",
   "languages": {
     "en": "إنجليزي",
     "ar": "عربي"
@@ -16,6 +17,6 @@
     "system": "حسب النظام"
   },
   "sideBarMenu": {
-    "dashboard": "لوحة المعلومات"
+    "dashboard": "الشاشة الرئيسية"
   }
 }
