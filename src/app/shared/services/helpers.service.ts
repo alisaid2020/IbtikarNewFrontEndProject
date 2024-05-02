@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HelpersService {
-  constructor() {}
+  showOverlay$ = new BehaviorSubject(false);
 
   setItemToLocalStorage(name: string, value: any): void {
     localStorage.setItem(name, JSON.stringify(value));

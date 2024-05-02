@@ -9,8 +9,11 @@ $white: #ffffff;
 
 // Theme colors
 // Primary
-$primary: #172d50;
-$primary-active: #0095e8;
+$primary-active: #172d50;
+$primary: lighten(
+  $color: #172d50,
+  $amount: 10,
+);
 $primary-light: #f1faff;
 $primary-light-dark: #212e48;
 $primary-inverse: $white;
@@ -30,14 +33,14 @@ $info-light-dark: #264041;
 $info-inverse: $white;
 
 // Danger
-$danger: #e74c3c;
+$danger: #e7515a;
 $danger-active: #c0392b;
 $danger-light: #fef3f3;
 $danger-light-dark: #3a2424;
 $danger-inverse: $white;
 
 // Warning
-$warning: #ffd740;
+$warning: #ffc720;
 $warning-active: #f1bc00;
 $warning-light: #fff8dd;
 $warning-light-dark: #392f28;

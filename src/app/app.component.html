@@ -12,3 +12,9 @@
   ref="router"
 ></ngx-loading-bar>
 <app-toasts-container></app-toasts-container>
+
+<div
+  class="overlay-box"
+  [class.show]="helpers.showOverlay$.getValue()"
+  (click)="helpers.showOverlay$.next(false)"
+></div>

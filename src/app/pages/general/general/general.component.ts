@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Subscription, tap } from 'rxjs';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { HelpersService } from 'src/app/shared/services/helpers.service';
+import { TableService } from 'src/app/shared/services/table.service';
 
 @Component({
   selector: 'app-general',
   templateUrl: './general.component.html',
 })
-export class GeneralComponent implements OnInit {
+export class GeneralComponent implements OnInit, OnDestroy {
   products = [
     {
       id: 1,
@@ -36,107 +37,41 @@ export class GeneralComponent implements OnInit {
   ];
   _selectedColumns: any[] = [];
   subs: Subscription[] = [];
-  objectKeys: any = [];
   allColumns: any[] = [];
   defaultStorage = 'general-default-selected';
+  tableStorage = 'general-table';
   changedColumns: any;
-  showOverlay: boolean;
   defaultSelected: any[] = [
     { field: 'branch', header: 'branch' },
     { field: 'category', header: 'category' },
     { field: 'price', header: 'price' },
   ];
-
   set selectedColumns(val: any[]) {
     this._selectedColumns = this.defaultSelected.filter((col: any) =>
       val.includes(col)
     );
   }
-  get selectedColumns(): any[] {
-    return this._selectedColumns;
-  }
+  translate = inject(TranslateService);
+  helpers = inject(HelpersService);
+  tableService = inject(TableService);
 
-  constructor(
-    private translate: TranslateService,
-    private helpers: HelpersService
-  ) {}
-
-  ngOnInit(): void {
-    this.getObjectKeys(this.products[0]);
-    this.tableColumns();
-    this.storageFn();
+  async ngOnInit() {
+    await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
-        this.tableColumns();
-        this.storageFn();
+        await this.initTableColumns();
       })
     );
   }
 
-  getObjectKeys(obj: any, previousPath = ''): void {
-    Object.keys(obj || {}).forEach((el) => {
-      const currentPath = previousPath.length ? `${previousPath}.${el}` : el;
-      if (!Array.isArray(obj[el])) {
-        if (typeof obj[el] === 'object') {
-          this.getObjectKeys(obj[el], currentPath);
-        } else {
-          this.objectKeys.push(currentPath);
-        }
-      }
-    });
-  }
-
-  tableColumns(): void {
-    this.objectKeys = this.objectKeys.filter((el: any) => !/id/gi.test(el));
-    this.allColumns = [];
-    this.objectKeys.forEach((el: any) => {
-      this.subs.push(
-        this.translate.get(`${el}`).subscribe((translatedValue: any) => {
-          const isItemThere = this.allColumns.find((x) => x.field === el);
-          const index = this.allColumns.indexOf(isItemThere);
-          if (isItemThere) {
-            this.allColumns[index] = {
-              field: el,
-              translatedName: translatedValue,
-              header: el,
-            };
-            return;
-          }
-          this.allColumns.push({
-            field: el,
-            translatedName: translatedValue,
-            header: el,
-          });
-        })
+  async initTableColumns() {
+    this.allColumns = this.tableService.tableColumns(this.products[0]);
+    [this.changedColumns, this._selectedColumns] =
+      await this.tableService.storageFn(
+        this.defaultSelected,
+        this.defaultStorage,
+        this._selectedColumns
       );
-    });
-  }
-  async storageFn(): Promise<any> {
-    if (this.helpers.checkItemFromLocalStorage(this.defaultStorage)) {
-      this._selectedColumns = this.helpers.getItemFromLocalStorage(
-        this.defaultStorage
-      );
-    } else {
-      this._selectedColumns = this.defaultSelected;
-    }
-    this.changedColumns = this._selectedColumns;
-    let newArray: any[] = [];
-    this.changedColumns.forEach((item: any) => {
-      this.subs.push(
-        this.translate
-          .get(`${item.field}`)
-          .pipe(
-            tap((value) => {
-              newArray.push({
-                ...item,
-                translatedName: value,
-              });
-            })
-          )
-          .subscribe()
-      );
-    });
-    this.changedColumns = newArray;
   }
 
   changeInHideShow(ev: any): void {
@@ -145,8 +80,8 @@ export class GeneralComponent implements OnInit {
       this.defaultStorage,
       this._selectedColumns
     );
-    if (this.helpers.checkItemFromLocalStorage('general-table')) {
-      let ts = this.helpers.getItemFromLocalStorage('general-table');
+    if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
+      let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
       let tsIndex: any = ts?.columnOrder.findIndex(
         (el: any) => el === ev.itemValue.header
       );
@@ -155,11 +90,11 @@ export class GeneralComponent implements OnInit {
       } else {
         ts.columnOrder.push(ev.itemValue.field);
       }
-      this.helpers.setItemToLocalStorage('general-table', ts);
+      this.helpers.setItemToLocalStorage(this.tableStorage, ts);
     }
   }
-  openMultiselect(multiSelect: any): void {
-    this.showOverlay = !this.showOverlay;
-    multiSelect.show();
+
+  ngOnDestroy(): void {
+    this.subs.forEach((sub) => sub.unsubscribe());
   }
 }

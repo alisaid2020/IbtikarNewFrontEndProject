@@ -1,28 +1,24 @@
-<div
-  class="overlay-box"
-  [class.show]="showOverlay"
-  (click)="showOverlay = false"
-></div>
 <p-table
   [value]="products"
   styleClass="p-datatable-gridlines p-datatable-striped shadow"
-  [columns]="selectedColumns"
-  [stateKey]="'general-table'"
+  [columns]="_selectedColumns"
+  [stateKey]="tableStorage"
+  responsiveLayout="stack"
 >
   <ng-template pTemplate="caption">
     <div class="flex">
       <span class="p-input-icon-left ml-auto">
-        <p-button (click)="openMultiselect(ms)">{{
+        <p-button (click)="tableService.openMultiselect(ms1)">{{
           "hideShowColumns" | translate
         }}</p-button>
         <p-multiSelect
-          #ms
+          #ms1
           appendTo="body"
           [options]="allColumns"
           [(ngModel)]="changedColumns"
           optionLabel="header"
           filterBy="translatedName"
-          (onPanelHide)="showOverlay = false"
+          (onPanelHide)="helpers.showOverlay$.next(false)"
           (onChange)="changeInHideShow($event)"
         >
           <ng-template let-option pTemplate="Item">
@@ -35,8 +31,11 @@
   <ng-template pTemplate="header" let-columns>
     <tr>
       @for (column of columns; track $index) {
-      <th class="bg-primary fw-bolder text-white fs-5">{{ column.header }}</th>
+      <th class="bg-primary fw-bolder text-white fs-5">
+        {{ column.header | translate }}
+      </th>
       }
+      <th class="bg-primary fw-bolder text-white fs-5">Actions</th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -44,6 +43,14 @@
       @for (col of columns; track $index) {
       <td>{{ rowData[col.field] }}</td>
       }
+      <td>
+        <button class="btn btn-icon btn-info">
+          <i class="fas fa-pen"></i>
+        </button>
+        <button class="btn btn-icon btn-danger ms-3">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
     </tr>
   </ng-template>
 </p-table>
