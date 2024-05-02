@@ -6,12 +6,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   NgbAccordionModule,
   NgbDatepickerModule,
-  NgbDropdownModule,
   NgbNavModule,
   NgbOffcanvasModule,
   NgbPaginationModule,
   NgbProgressbar,
-  NgbTooltipModule,
 } from '@ng-bootstrap/ng-bootstrap';
 import { NgOtpInputModule } from 'ng-otp-input';
 import { SubmitButtonComponent } from './components/submit-button/submit-button.component';
@@ -34,6 +32,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { EbtikarInputComponent } from './components/ebtikar-input/ebtikar-input.component';
 import { AppArrowFocusDirective } from './directives/app-arrow-focus.directive';
+import { TableModule } from 'primeng/table';
 
 const sharedModules: any[] = [
   NgApexchartsModule,
@@ -63,6 +62,7 @@ const sharedModules: any[] = [
   CKEditorModule,
   NgxMaterialTimepickerModule,
   TranslateModule,
+  TableModule,
 ];
 const sharedComponents: any[] = [
   EbtikarInputComponent,
@@ -72,7 +72,6 @@ const sharedComponents: any[] = [
   FileUploadComponent,
   AppArrowFocusDirective,
   ScriptsInitComponent,
-
 ];
 
 @NgModule({
