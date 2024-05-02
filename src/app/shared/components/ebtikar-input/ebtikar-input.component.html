@@ -129,6 +129,24 @@
     >
     </textarea>
   </ng-container>
+
+
+  <ng-container *ngSwitchCase="'advancedTimepicker'">
+    <input
+    class="form-control"
+    [placeholder]="placeholder"
+    [formControl]="formControl"
+    [ngxTimepicker]="appendedToInput"
+    [format]="12"
+    readonly
+  />
+  <ngx-material-timepicker
+    #appendedToInput
+    [timepickerClass]="'hide-clock-face'"
+    [enableKeyboardInput]="true"
+    [appendToInput]="true"
+  ></ngx-material-timepicker>
+  </ng-container>
 </ng-container>
 
 <div class="invalid-feedback" *ngIf="control?.touched && control?.invalid">

@@ -3,12 +3,12 @@ import { Routes } from '@angular/router';
 const Routing: Routes = [
   {
     path: '',
-    redirectTo: '/departments',
+    redirectTo: '/general',
     pathMatch: 'full',
   },
 
   {
-    path: 'departments',
+    path: 'general',
     loadChildren: () =>
       import('./general/general.module').then((m) => m.GeneralModule),
   },

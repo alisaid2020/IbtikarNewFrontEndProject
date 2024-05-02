@@ -10,22 +10,24 @@ import { LayoutService } from '../../../core/layout.service';
 })
 export class SidebarMenuComponent implements OnInit {
   navItems: any = [
+    // for menu of links
+    // {
+    //   name: 'general',
+    //   route: '/general',
+    //   icon: 'fa-bar-chart',
+    //   children: [
+    //     {
+    //       title: 'general',
+    //       route: '/general',
+    //     },
+    //   ],
+    // },
+    // for link
     {
       name: 'general',
-      route: '/',
-      icon: 'fa-bar-chart',
-      children: [
-        {
-          title: 'sideBarMenu.users',
-          route: '/statistics/users',
-        },
-      ],
+      route: '/general',
+      icon: 'fa-users-viewfinder',
     },
-    // {
-    //   name: 'departments',
-    //   route: '/departments',
-    //   icon: 'fa-users-viewfinder',
-    // },
   ];
 
   constructor(

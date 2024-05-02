@@ -1,6 +1,10 @@
 {
   "language": "Language",
   "signIn": "Sign In",
+  "userName":"UserName",
+  "password":"Password",
+  "branch":"Branch",
+  "chooseBranch":"Choose Branch",
   "rightsReserved": "All rights reserved for EBTIKAR",
   "languages": {
     "en": "English",

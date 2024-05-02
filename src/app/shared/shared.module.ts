@@ -19,8 +19,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { MatSliderModule } from '@angular/material/slider';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { ImageCropperModule } from 'ngx-image-cropper';
-import { CropperModalComponent } from './components/cropper-modal/cropper-modal.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
 import { CountdownModule } from 'ngx-countdown';
@@ -31,7 +29,7 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ScriptsInitComponent } from '../_metronic/layout/components/scripts-init/scripts-init.component';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { MotamaratSelectComponent } from './components/motamarat-select/motamarat-select.component';
+import { EbtikarSelectComponent } from './components/ebtikar-select/ebtikar-select.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { EbtikarInputComponent } from './components/ebtikar-input/ebtikar-input.component';
@@ -53,7 +51,6 @@ const sharedModules: any[] = [
   NgSelectModule,
   NgbNavModule,
   NgbProgressbar,
-  ImageCropperModule,
   // NgbDropdownModule,
   MatCheckboxModule,
   // NgbTooltipModule,
@@ -70,9 +67,8 @@ const sharedModules: any[] = [
 const sharedComponents: any[] = [
   EbtikarInputComponent,
   SubmitButtonComponent,
-  CropperModalComponent,
   ConfirmModalComponent,
-  MotamaratSelectComponent,
+  EbtikarSelectComponent,
   FileUploadComponent,
   AppArrowFocusDirective,
   ScriptsInitComponent,

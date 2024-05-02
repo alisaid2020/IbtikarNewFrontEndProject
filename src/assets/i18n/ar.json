@@ -1,6 +1,10 @@
 {
   "language": "اللغة",
   "signIn": "تسجيل الدخول",
+  "userName": "اسم المستخدم",
+  "password":"كلمة السر",
+  "branch":"الفرع",
+  "chooseBranch":"اختر الفرع",
   "rightsReserved":"جميع الحقوق محفوظة لبرمجيات الابتكار",
   "languages": {
     "en": "إنجليزي",

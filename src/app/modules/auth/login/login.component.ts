@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environment';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   returnUrl: string;
+  items = [{ value: 1, name: 'arabic' }];
 
   constructor(
     private fb: FormBuilder,
@@ -29,9 +30,11 @@ export class LoginComponent implements OnInit {
   }
 
   initForm(): void {
+    let selectControl;
     this.loginForm = this.fb.group({
       Email: [environment.email, [Validators.required]],
       Password: [environment.password, [Validators.required]],
+      selectControl: [selectControl, [Validators.required]],
     });
   }
 

@@ -22,18 +22,20 @@
   [placeholder]="placeholder | translate"
   [closeOnSelect]="!IsMultiple"
   [addTag]="isAddTag"
+  [virtualScroll]="isPaginated"
   (change)="getChangedItem($event)"
   [searchFn]="searchByLabelInDynamic"
+  (scrollToEnd)="getPaginatedData()"
   #select
 >
-  <!-- <ng-template
+  <ng-template
     *ngIf="hasMultipleLabels"
     ng-label-tmp
     ng-option-tmp
     let-item="item"
   >
-    {{ item[secondLabel] }}
-  </ng-template> -->
+    {{ item.nameAr}}
+  </ng-template>
 </ng-select>
 <ng-select
   *ngIf="apiUrl"
@@ -60,14 +62,14 @@
   [searchFn]="searchByLabelInDynamic"
   #select
 >
-  <!-- <ng-template
+  <ng-template
     *ngIf="hasMultipleLabels"
     ng-label-tmp
     ng-option-tmp
     let-item="item"
   >
-    {{ item[secondLabel] }}
-  </ng-template> -->
+  {{ item.nameAr}}
+  </ng-template>
 </ng-select>
 
 <ng-select
@@ -77,7 +79,7 @@
   [multiple]="IsMultiple"
   [formControl]="formControl"
   [hideSelected]="true"
-  [bindValue]="'value'"
+  [bindValue]="bindValue"
   [bindLabel]="'translatedName'"
   [clearable]="clearable"
   [placeholder]="placeholder | translate"
@@ -87,9 +89,9 @@
   (change)="getChangedItem($event)"
   [searchFn]="searchByLabelInStatic"
 >
-  <!-- <ng-template ng-label-tmp ng-option-tmp let-item="item">
+  <ng-template ng-label-tmp ng-option-tmp let-item="item">
     {{ item.name | translate }}
-  </ng-template> -->
+  </ng-template>
 </ng-select>
 
 <div
@@ -98,8 +100,5 @@
 >
   <p *ngIf="formControl.hasError('required')">
     {{ "fieldIsRequired" | translate }}
-  </p>
-  <p *ngIf="patternMessage && formControl.hasError('pattern')">
-    {{ patternMessage | translate }}
   </p>
 </div>

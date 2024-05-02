@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -11,7 +12,7 @@ import {
 } from '@angular/core';
 import {
   AbstractControl,
-  UntypedFormControl,
+  FormControl,
   Validators,
 } from '@angular/forms';
 import {
@@ -25,53 +26,63 @@ import {
   tap,
   switchMap,
   catchError,
+  filter,
+  debounceTime,
+  map,
 } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../services/data.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { HelpersService } from '../../services/helpers.service';
 
 @Component({
-  selector: 'app-motamarat-select',
-  templateUrl: './motamarat-select.component.html',
+  selector: 'app-ebtikar-select',
+  templateUrl: './ebtikar-select.component.html',
 })
-export class MotamaratSelectComponent implements OnInit, OnDestroy, OnChanges {
+export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
   @Input() items: any = [];
   @Input() label?: string;
   @Input() placeholder!: string;
   @Input() bindLabel!: string;
   @Input() bindValue!: string;
   @Input() IsMultiple!: boolean;
-  @Input() uid: any;
   @Input() disabled!: boolean;
   @Input() clearable = true;
   @Input() searchable = true;
   @Input() control!: AbstractControl;
   @Input() hasStaticValues?: boolean;
   @Input() isAddTag?: any;
-  @Input() patternMessage?: string;
   @Input() hasMultipleLabels: boolean;
-  @Input() firstLabel!: string;
-  @Input() secondLabel!: string;
-  @Input() apiUrl!: string;
+  @Input() isPaginated!: boolean;
   @Input() queryParams: object;
+  @Input() apiUrl!: string;
+  @Input() customData: any[];
+  @Input() isAddNewLine?: any;
+  @Input() uid?: any;
+
+  @Output() emitChanged = new EventEmitter<any>();
 
   @ViewChild('select', { static: false }) selectComponent: NgSelectComponent;
 
+  pageNo = 1;
   loading = false;
   searchInput$ = new Subject<string>();
   asyncedItems$: Observable<any[]>;
   subs: Subscription[] = [];
-
-  @Output() emitChanged = new EventEmitter<any>();
-
+  pagination: any;
   validators = Validators;
 
   constructor(
     public translate: TranslateService,
-    private dataService: DataService
+    private dataService: DataService,
+    private cd: ChangeDetectorRef,
+    public helpers: HelpersService
   ) {}
 
   ngOnInit(): void {
+    if (this.uid) {
+      this.formControl.patchValue(this.uid);
+    }
     if (this.hasStaticValues) {
       this.translateStaticItems();
       this.subs.push(
@@ -80,37 +91,40 @@ export class MotamaratSelectComponent implements OnInit, OnDestroy, OnChanges {
         })
       );
     }
-    if (this.apiUrl) {
+
+    if (this.apiUrl || (this.apiUrl && this.isPaginated)) {
       this.loadSyncedItems();
       if (this.formControl.value) {
         this.formControl.patchValue(
           eval(`this.formControl.value.${this.bindValue}`)
         );
       }
+      return;
+    }
+
+    if (this.isPaginated && !this.apiUrl) {
+      this.getPaginatedData();
+      return;
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!changes.items?.isFirstChange()) {
       this.selectComponent?.blur();
-      // this.selectComponent?.focus();
     }
-
     if (changes.items?.currentValue && !this.hasStaticValues) {
       const item = changes.items?.currentValue.find(
         (x: any) => x.id === this.control.value
       );
-
       if (!item) {
         this.control.patchValue(null);
         this.selectComponent?.blur();
-        // this.selectComponent?.focus();
       }
     }
   }
 
-  get formControl(): UntypedFormControl {
-    return this.control as UntypedFormControl;
+  get formControl(): FormControl {
+    return this.control as FormControl;
   }
 
   getChangedItem(ev: any): void {
@@ -134,6 +148,7 @@ export class MotamaratSelectComponent implements OnInit, OnDestroy, OnChanges {
       })
     );
   }
+
   searchByLabelInDynamic(term: string, item: any) {
     term = term.toLocaleLowerCase();
     if (item?.arabicAddress && item?.englishAddress) {
@@ -142,30 +157,6 @@ export class MotamaratSelectComponent implements OnInit, OnDestroy, OnChanges {
         item.englishAddress?.toLocaleLowerCase().indexOf(term) > -1
       );
     }
-    if (item?.arabicTitle && item?.englishTitle) {
-      return (
-        item.arabicTitle?.toLocaleLowerCase().indexOf(term) > -1 ||
-        item.englishTitle?.toLocaleLowerCase().indexOf(term) > -1
-      );
-    }
-    if (item?.arabicName && item?.englishName) {
-      return (
-        item.arabicName?.toLocaleLowerCase().indexOf(term) > -1 ||
-        item.englishName?.toLocaleLowerCase().indexOf(term) > -1
-      );
-    }
-    if (item?.user?.fullName) {
-      return item.user.fullName?.toLocaleLowerCase().indexOf(term) > -1;
-    }
-    if (item?.fullName) {
-      return item.fullName?.toLocaleLowerCase().indexOf(term) > -1;
-    }
-    if (item?.name) {
-      return item.name?.toLocaleLowerCase().indexOf(term) > -1;
-    }
-    if (item?.title) {
-      return item.title?.toLocaleLowerCase().indexOf(term) > -1;
-    }
   }
 
   searchByLabelInStatic(term: any, item: any) {
@@ -173,30 +164,72 @@ export class MotamaratSelectComponent implements OnInit, OnDestroy, OnChanges {
     return item.translatedName?.includes(term);
   }
 
+  fetchMore(): void {
+    this.pageNo += 1;
+    if (this.items?.length >= this.pagination.totalItems!) {
+      return;
+    }
+    if (this.isPaginated && !this.apiUrl) {
+      this.getPaginatedData(this.pagination.currentPage + 1);
+    }
+    if (this.apiUrl || (this.isPaginated && this.apiUrl)) {
+      this.loadSyncedItems();
+    }
+  }
+
+  getPaginatedData(PageNumber: number = 1) {
+    this.loading = true;
+    let params: any = {
+      // PageNumber,
+      // PageSize: PAGE_SIZE,
+    };
+    if (this.selectComponent?.searchTerm) {
+      params.keyword = this.selectComponent.searchTerm;
+    }
+    if (this.queryParams) {
+      params = {
+        ...params,
+        ...this.queryParams,
+      };
+    }
+    firstValueFrom(
+      this.dataService
+        .get(this.apiUrl, {
+          params,
+        })
+        .pipe(
+          tap((res) => {
+            this.items = [this.items, ...res.Data.Data];
+            // this.pagination = {
+            //   currentPage: res.Data.CurrentPage,
+            //   pageSize: res.Data.PageSize,
+            //   totalPages: res.Data.TotalPages,
+            //   totalItems: res.Data.TotalItems,
+            // };
+            this.loading = false;
+          })
+        )
+    );
+  }
+
   private loadSyncedItems() {
     this.asyncedItems$ = concat(
-      of([this.formControl.value && this.formControl.value]), // default items
+      of(this.customData || []),
       this.searchInput$.pipe(
         distinctUntilChanged(),
-        tap(() => (this.loading = true)),
+        debounceTime(500),
+        filter((term) => !!term),
+        tap((ـ) => (this.loading = true)),
         switchMap((term) => {
-          let params = {
-            keyword: term,
-          };
-          if (this.queryParams) {
-            params = {
-              ...params,
-              ...this.queryParams,
-            };
-          }
-          return this.dataService
-            .get(this.apiUrl, {
-              params,
-            })
-            .pipe(
-              catchError(() => of([])), // empty list on error
-              tap(() => (this.loading = false))
-            );
+          // let params = {
+          //   ...this.queryParams,
+          //   PageNumber: this.pageNo,
+          // };
+          return this.dataService.get(`${this.apiUrl}/${term}`).pipe(
+            catchError(() => of([])), // empty list on error
+            map((res) => res.Data.Data),
+            tap(() => (this.loading = false))
+          );
         })
       )
     );
