@@ -17,6 +17,7 @@ import { SidebarMenuComponent } from './components/sidebar/sidebar-menu/sidebar-
 import { NavbarComponent } from './components/header/navbar/navbar.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ScriptsInitComponent } from './components/scripts-init/scripts-init.component';
+import { HeaderMenuComponent } from './components/header/header-menu/header-menu.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,7 @@ const routes: Routes = [
     SidebarLogoComponent,
     SidebarMenuComponent,
     NavbarComponent,
+    HeaderMenuComponent
   ],
   imports: [
     CommonModule,

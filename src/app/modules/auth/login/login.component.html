@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-center mb-5">
-  <img alt="Logo" src="assets/media/logos/logo.jpg" style="height: 130px" />
+  <img alt="Logo" src="assets/media/logos/logo.jpg" style="height: 130px" alt="ebtikar logo"/>
 </div>
 <div
   class="bg-white border border-gray-300 pt-10 px-10 rounded-4 rounder-4 w-100 w-md-500px w-sm-490px m-auto"
@@ -8,8 +8,8 @@
     <div class="text-center mb-11">
       <h1 class="text-dark fw-bolder mb-3">{{ "signIn" | translate }}</h1>
     </div>
-    <div class="fv-row mb-8">
-      <app-ebtikar-input
+    <div class="fv-row mb-8" appAppArrowFocus>
+      <app-ebtikar-input 
         [label]="'email'"
         [placeholder]="'email'"
         patternMessage="validEmailAddress"
@@ -17,8 +17,8 @@
       >
       </app-ebtikar-input>
     </div>
-    <div class="fv-row mb-8">
-      <app-ebtikar-input
+    <div class="fv-row mb-8" appAppArrowFocus>
+      <app-ebtikar-input 
         [type]="'password'"
         [label]="'password'"
         [placeholder]="'password'"

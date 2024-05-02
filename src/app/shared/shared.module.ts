@@ -35,6 +35,7 @@ import { MotamaratSelectComponent } from './components/motamarat-select/motamara
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { EbtikarInputComponent } from './components/ebtikar-input/ebtikar-input.component';
+import { AppArrowFocusDirective } from './directives/app-arrow-focus.directive';
 
 const sharedModules: any[] = [
   NgApexchartsModule,
@@ -73,7 +74,9 @@ const sharedComponents: any[] = [
   ConfirmModalComponent,
   MotamaratSelectComponent,
   FileUploadComponent,
+  AppArrowFocusDirective,
   ScriptsInitComponent,
+
 ];
 
 @NgModule({
