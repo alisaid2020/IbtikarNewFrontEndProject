@@ -26,5 +26,13 @@
   "clientName": "Client Name",
   "products": "Products",
   "rememberMe": "Remember Me",
-  "memberSince": "Member Since "
+  "memberSince": "Member Since ",
+  "apply": "Apply",
+  "fromDate": "From Date",
+  "toDate": "To Date",
+  "deleteSalesInvoice": "Delete Sales Invoice",
+  "areYouSureToDelete": "Are you sure you want to delete",
+  "yesSure": "Yes, I am sure",
+  "cancel": "Cancel",
+  "clear": "Clear"
 }

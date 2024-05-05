@@ -8,6 +8,38 @@
     <a class="btn btn-primary">{{ "addNew" | translate }}</a>
   </div>
 </div>
+<form [formGroup]="filterForm">
+  <div class="row g-5">
+    <div class="col-md-3">
+      <app-ebtikar-input
+        [type]="'datepicker'"
+        [label]="'fromDate'"
+        [placeholder]="'fromDate'"
+        [control]="filterForm.get('fromDate')!"
+      ></app-ebtikar-input>
+    </div>
+    <div class="col-md-3">
+      <app-ebtikar-input
+        [type]="'datepicker'"
+        [label]="'toDate'"
+        [placeholder]="'toDate'"
+        [control]="filterForm.get('toDate')!"
+      ></app-ebtikar-input>
+    </div>
+  </div>
+  <div class="mt-5">
+    <button type="button" class="btn btn-primary me-5" (click)="applyFilter()">
+      {{ "apply" | translate }}
+    </button>
+    <button
+      *ngIf="showClearFilters"
+      class="btn btn-light-danger"
+      (click)="clearFilters()"
+    >
+      {{ "clear" | translate }}
+    </button>
+  </div>
+</form>
 
 <div class="card mb-5 mb-xxl-8 mt-7">
   <div class="card-body p-0">
@@ -16,15 +48,16 @@
       styleClass="p-datatable-gridlines p-datatable-striped "
       [columns]="_selectedColumns"
       [stateKey]="tableStorage"
-      responsiveLayout="stack"
       columnResizeMode="expand"
     >
       <ng-template pTemplate="caption">
-        <div class="flex">
-          <span class="p-input-icon-left ml-auto">
-            <p-button (click)="tableService.openMultiselect(ms1)">{{
-              "hideShowColumns" | translate
-            }}</p-button>
+        <div class="d-flex">
+          <span class="p-input-icon-left ms-auto">
+            <p-button
+              class="btn btn-ifo"
+              (click)="tableService.openMultiselect(ms1)"
+              >{{ "hideShowColumns" | translate }}</p-button
+            >
             <p-multiSelect
               #ms1
               appendTo="body"
@@ -57,13 +90,19 @@
       <ng-template pTemplate="body" let-rowData let-columns="columns">
         <tr>
           @for (col of columns; track $index) {
-          <td>{{ rowData[col.field] }}</td>
+          <td>{{ rowData[col.field] | formatValue }}</td>
           }
           <td>
-            <button class="btn btn-icon btn-info">
-              <i class="fas fa-pen"></i>
+            <button
+              class="btn btn-icon btn-info"
+              (click)="downloadPdf(rowData.Id)"
+            >
+              <i class="fa fa-file-pdf fs-1"></i>
             </button>
-            <button class="btn btn-icon btn-danger ms-3">
+            <button
+              class="btn btn-icon btn-danger ms-3"
+              (click)="delete(rowData)"
+            >
               <i class="fas fa-trash"></i>
             </button>
           </td>
@@ -71,9 +110,9 @@
       </ng-template>
     </p-table>
   </div>
-  <!-- <div class="my-9" *ngIf="total > pageSize">
+  <div class="my-9" *ngIf="100 > pageSize">
     <ngb-pagination
-      [collectionSize]="total"
+      [collectionSize]="100"
       [(page)]="pageNo"
       [maxSize]="3"
       [rotate]="true"
@@ -82,5 +121,5 @@
       (pageChange)="page($event)"
     >
     </ngb-pagination>
-  </div> -->
+  </div>
 </div>

@@ -12,7 +12,9 @@
 <div class="modal-body">
   <p>
     {{ modalInfo.description | translate }}
-    <ng-container *ngIf="modalInfo?.name"> {{ modalInfo.name }}</ng-container>?
+    <ng-container *ngIf="modalInfo?.name">
+      {{ modalInfo.name | translate }}</ng-container
+    >?
   </p>
 </div>
 <div class="modal-footer">

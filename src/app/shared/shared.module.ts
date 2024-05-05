@@ -35,6 +35,7 @@ import { AppArrowFocusDirective } from './directives/app-arrow-focus.directive';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { FormatValuePipe } from './pipes/format-value.pipe';
 
 const sharedModules: any[] = [
   NgApexchartsModule,
@@ -76,6 +77,7 @@ const sharedComponents: any[] = [
   FileUploadComponent,
   AppArrowFocusDirective,
   ScriptsInitComponent,
+  FormatValuePipe,
 ];
 
 @NgModule({

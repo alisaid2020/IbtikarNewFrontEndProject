@@ -26,5 +26,13 @@
   "clientName": "اسم العميل",
   "products": "الاصناف",
   "rememberMe": "تذكرني",
-  "memberSince": "عضو منذ "
+  "memberSince": "عضو منذ ",
+  "apply": "تطبيق",
+  "fromDate": "من تاريخ",
+  "toDate": "الي تاريخ",
+  "deleteSalesInvoice": "حذف فاتورة المبيعات",
+  "areYouSureToDelete": "هل أنت متأكد أنك تريد حذف",
+  "yesSure": "نعم أنا متأكد",
+  "cancel": "إلغاء",
+  "clear": "مسح"
 }
