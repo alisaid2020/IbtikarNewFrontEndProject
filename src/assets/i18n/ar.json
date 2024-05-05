@@ -16,7 +16,13 @@
     "dark": "غامق",
     "system": "حسب النظام"
   },
-  "sideBarMenu": {
-    "dashboard": "الشاشة الرئيسية"
-  }
+  "sales": "المبيعات",
+  "salesInvoice": "فاتورة المبيعات",
+  "addNew": "إضافة جديد",
+  "date": "التاريخ",
+  "notes": "ملاحظات",
+  "paymentType": "طريقة الدفع",
+  "clientName": "اسم العميل",
+  "products": "الاصناف",
+  "rememberMe": "تذكرني"
 }

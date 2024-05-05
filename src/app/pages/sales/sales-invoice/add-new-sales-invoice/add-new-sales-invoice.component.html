@@ -1,0 +1,66 @@
+<form [formGroup]="salesInvoiceForm">
+  <div class="app-toolbar pb-3 pb-md-6 d-flex">
+    <div class="me-5">
+      <a
+        routerLink="active"
+        [routerLink]="'/sales-invoice'"
+        class="btn btn-icon btn-light"
+      >
+        <span
+          [inlineSVG]="'./assets/media/icons/duotune/arrows/arr063.svg'"
+          class="svg-icon svg-icon-3 text-gray-800 fw-bolder"
+        ></span>
+      </a>
+    </div>
+    <div class="page-title d-flex flex-column justify-content-center flex-wrap">
+      <h1 class="page-heading d-flex text-dark fw-bold fs-2 my-0">
+        {{ "addNew" | translate }}
+      </h1>
+    </div>
+  </div>
+  <div class="card mb-5 mb-xxl-8">
+    <div class="card-body">
+      <div class="row g-5">
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [placeholder]="''"
+            [label]="''"
+            [control]="salesInvoiceForm.get('client')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [placeholder]="'paymentType'"
+            [label]="'paymentType'"
+            [control]="salesInvoiceForm.get('paymentType')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [type]="'datepicker'"
+            [placeholder]="'date'"
+            [label]="'date'"
+            [control]="salesInvoiceForm.get('docDate')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [type]="'textArea'"
+            [placeholder]="'notes'"
+            [label]="'notes'"
+            [control]="salesInvoiceForm.get('notes')!"
+          ></app-ebtikar-input>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <h2>
+          <span
+            [inlineSVG]="'./assets/media/icons/duotune/ecommerce/ecm001.svg'"
+            class="svg-icon svg-icon-1 text-primary fw-bolder"
+          ></span>
+          {{ "products" | translate }}
+        </h2>
+      </div>
+    </div>
+  </div>
+</form>

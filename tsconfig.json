@@ -18,10 +18,11 @@
     "allowJs": true,
     "target": "es2017",
     "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ]
+    "lib": ["es2018", "dom"],
+    "paths": {
+      "@services/*": ["./src/app/shared/services/*"],
+      "@constants/*": ["./src/app/shared/constants/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

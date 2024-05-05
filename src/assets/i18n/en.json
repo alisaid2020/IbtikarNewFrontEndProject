@@ -16,7 +16,13 @@
     "dark": "Dark",
     "system": "System"
   },
-  "sideBarMenu": {
-    "dashboard": "Dashboard"
-  }
+  "sales": "Sales",
+  "salesInvoice": "Sales Invoice",
+  "addNew": "Add New",
+  "date": "Date",
+  "notes": "Notes",
+  "paymentType": "Payment Type",
+  "clientName": "Client Name",
+  "products": "Products",
+  "rememberMe": "Remember Me"
 }

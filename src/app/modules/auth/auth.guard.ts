@@ -4,8 +4,8 @@ import {
   RouterStateSnapshot,
   Router,
 } from '@angular/router';
-import { ACCESS_TOKEN } from 'src/app/shared/constants/general.constant';
-import { HelpersService } from 'src/app/shared/services/helpers.service';
+import { ACCESS_TOKEN } from '@constants/general.constant';
+import { HelpersService } from '@services/helpers.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard {
@@ -15,6 +15,12 @@ export class AuthGuard {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    return true;
+    const token = this.helpers.getItemFromLocalStorage(ACCESS_TOKEN);
+    if (!token) {
+      this.router.navigate(['/auth']);
+      return false;
+    } else {
+      return true;
+    }
   }
 }

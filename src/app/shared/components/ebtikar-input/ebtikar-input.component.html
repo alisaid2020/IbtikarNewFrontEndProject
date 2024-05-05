@@ -130,33 +130,32 @@
     </textarea>
   </ng-container>
 
-
   <ng-container *ngSwitchCase="'advancedTimepicker'">
     <input
-    class="form-control"
-    [placeholder]="placeholder"
-    [formControl]="formControl"
-    [ngxTimepicker]="appendedToInput"
-    [format]="12"
-    readonly
-  />
-  <ngx-material-timepicker
-    #appendedToInput
-    [timepickerClass]="'hide-clock-face'"
-    [enableKeyboardInput]="true"
-    [appendToInput]="true"
-  ></ngx-material-timepicker>
+      class="form-control"
+      [placeholder]="placeholder"
+      [formControl]="formControl"
+      [ngxTimepicker]="appendedToInput"
+      [format]="12"
+      readonly
+    />
+    <ngx-material-timepicker
+      #appendedToInput
+      [timepickerClass]="'hide-clock-face'"
+      [enableKeyboardInput]="true"
+      [appendToInput]="true"
+    ></ngx-material-timepicker>
   </ng-container>
 </ng-container>
 
 <div class="invalid-feedback" *ngIf="control?.touched && control?.invalid">
-  <p class="text-start" *ngIf="formControl.hasError('required')">
+  <p class="text-start" *ngIf="formControl?.hasError('required')">
     {{ "fieldIsRequired" | translate }}
   </p>
-  <p *ngIf="formControl.hasError('validatePhoneNumber')">
+  <p *ngIf="formControl?.hasError('validatePhoneNumber')">
     {{ "validPhoneNumber" | translate }}
   </p>
-  <p *ngIf="formControl.hasError('pattern')">
+  <p *ngIf="formControl?.hasError('pattern')">
     {{ patternMessage! | translate }}
   </p>
 </div>

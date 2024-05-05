@@ -1,8 +1,8 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ACCESS_TOKEN } from '@constants/general.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/modules/auth/auth.service';
 import { HelpersService } from 'src/app/shared/services/helpers.service';
 
 @Component({
@@ -20,14 +20,14 @@ export class UserInnerComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     public translate: TranslateService,
-    private authService: AuthService,
     public helpers: HelpersService
   ) {}
 
   ngOnInit(): void {}
 
   logout(): void {
-    this.authService.logout();
+    this.helpers.removeItemFromLocalStorage(ACCESS_TOKEN);
+    this.router.navigateByUrl('/auth');
   }
 
   changeLanguage(value: string): void {

@@ -27,8 +27,6 @@ import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
   styleUrls: ['./ebtikar-input.component.scss'],
 })
 export class EbtikarInputComponent implements OnInit, OnChanges {
-  @Output() emitChanged = new EventEmitter<any>();
-
   @Input() control: AbstractControl;
   @Input() label?: string;
   @Input() readonly?: boolean;
@@ -37,6 +35,8 @@ export class EbtikarInputComponent implements OnInit, OnChanges {
   @Input() patternMessage?: string;
   @Input() addon?: string;
   @Input() phoneValidation = true;
+  @Output() emitChanged = new EventEmitter<any>();
+
   nextArrow = '<i class="fas fa-arrow-right"></i>';
   prevArrow = '<i class="fas fa-arrow-left"></i>';
 

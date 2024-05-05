@@ -1,5 +1,7 @@
 import { environment } from 'src/environments/environment';
 
-// const apiUrl = `${environment.apiUrl}/api`;
+const apiUrl = `https://innovationksa.ddns.net:9034`;
 
-// export const loginApi = `${apiUrl}/login`;
+export const loginApi = `${apiUrl}/Login`;
+
+export const branchesApi = `${apiUrl}/Branch`;
