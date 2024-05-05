@@ -395,24 +395,3 @@ body {
     right: 37px !important;
   }
 }
-
-// colors in dark theme
-.dark-mode-color:hover,
-.menu-link:hover,
-.dark-mode-color2 {
-  [data-bs-theme="dark"] & {
-    color: white !important;
-  }
-}
-::ng-deep {
-  .menu-state-primary
-    .menu-item.hover:not(.here)
-    > .menu-link:not(.disabled):not(.active):not(.here),
-  .menu-state-primary
-    .menu-item:not(.here)
-    .menu-link:hover:not(.disabled):not(.active):not(.here) {
-    [data-bs-theme="dark"] & {
-      color: white !important;
-    }
-  }
-}
