@@ -40,7 +40,7 @@
   [trackByFn]="trackByFn"
   [loading]="loading"
   [typeahead]="searchInput$"
-  [minTermLength]="2"
+  [minTermLength]="1"
   [clearable]="clearable"
   [formControl]="formControl"
   [editableSearchTerm]="true"
@@ -48,12 +48,20 @@
   [bindValue]="bindValue"
   [placeholder]="placeholder | translate"
   [closeOnSelect]="!IsMultiple"
-  [typeToSearchText]="'pleaseEnterMoreCharacters' | translate"
+  [typeToSearchText]="'writeToSearch' | translate"
   [addTag]="isAddTag"
   (change)="getChangedItem($event)"
   [searchFn]="searchByLabelInDynamic"
   #select
 >
+  <ng-template
+    *ngIf="hasMultipleLabels"
+    ng-label-tmp
+    ng-option-tmp
+    let-item="item"
+  >
+    {{ helpers.getTranslatedName(item) }}
+  </ng-template>
 </ng-select>
 
 <ng-select
@@ -73,6 +81,9 @@
   (change)="getChangedItem($event)"
   [searchFn]="searchByLabelInStatic"
 >
+  <ng-template ng-label-tmp ng-option-tmp let-item="item">
+    {{ item.name | translate }}
+  </ng-template>
 </ng-select>
 
 <div

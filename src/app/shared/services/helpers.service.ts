@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -8,7 +9,10 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class HelpersService {
   showOverlay$ = new BehaviorSubject(false);
-  constructor(@Inject(DOCUMENT) private document: Document) {}
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    private translate: TranslateService
+  ) {}
 
   setItemToLocalStorage(name: string, value: any): void {
     localStorage.setItem(name, JSON.stringify(value));
@@ -33,7 +37,7 @@ export class HelpersService {
     return item.id;
   }
 
-  getPdfFromBase64(base64String: string, fileName: string) {
+  getPdfFromBase64(base64String: string, fileName: string): void {
     const byteCharacters = window.atob(base64String);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
@@ -51,5 +55,13 @@ export class HelpersService {
     a.click();
     URL.revokeObjectURL(blobUrl);
     this.document.body.removeChild(a);
+  }
+
+  getTranslatedName(item: any): string {
+    const currLang = this.translate.currentLang;
+    if (item.NameEn) {
+      return currLang === 'ar' ? item.NameAr : item.NameEn;
+    }
+    return item.NameAr;
   }
 }

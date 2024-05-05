@@ -147,10 +147,10 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
 
   searchByLabelInDynamic(term: string, item: any) {
     term = term.toLocaleLowerCase();
-    if (item?.arabicAddress && item?.englishAddress) {
+    if (item?.NameAr && item?.NameEn) {
       return (
-        item.arabicAddress?.toLocaleLowerCase().indexOf(term) > -1 ||
-        item.englishAddress?.toLocaleLowerCase().indexOf(term) > -1
+        item.NameAr?.toLocaleLowerCase().indexOf(term) > -1 ||
+        item.NameEn?.toLocaleLowerCase().indexOf(term) > -1
       );
     }
   }
@@ -195,13 +195,7 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
         })
         .pipe(
           tap((res) => {
-            this.items = [this.items, ...res.Data.Data];
-            // this.pagination = {
-            //   currentPage: res.Data.CurrentPage,
-            //   pageSize: res.Data.PageSize,
-            //   totalPages: res.Data.TotalPages,
-            //   totalItems: res.Data.TotalItems,
-            // };
+            this.items = [this.items, ...res.Obj];
             this.loading = false;
           })
         )
@@ -213,17 +207,16 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
       of(this.customData || []),
       this.searchInput$.pipe(
         distinctUntilChanged(),
-        debounceTime(500),
+        debounceTime(300),
         filter((term) => !!term),
         tap((ـ) => (this.loading = true)),
         switchMap((term) => {
-          // let params = {
-          //   ...this.queryParams,
-          //   PageNumber: this.pageNo,
-          // };
-          return this.dataService.get(`${this.apiUrl}/${term}`).pipe(
+          let params = {
+            trim: term,
+          };
+          return this.dataService.get(`${this.apiUrl}`, { params }).pipe(
             catchError(() => of([])), // empty list on error
-            map((res) => res.Data.Data),
+            map((res) => res.Obj),
             tap(() => (this.loading = false))
           );
         })

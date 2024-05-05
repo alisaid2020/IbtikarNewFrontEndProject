@@ -34,5 +34,8 @@
   "areYouSureToDelete": "Are you sure you want to delete",
   "yesSure": "Yes, I am sure",
   "cancel": "Cancel",
-  "clear": "Clear"
+  "clear": "Clear",
+  "writeToSearch": "Type to search ...",
+  "cash": "Cash",
+  "debt": "Debt"
 }

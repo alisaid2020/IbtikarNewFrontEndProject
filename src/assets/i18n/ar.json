@@ -34,5 +34,8 @@
   "areYouSureToDelete": "هل أنت متأكد أنك تريد حذف",
   "yesSure": "نعم أنا متأكد",
   "cancel": "إلغاء",
-  "clear": "مسح"
+  "clear": "مسح",
+  "writeToSearch": " ... اكتب للبحث",
+  "cash": "كاش",
+  "debt": "آجل"
 }
