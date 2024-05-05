@@ -3,14 +3,8 @@ import { Routes } from '@angular/router';
 const Routing: Routes = [
   {
     path: '',
-    redirectTo: '/general',
+    redirectTo: '/sales-invoice',
     pathMatch: 'full',
-  },
-
-  {
-    path: 'general',
-    loadChildren: () =>
-      import('./general/general.module').then((m) => m.GeneralModule),
   },
   {
     path: 'sales-invoice',

@@ -1,6 +1,7 @@
 {
   "language": "Language",
   "signIn": "Sign In",
+  "signOut": "Sign Out",
   "userName": "UserName",
   "password": "Password",
   "branch": "Branch",
@@ -24,5 +25,6 @@
   "paymentType": "Payment Type",
   "clientName": "Client Name",
   "products": "Products",
-  "rememberMe": "Remember Me"
+  "rememberMe": "Remember Me",
+  "memberSince": "Member Since "
 }

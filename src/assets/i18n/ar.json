@@ -1,6 +1,7 @@
 {
   "language": "اللغة",
   "signIn": "تسجيل الدخول",
+  "signOut": "تسجيل الخروج",
   "userName": "اسم المستخدم",
   "password": "كلمة السر",
   "branch": "الفرع",
@@ -24,5 +25,6 @@
   "paymentType": "طريقة الدفع",
   "clientName": "اسم العميل",
   "products": "الاصناف",
-  "rememberMe": "تذكرني"
+  "rememberMe": "تذكرني",
+  "memberSince": "عضو منذ "
 }

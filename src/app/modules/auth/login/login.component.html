@@ -33,6 +33,7 @@
     <div class="fv-row mb-5" appAppArrowFocus>
       <app-ebtikar-select
         [items]="branches"
+        [uid]="userProfile ? userProfile.Obj.Role.BranchId : ''"
         [label]="'branch'"
         [placeholder]="'chooseBranch'"
         [bindValue]="'Id'"

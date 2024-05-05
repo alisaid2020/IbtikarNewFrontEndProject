@@ -10,11 +10,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormControl, Validators } from '@angular/forms';
 import {
   Subscription,
   firstValueFrom,
@@ -31,9 +27,9 @@ import {
   map,
 } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { DataService } from '../../services/data.service';
+import { DataService } from '@services/data.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { HelpersService } from '../../services/helpers.service';
+import { HelpersService } from '@services/helpers.service';
 
 @Component({
   selector: 'app-ebtikar-select',

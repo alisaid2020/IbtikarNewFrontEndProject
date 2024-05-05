@@ -28,14 +28,6 @@
   (scrollToEnd)="getPaginatedData()"
   #select
 >
-  <ng-template
-    *ngIf="hasMultipleLabels"
-    ng-label-tmp
-    ng-option-tmp
-    let-item="item"
-  >
-    {{ item.nameAr}}
-  </ng-template>
 </ng-select>
 <ng-select
   *ngIf="apiUrl"
@@ -62,14 +54,6 @@
   [searchFn]="searchByLabelInDynamic"
   #select
 >
-  <ng-template
-    *ngIf="hasMultipleLabels"
-    ng-label-tmp
-    ng-option-tmp
-    let-item="item"
-  >
-  {{ item.nameAr}}
-  </ng-template>
 </ng-select>
 
 <ng-select
@@ -89,9 +73,6 @@
   (change)="getChangedItem($event)"
   [searchFn]="searchByLabelInStatic"
 >
-  <ng-template ng-label-tmp ng-option-tmp let-item="item">
-    {{ item.name | translate }}
-  </ng-template>
 </ng-select>
 
 <div

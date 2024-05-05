@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   returnUrl: string;
   branches: any;
+  userProfile: any;
 
   fb = inject(FormBuilder);
   route = inject(ActivatedRoute);
@@ -52,8 +53,8 @@ export class LoginComponent implements OnInit {
     let companyId = 1;
     let rememberMe = false;
     if (this.helpers.checkItemFromLocalStorage(REMEMBER_ME)) {
-      const userProfile = this.helpers.getItemFromLocalStorage(ADMIN_PROFILE);
-      userName = userProfile.Obj.UserName;
+      this.userProfile = this.helpers.getItemFromLocalStorage(ADMIN_PROFILE);
+      userName = this.userProfile.Obj.UserName;
       rememberMe = this.helpers.getItemFromLocalStorage(REMEMBER_ME);
     }
     this.loginForm = this.fb.group({
