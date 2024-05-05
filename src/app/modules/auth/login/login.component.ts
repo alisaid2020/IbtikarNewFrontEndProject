@@ -1,10 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom, tap } from 'rxjs';
+import { firstValueFrom, map, tap } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DataService } from '@services/data.service';
-import { branchesApi, loginApi } from '@constants/api.constant';
+import { loginApi } from '@constants/api.constant';
 import { HelpersService } from '@services/helpers.service';
 import {
   ACCESS_TOKEN,
@@ -30,17 +30,14 @@ export class LoginComponent implements OnInit {
   helpers = inject(HelpersService);
 
   ngOnInit(): void {
-    this.getBranches();
-    this.initForm();
-    this.returnUrl =
-      this.route.snapshot.queryParams['returnUrl'.toString()] || '/';
-  }
-
-  getBranches() {
     firstValueFrom(
-      this.dataService.get(`${branchesApi}/GetAllForDropDown`).pipe(
+      this.route.data.pipe(
+        map((res) => res.branches),
         tap((res) => {
           this.branches = res;
+          this.initForm();
+          this.returnUrl =
+            this.route.snapshot.queryParams['returnUrl'.toString()] || '/';
         })
       )
     );
