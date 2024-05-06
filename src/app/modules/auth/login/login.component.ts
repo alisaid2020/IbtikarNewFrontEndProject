@@ -9,6 +9,8 @@ import { HelpersService } from '@services/helpers.service';
 import {
   ACCESS_TOKEN,
   ADMIN_PROFILE,
+  E_USER_ROLE,
+  E_USER_ROLES,
   REMEMBER_ME,
 } from '@constants/general.constant';
 
@@ -74,6 +76,11 @@ export class LoginComponent implements OnInit {
             this.loginForm.value.rememberMe
           );
           this.helpers.setItemToLocalStorage(ADMIN_PROFILE, res);
+          this.helpers.setItemToLocalStorage(
+            E_USER_ROLES,
+            res.Obj.Role.RoleScreens
+          );
+          this.helpers.setItemToLocalStorage(E_USER_ROLE, res.Obj.Role.Id);
           this.spinner.hide();
           this.router.navigateByUrl('/');
         })

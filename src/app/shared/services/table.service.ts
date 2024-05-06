@@ -22,13 +22,16 @@ export class TableService {
     multiSelect.show();
   }
 
-  getObjectKeys(obj: any, previousPath = ''): any {
+  gekKeys(element: any, previousPath = ''): any {
     let Keys: any = [];
-    Object.keys(obj || {}).forEach((el) => {
+    if (Array.isArray(element)) {
+      return element;
+    }
+    Object.keys(element || {}).forEach((el) => {
       const currentPath = previousPath.length ? `${previousPath}.${el}` : el;
-      if (!Array.isArray(obj[el])) {
-        if (typeof obj[el] === 'object') {
-          this.getObjectKeys(obj[el], currentPath);
+      if (!Array.isArray(element[el])) {
+        if (typeof element[el] === 'object') {
+          this.gekKeys(element[el], currentPath);
         } else {
           Keys.push(currentPath);
         }
@@ -37,8 +40,8 @@ export class TableService {
     return Keys;
   }
 
-  tableColumns(obj: any) {
-    this.objectKeys = this.getObjectKeys(obj)?.filter(
+  tableColumns(element: any) {
+    this.objectKeys = this.gekKeys(element)?.filter(
       (el: any) => !/id/gi.test(el)
     );
     this.allColumns = [];

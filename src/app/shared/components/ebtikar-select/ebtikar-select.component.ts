@@ -55,6 +55,8 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
   @Input() customData: any[];
   @Input() isAddNewLine?: any;
   @Input() uid?: any;
+  @Input() searchByTerm: boolean;
+  @Input() searchByBarcode: boolean;
 
   @Output() emitChanged = new EventEmitter<any>();
 
@@ -79,7 +81,7 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
     if (this.uid) {
       this.formControl.patchValue(this.uid);
     }
-    if (this.hasStaticValues) {
+    if (this.hasStaticValues && this.items?.length) {
       this.translateStaticItems();
       this.subs.push(
         this.translate.onLangChange.subscribe((_) => {
@@ -90,7 +92,7 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
 
     if (this.apiUrl || (this.apiUrl && this.isPaginated)) {
       this.loadSyncedItems();
-      if (this.formControl.value) {
+      if (this.formControl?.value) {
         this.formControl.patchValue(
           eval(`this.formControl.value.${this.bindValue}`)
         );
@@ -116,6 +118,10 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
         this.control.patchValue(null);
         this.selectComponent?.blur();
       }
+    }
+    if (this.apiUrl && changes?.customData?.currentValue) {
+      this.customData = changes.customData.currentValue;
+      this.loadSyncedItems();
     }
   }
 
@@ -211,9 +217,13 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
         filter((term) => !!term),
         tap((ـ) => (this.loading = true)),
         switchMap((term) => {
-          let params = {
-            trim: term,
-          };
+          let params: any = {};
+          if (this.searchByTerm) {
+            params['trim'] = term;
+          }
+          if (this.searchByBarcode) {
+            params['barcode'] = term;
+          }
           return this.dataService.get(`${this.apiUrl}`, { params }).pipe(
             catchError(() => of([])), // empty list on error
             map((res) => res.Obj),

@@ -36,6 +36,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FormatValuePipe } from './pipes/format-value.pipe';
+import { TableColumnDataPipe } from './pipes/table-column-data.pipe';
 
 const sharedModules: any[] = [
   NgApexchartsModule,
@@ -78,6 +79,7 @@ const sharedComponents: any[] = [
   AppArrowFocusDirective,
   ScriptsInitComponent,
   FormatValuePipe,
+  TableColumnDataPipe,
 ];
 
 @NgModule({
