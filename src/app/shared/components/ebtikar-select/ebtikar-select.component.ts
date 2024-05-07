@@ -141,7 +141,7 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
     this.items = await Promise.all(
       this.items.map(async (item: any) => {
         const translatedValue = await firstValueFrom(
-          this.translate.get(`${item.name}`)
+          this.translate.get(`${item[this.bindLabel]}`)
         );
         return {
           ...item,

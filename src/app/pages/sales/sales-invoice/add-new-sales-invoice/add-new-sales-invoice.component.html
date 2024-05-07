@@ -55,6 +55,14 @@
             [control]="salesInvoiceForm.get('docDate')!"
           ></app-ebtikar-input>
         </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [type]="'textArea'"
+            [placeholder]="'notes'"
+            [label]="'notes'"
+            [control]="salesInvoiceForm.get('notes')!"
+          ></app-ebtikar-input>
+        </div>
       </div>
       <div class="row mt-5">
         <p-table
@@ -243,17 +251,75 @@
             [control]="salesInvoiceForm.get('totalNet')!"
           ></app-ebtikar-input>
         </div>
-        <div class="col-md-6"></div>
-        <div class="col-md-6"></div>
-        <div class="col-md-6"></div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <app-ebtikar-input
-            [type]="'textArea'"
-            [placeholder]="'notes'"
-            [label]="'notes'"
-            [control]="salesInvoiceForm.get('notes')!"
+            [placeholder]="'cash'"
+            [label]="'cash'"
+            [control]="salesInvoiceForm.get('cash')!"
           ></app-ebtikar-input>
         </div>
+        <div class="col-md-4">
+          <app-ebtikar-input
+            [placeholder]="'visa'"
+            [label]="'visa'"
+            [control]="salesInvoiceForm.get('visa')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-4" *ngIf="salesInvoiceForm.get('visa')?.value">
+          <app-ebtikar-input
+            [placeholder]="'visaTrxNo'"
+            [label]="'visaTrxNo'"
+            [control]="salesInvoiceForm.get('visaTrxNo')!"
+          ></app-ebtikar-input>
+        </div>
+        <div
+          class="col-md-4"
+          *ngIf="
+            salesInvoiceForm.get('visa')?.value &&
+            !salesInvoiceInitObj?.empHasAccount
+          "
+        >
+          <app-ebtikar-select
+            [hasStaticValues]="true"
+            [items]="salesInvoiceInitObj?.banks"
+            [placeholder]="'bankId'"
+            [label]="'bankId'"
+            [bindValue]="'Id'"
+            [bindLabel]="'BankName'"
+            [control]="salesInvoiceForm.get('bankId')!"
+          ></app-ebtikar-select>
+        </div>
+        <div class="col-md-4">
+          <app-ebtikar-select
+            [hasStaticValues]="true"
+            [items]="visaTrxTypes"
+            [placeholder]="'visaTrxType'"
+            [label]="'visaTrxType'"
+            [bindLabel]="'name'"
+            [bindValue]="'value'"
+            [control]="salesInvoiceForm.get('visaTrxType')!"
+          ></app-ebtikar-select>
+        </div>
+        <div
+          class="col-md-4"
+          *ngIf="salesInvoiceForm.get('paymentType')?.value === 2"
+        >
+          <app-ebtikar-input
+            [label]="'debt'"
+            [placeholder]="'debt'"
+            [control]="salesInvoiceForm.get('debt')!"
+          >
+          </app-ebtikar-input>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer d-flex align-items-activity py-6 px-9">
+      <div class="d-flex gap-3 ms-auto">
+        <app-submit-button
+          [isDisabled]="salesInvoiceForm.invalid"
+          [buttonText]="'save'"
+          (btnClick)="submit()"
+        ></app-submit-button>
       </div>
     </div>
   </div>

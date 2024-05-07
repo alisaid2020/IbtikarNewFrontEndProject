@@ -19,8 +19,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   itemsUnits: any = [];
   barcodeItems: any = [];
   items: any = [];
-  barcodeControl = new FormControl();
-  barcodeControls = [this.barcodeControl];
+  barcodeControls = [new FormControl()];
   changedColumns: any;
   salesInvoiceInitObj: any;
   defaultStorage = 'salesInvoiceLines-default-selected';
@@ -42,6 +41,10 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   paymentTypes = [
     { name: 'cash', value: 1 },
     { name: 'debt', value: 2 },
+  ];
+  visaTrxTypes = [
+    { name: 'Mada', value: 1 },
+    { name: 'Transfer', value: 2 },
   ];
   invoiceLineKeys = [
     'Price',
@@ -66,8 +69,8 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   fb = inject(FormBuilder);
 
   async ngOnInit() {
-    this.initForm();
     this.salesInvoiceInit();
+    this.initForm();
     await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
@@ -128,12 +131,12 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   addNewLine(value?: any): void {
+    this.barcodeControls.push(new FormControl());
     if (value) {
       this.linesArray.push(this.newLine(value));
       return;
     }
     this.linesArray.push(this.newLine());
-    this.barcodeControls.push(this.barcodeControl);
   }
 
   remove(i: number) {
@@ -236,7 +239,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let form = this.linesArray.controls[i];
     const itemID = form.get('itemID')?.value;
     const unitId = form.get('uniteId')?.value;
-    this.barcodeControl.setValue(ev?.Barcode);
+    this.barcodeControls[i].setValue(ev?.Barcode);
     this.barcodeItems[i] = [ev];
     form.patchValue({ vat: ev?.Vat, productId: ev.Id });
     this.getBalance(ev, i);
@@ -299,6 +302,8 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   changeQuantity(ev: any, i: number) {
     console.log('ev');
   }
+
+  submit(): void {}
 
   ngOnDestroy(): void {
     this.subs.forEach((sub) => sub.unsubscribe());
