@@ -28,6 +28,14 @@
   (scrollToEnd)="getPaginatedData()"
   #select
 >
+  <ng-template
+    *ngIf="hasMultipleLabels"
+    ng-label-tmp
+    ng-option-tmp
+    let-item="item"
+  >
+    {{ helpers.getTranslatedName(item) }}
+  </ng-template>
 </ng-select>
 <ng-select
   *ngIf="apiUrl"
