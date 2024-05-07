@@ -20,6 +20,13 @@ const Routing: Routes = [
         (m) => m.PricingPolicyModule
       ),
   },
+  {
+    path: 'pricing-policy-lists',
+    loadChildren: () =>
+      import('./sales/pricing-policy-lists/pricing-policy-lists.module').then(
+        (m) => m.PricingPolicyListsModule
+      ),
+  },
 
   {
     path: '**',

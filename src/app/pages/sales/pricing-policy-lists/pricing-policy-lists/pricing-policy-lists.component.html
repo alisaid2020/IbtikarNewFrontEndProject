@@ -1,0 +1,92 @@
+<div class="app-toolbar mb-5 d-flex flex-stack flex-wrap align-items-center">
+  <div class="page-title">
+    <h1 class="page-heading d-flex text-dark fw-bold fs-3 my-0">
+      {{ "pricingPolicyLists" | translate }}
+    </h1>
+  </div>
+  <div class="ms-auto">
+    <a class="btn btn-primary" routerLink="/pricing-policy-lists/add">{{
+      "addNew" | translate
+    }}</a>
+  </div>
+</div>
+
+<div class="card mb-5 mb-xxl-8 mt-7">
+  <div class="card-body p-0">
+    <p-table
+      [value]="pricingPolicyLists"
+      styleClass="p-datatable-gridlines p-datatable-striped "
+      [columns]="_selectedColumns"
+      [stateKey]="tableStorage"
+      columnResizeMode="expand"
+    >
+      <ng-template pTemplate="caption">
+        <div class="d-flex">
+          <span class="p-input-icon-left">
+            <p-button
+              class="btn btn-ifo"
+              (click)="tableService.openMultiselect(ms1)"
+              >{{ "hideShowColumns" | translate }}</p-button
+            >
+            <p-multiSelect
+              #ms1
+              appendTo="body"
+              [options]="allColumns"
+              [(ngModel)]="changedColumns"
+              optionLabel="header"
+              filterBy="translatedName"
+              (onPanelHide)="helpers.showOverlay$.next(false)"
+              (onChange)="changeInHideShow($event)"
+            >
+              <ng-template let-option pTemplate="Item">
+                {{ option.translatedName }}
+              </ng-template>
+            </p-multiSelect>
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          @for (column of columns; track $index) {
+          <th class="bg-primary fw-bolder text-white fs-5 m min-w-150px">
+            {{ column.header | translate }}
+          </th>
+          }
+          <th class="bg-primary fw-bolder text-white fs-5 min-w-150px">
+            Actions
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr>
+          @for (col of columns; track $index) {
+          <td>{{ rowData[col.field] | formatValue }}</td>
+          }
+          <td>
+            <button class="btn btn-icon btn-secondary">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button
+              class="btn btn-icon btn-danger ms-3"
+              (click)="delete(rowData)"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  <!-- <div class="my-9" *ngIf="100 > pageSize">
+      <ngb-pagination
+        [collectionSize]="100"
+        [(page)]="pageNo"
+        [maxSize]="3"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        [pageSize]="pageSize"
+        (pageChange)="page($event)"
+      >
+      </ngb-pagination>
+    </div> -->
+</div>

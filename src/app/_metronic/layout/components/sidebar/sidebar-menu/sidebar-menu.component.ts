@@ -28,10 +28,10 @@ export class SidebarMenuComponent implements OnInit {
           title: 'pricingPolicy',
           route: '/pricing-policy',
         },
-        // {
-        //   title: 'pricingLists',
-        //   route: '/pricing-lists',
-        // },
+        {
+          title: 'pricingPolicyLists',
+          route: '/pricing-policy-lists',
+        },
         // {
         //   title: 'customerAccountStatement',
         //   route: '/customer-account-statement',
