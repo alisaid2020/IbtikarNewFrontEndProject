@@ -37,5 +37,9 @@
   "clear": "مسح",
   "writeToSearch": " ... اكتب للبحث",
   "cash": "كاش",
-  "debt": "آجل"
+  "debt": "آجل",
+  "shiftInfo": "بيانات الورديه",
+  "pricingPolicy": "سياسات التسعير",
+  "arabicName": "الإسم بالعربيه",
+  "englishName": "الإسم بالانجليزية"
 }

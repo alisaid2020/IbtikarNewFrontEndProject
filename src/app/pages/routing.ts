@@ -13,6 +13,13 @@ const Routing: Routes = [
         (m) => m.SalesInvoiceModule
       ),
   },
+  {
+    path: 'pricing-policy',
+    loadChildren: () =>
+      import('./sales/pricing-policy/pricing-policy.module').then(
+        (m) => m.PricingPolicyModule
+      ),
+  },
 
   {
     path: '**',

@@ -16,6 +16,13 @@
       {{ "addNew" | translate }}
     </h1>
   </div>
+  <button
+    type="button"
+    class="btn btn-success ms-auto"
+    (click)="openShiftDetails()"
+  >
+    {{ "shiftInfo" | translate }}
+  </button>
 </div>
 <form [formGroup]="salesInvoiceForm">
   <div class="card mb-5 mb-xxl-8">

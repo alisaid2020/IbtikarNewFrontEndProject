@@ -37,5 +37,9 @@
   "clear": "Clear",
   "writeToSearch": "Type to search ...",
   "cash": "Cash",
-  "debt": "Debt"
+  "debt": "Debt",
+  "shiftInfo": "Shift Info",
+  "pricingPolicy": "Pricing Policy",
+  "arabicName": "Arabic Name",
+  "englishName": "English Name"
 }

@@ -20,6 +20,22 @@ export class SidebarMenuComponent implements OnInit {
           title: 'salesInvoice',
           route: '/sales-invoice',
         },
+        // {
+        //   title: 'salesReturn',
+        //   route: '/sales-return',
+        // },
+        {
+          title: 'pricingPolicy',
+          route: '/pricing-policy',
+        },
+        // {
+        //   title: 'pricingLists',
+        //   route: '/pricing-lists',
+        // },
+        // {
+        //   title: 'customerAccountStatement',
+        //   route: '/customer-account-statement',
+        // },
       ],
     },
     // for link

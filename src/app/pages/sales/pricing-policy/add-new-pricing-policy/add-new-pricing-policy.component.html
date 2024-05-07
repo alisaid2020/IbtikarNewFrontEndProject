@@ -1,0 +1,58 @@
+<div
+  class="offcanvs-header d-flex justify-content-between align-items-center flex-wrap"
+>
+  <h3 class="offcanvs-title fw-bolder text-dark">
+    {{
+      pricingPolicy
+        ? helpers.getTranslatedName(pricingPolicy)
+        : ("addNew" | translate)
+    }}
+  </h3>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="activeDrawer.close()"
+  ></button>
+</div>
+<div class="offcanvs-body">
+  <div class="h-100 overflow-auto">
+    <form [formGroup]="pricingPolicyForm"></form>
+    <div class="row m-0 g-5 mt-5">
+      <div class="col-md-6">
+        <app-ebtikar-input
+          [label]="'arabicName'"
+          [placeholder]="'arabicName'"
+          [control]="pricingPolicyForm.get('nameAr')!"
+        ></app-ebtikar-input>
+      </div>
+      <div class="col-md-6">
+        <app-ebtikar-input
+          [label]="'englishName'"
+          [placeholder]="'englishName'"
+          [control]="pricingPolicyForm.get('nameEn')!"
+        ></app-ebtikar-input>
+      </div>
+      <div class="col-md-6">
+        <app-ebtikar-input
+          [type]="'textArea'"
+          [label]="'notes'"
+          [placeholder]="'notes'"
+          [control]="pricingPolicyForm.get('notes')!"
+        ></app-ebtikar-input>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="offcanvs-footer p-5 pt-0 text-center">
+  <div class="d-flex justify-content-end gap-2 gap-lg-3">
+    <button class="btn btn-light" (click)="activeDrawer.close()">
+      {{ "close" | translate }}
+    </button>
+    <app-submit-button
+      [buttonText]="'save'"
+      [isDisabled]="pricingPolicyForm.invalid"
+      (btnClick)="submit()"
+    ></app-submit-button>
+  </div>
+</div>

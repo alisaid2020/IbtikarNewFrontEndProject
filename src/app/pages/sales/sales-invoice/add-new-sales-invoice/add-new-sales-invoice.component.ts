@@ -6,6 +6,8 @@ import { DataService } from '@services/data.service';
 import { HelpersService } from '@services/helpers.service';
 import { TableService } from '@services/table.service';
 import { Subscription, firstValueFrom, tap } from 'rxjs';
+import { ShiftDetailsDrawerComponent } from '../shift-details-drawer/shift-details-drawer.component';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-add-new-sales-invoice',
@@ -22,6 +24,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   barcodeControls = [new FormControl()];
   changedColumns: any;
   salesInvoiceInitObj: any;
+  isUserShiftOpened: boolean;
   defaultStorage = 'salesInvoiceLines-default-selected';
   tableStorage = 'salesInvoiceLines-table';
   itemsByBarcodeApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemByBarcode`;
@@ -67,9 +70,11 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   tableService = inject(TableService);
   dataService = inject(DataService);
   fb = inject(FormBuilder);
+  offcanvasService = inject(NgbOffcanvas);
 
   async ngOnInit() {
     this.salesInvoiceInit();
+    this.checkIfUserShiftOpened();
     this.initForm();
     await this.initTableColumns();
     this.subs.push(
@@ -184,6 +189,14 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         .pipe(
           tap((res) => {
             this.salesInvoiceInitObj = res.Obj;
+            console.log(this.salesInvoiceInitObj);
+
+            if (this.salesInvoiceInitObj.isSalesPerson) {
+              this.salesInvoiceForm.get('paymentType')?.setValue(2);
+            }
+            if (!this.salesInvoiceInitObj.isSalesPerson) {
+              this.salesInvoiceForm.get('paymentType')?.setValue(1);
+            }
           })
         )
     );
@@ -301,6 +314,35 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
 
   changeQuantity(ev: any, i: number) {
     console.log('ev');
+  }
+
+  checkIfUserShiftOpened(): void {
+    firstValueFrom(
+      this.dataService
+        .get(`${apiUrl}/ExtraAndPOS_Shift/IsUserShiftOpened`)
+        .pipe(
+          tap((res) => {
+            this.isUserShiftOpened = res.Obj.IsUserShiftOpened;
+          })
+        )
+    );
+  }
+
+  openShiftDetails(): void {
+    const offCanvasRef = this.offcanvasService.open(
+      ShiftDetailsDrawerComponent,
+      {
+        position: this.translate.currentLang == 'ar' ? 'start' : 'end',
+        scroll: true,
+        panelClass: 'w-100 w-md-50',
+      }
+    );
+    // offCanvasRef.componentInstance.center = center;
+    // offCanvasRef.result.then((result) => {
+    //   if (result) {
+    //     this.getCenters();
+    //   }
+    // });
   }
 
   submit(): void {}
