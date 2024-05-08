@@ -99,7 +99,6 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
   }
 
   delete(item: any) {
-    console.log(item);
     const modalRef = this.modal.open(ConfirmModalComponent);
     modalRef.componentInstance.modalInfo = {
       title: 'deletePricingPolicyLists',
@@ -116,6 +115,7 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
             })
             .pipe(
               tap((_) => {
+                this.spinner.hide();
                 this.toast.show(Toast.deleted, {
                   classname: Toast.success,
                 });

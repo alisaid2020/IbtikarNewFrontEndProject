@@ -63,9 +63,12 @@
           <td>{{ rowData[col.field] | formatValue }}</td>
           }
           <td>
-            <button class="btn btn-icon btn-secondary">
+            <a
+              class="btn btn-icon btn-secondary"
+              [routerLink]="['/pricing-policy-lists', rowData.Id]"
+            >
               <i class="fas fa-pen"></i>
-            </button>
+            </a>
             <button
               class="btn btn-icon btn-danger ms-3"
               (click)="delete(rowData)"

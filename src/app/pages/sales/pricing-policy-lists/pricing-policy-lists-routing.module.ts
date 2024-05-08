@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { PricingPolicyListsComponent } from './pricing-policy-lists/pricing-policy-lists.component';
 import { pricingPolicyListsResolver } from './pricing-policy-lists.resolver';
 import { AddNewPricingPolicyListComponent } from './add-new-pricing-policy-list/add-new-pricing-policy-list.component';
+import { pricingPolicyListResolver } from './pricing-policy-list.resolver';
 
 const routes: Routes = [
   {
@@ -15,6 +16,16 @@ const routes: Routes = [
   {
     path: 'add',
     component: AddNewPricingPolicyListComponent,
+    resolve: {
+      pricingPolicyList: pricingPolicyListResolver,
+    },
+  },
+  {
+    path: ':id',
+    component: AddNewPricingPolicyListComponent,
+    resolve: {
+      pricingPolicyList: pricingPolicyListResolver,
+    },
   },
 ];
 

@@ -33,10 +33,21 @@
     ng-label-tmp
     ng-option-tmp
     let-item="item"
+    let-clear="clear"
   >
     {{ helpers.getTranslatedName(item) }}
+    <span
+      *ngIf="IsMultiple"
+      class="ng-value-icon"
+      (click)="clear(item)"
+      aria-hidden="true"
+    >
+      ×
+    </span>
   </ng-template>
+  >
 </ng-select>
+
 <ng-select
   *ngIf="apiUrl"
   appendTo="body"

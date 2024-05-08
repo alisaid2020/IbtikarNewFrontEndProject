@@ -1,6 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -37,6 +37,7 @@ export class HelpersService {
     return item.id;
   }
 
+  // get PDF file from base64
   getPdfFromBase64(base64String: string, fileName: string): void {
     const byteCharacters = window.atob(base64String);
     const byteNumbers = new Array(byteCharacters.length);
@@ -63,5 +64,21 @@ export class HelpersService {
       return currLang === 'ar' ? item.NameAr : item.NameEn;
     }
     return item.NameAr;
+  }
+
+  // remove empty lines from form array
+  removeEmptyLines(myFormArray: FormArray): any {
+    const lines: any = [];
+    myFormArray.controls.forEach((formGroup: any, index: any) => {
+      const values = Object.values(formGroup.controls);
+      const isEmpty = values.every(
+        (control: any) => control.value == ('' || null || undefined)
+      );
+      if (!isEmpty) {
+        const line = formGroup.value;
+        lines.push(line);
+      }
+    });
+    return lines;
   }
 }

@@ -16,13 +16,9 @@
       {{ "addNew" | translate }}
     </h1>
   </div>
-  <button type="button" class="btn btn-secondary ms-auto">
-    <span
-      class="svg-icon svg-icon-2"
-      [inlineSVG]="'./assets/media/icons/duotune/arrows/arr078.svg'"
-    ></span>
-    {{ "export" | translate }}
-  </button>
+  <div class="ms-auto" *ngIf="!pricingPolicyList">
+    <app-file-upload (changed)="selectedFile($event)"></app-file-upload>
+  </div>
 </div>
 <form [formGroup]="pricingPolicyListForm">
   <div class="card mb-5 mb-xxl-8">
@@ -32,6 +28,7 @@
           <app-ebtikar-select
             [items]="pricingPolicesObj?.group"
             [hasMultipleLabels]="true"
+            [uid]="pricingPolicyList?.PricePolicyId"
             [placeholder]="'PricePolicy'"
             [label]="'PricePolicy'"
             [bindValue]="'Id'"
@@ -42,6 +39,7 @@
           <app-ebtikar-select
             [items]="pricingPolicesObj?.itemgroup"
             [hasMultipleLabels]="true"
+            [uid]="pricingPolicyList?.GroupId"
             [placeholder]="'ItemGroup'"
             [label]="'ItemGroup'"
             [bindValue]="'Id'"
@@ -53,6 +51,7 @@
             [items]="pricingPolicesObj?.Branches"
             [IsMultiple]="true"
             [hasMultipleLabels]="true"
+            [uid]="pricingPolicyList?.Branches"
             [placeholder]="'branches'"
             [label]="'branches'"
             [bindValue]="'Id'"

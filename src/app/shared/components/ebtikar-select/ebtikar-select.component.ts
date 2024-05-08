@@ -152,11 +152,11 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   searchByLabelInDynamic(term: string, item: any) {
-    term = term.toLocaleLowerCase();
+    term = term?.toLocaleLowerCase();
     if (item?.NameAr && item?.NameEn) {
       return (
-        item.NameAr?.toLocaleLowerCase().indexOf(term) > -1 ||
-        item.NameEn?.toLocaleLowerCase().indexOf(term) > -1
+        item?.NameAr?.toLocaleLowerCase()?.indexOf(term) > -1 ||
+        item?.NameEn?.toLocaleLowerCase()?.indexOf(term) > -1
       );
     }
   }

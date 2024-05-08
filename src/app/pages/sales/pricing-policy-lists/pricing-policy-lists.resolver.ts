@@ -4,11 +4,8 @@ import { apiUrl } from '@constants/api.constant';
 import { DataService } from '@services/data.service';
 import { firstValueFrom } from 'rxjs';
 
-export const pricingPolicyListsResolver: ResolveFn<boolean> = (
-  route,
-  state
-) => {
-  const dataService = inject(DataService);
+export const pricingPolicyListsResolver: ResolveFn<any> = (route, state) => {
+  let dataService = inject(DataService);
   return firstValueFrom(
     dataService.get(`${apiUrl}/XtraAndPos_PricePolicyList/GetAll`)
   );
