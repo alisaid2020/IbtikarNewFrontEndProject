@@ -11,6 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription, firstValueFrom, map, tap } from 'rxjs';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 import { Toast } from 'src/app/shared/enums/toast.enum';
+import { IPagination } from 'src/app/shared/models/IPagination.model';
 
 @Component({
   selector: 'app-pricing-policy-lists',
@@ -20,6 +21,7 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
   _selectedColumns: any[] = [];
   subs: Subscription[] = [];
   allColumns: any[] = [];
+  pagination: IPagination;
   defaultStorage = 'pricing-policy-default-selected';
   tableStorage = 'pricing-policy-table';
   changedColumns: any;
@@ -50,7 +52,7 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
       this.route.data.pipe(
         map((res) => res.pricingPolicyLists.Obj),
         tap((res) => {
-          this.pricingPolicyLists = res.Obj.list;
+          this.setData(res);
         })
       )
     );
@@ -128,13 +130,35 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
   }
 
   getPricingPolicyLists(): void {
+    let params = {
+      pageNumber: this.pagination.PageNumber,
+      pageSize: this.pagination.PageSize,
+    };
     firstValueFrom(
-      this.dataService.get(`${apiUrl}/XtraAndPos_PricePolicyList/GetAll`).pipe(
-        tap((res) => {
-          this.pricingPolicyLists = res.Obj.Obj.list;
+      this.dataService
+        .get(`${apiUrl}/XtraAndPos_PricePolicyList/GetPagedPriceListDetail`, {
+          params,
         })
-      )
+        .pipe(
+          tap((res) => {
+            this.setData(res?.Obj);
+          })
+        )
     );
+  }
+
+  page(pageNo: any) {
+    this.pagination.PageNumber = pageNo;
+    this.getPricingPolicyLists();
+  }
+
+  setData(res: any): void {
+    this.pricingPolicyLists = res.PagedResult;
+    this.pagination = {
+      PageSize: res.PageSize,
+      PageNumber: res.PageNumber,
+      TotalCount: res.TotalCount,
+    };
   }
 
   ngOnDestroy(): void {

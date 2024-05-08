@@ -80,16 +80,16 @@
       </ng-template>
     </p-table>
   </div>
-  <!-- <div class="my-9" *ngIf="100 > pageSize">
-      <ngb-pagination
-        [collectionSize]="100"
-        [(page)]="pageNo"
-        [maxSize]="3"
-        [rotate]="true"
-        [boundaryLinks]="true"
-        [pageSize]="pageSize"
-        (pageChange)="page($event)"
-      >
-      </ngb-pagination>
-    </div> -->
+  <div class="my-9" *ngIf="pagination.TotalCount > pagination.PageSize">
+    <ngb-pagination
+      [collectionSize]="100"
+      [(page)]="pagination.PageNumber"
+      [maxSize]="3"
+      [rotate]="true"
+      [boundaryLinks]="true"
+      [pageSize]="pagination.PageSize"
+      (pageChange)="page($event)"
+    >
+    </ngb-pagination>
+  </div>
 </div>
