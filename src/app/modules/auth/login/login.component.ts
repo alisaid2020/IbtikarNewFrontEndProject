@@ -75,6 +75,7 @@ export class LoginComponent implements OnInit {
             REMEMBER_ME,
             this.loginForm.value.rememberMe
           );
+
           this.helpers.setItemToLocalStorage(ADMIN_PROFILE, res);
           this.helpers.setItemToLocalStorage(
             E_USER_ROLES,

@@ -22,6 +22,7 @@ import { ToastsContainerComponent } from './shared/components/toasts-container/t
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 const createTranslateLoader = (http: HttpClient) => {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -48,6 +49,7 @@ const createTranslateLoader = (http: HttpClient) => {
     }),
     FlatpickrModule.forRoot(),
     NgxSpinnerModule.forRoot(),
+    NgxPermissionsModule.forRoot(),
     LoadingBarModule,
     LoadingBarRouterModule,
   ],

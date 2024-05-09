@@ -22,13 +22,13 @@
 </div>
 <form [formGroup]="pricingPolicyListForm">
   <div class="card mb-5 mb-xxl-8">
-    <div class="card-body">
+    <div class="card-body pb-0">
       <div class="row g-5">
         <div class="col-md-6" appAppArrowFocus>
           <app-ebtikar-select
             [items]="pricingPolicesObj?.group"
-            [hasMultipleLabels]="true"
             [uid]="pricingPolicyList?.PricePolicyId"
+            [hasMultipleLabels]="true"
             [placeholder]="'PricePolicy'"
             [label]="'PricePolicy'"
             [bindValue]="'Id'"
@@ -38,8 +38,8 @@
         <div class="col-md-6" appAppArrowFocus>
           <app-ebtikar-select
             [items]="pricingPolicesObj?.itemgroup"
-            [hasMultipleLabels]="true"
             [uid]="pricingPolicyList?.GroupId"
+            [hasMultipleLabels]="true"
             [placeholder]="'ItemGroup'"
             [label]="'ItemGroup'"
             [bindValue]="'Id'"
@@ -49,9 +49,9 @@
         <div class="col-md-6" appAppArrowFocus>
           <app-ebtikar-select
             [items]="pricingPolicesObj?.Branches"
+            [uid]="pricingPolicyList?.Branches"
             [IsMultiple]="true"
             [hasMultipleLabels]="true"
-            [uid]="pricingPolicyList?.Branches"
             [placeholder]="'branches'"
             [label]="'branches'"
             [bindValue]="'Id'"
@@ -59,7 +59,8 @@
           ></app-ebtikar-select>
         </div>
       </div>
-      <div class="row mt-5">
+      <hr class="mt-10 mb-10" />
+      <div class="row">
         <p-table
           [columns]="_selectedColumns"
           [value]="linesArray.controls"
@@ -69,11 +70,26 @@
         >
           <ng-template pTemplate="caption">
             <div class="d-flex align-items-center">
-              <h2 class="d-flex fs-3 mb-0">
+              <h2 class="d-flex fs-3 mb-0 me-auto">
                 <i class="fa-solid fa-cart-shopping text-primary fs-1 me-3"></i>
                 {{ "products" | translate }}
               </h2>
-              <span class="p-input-icon-left ms-auto">
+              <div class="position-relative col-12 col-sm-6 col-md-4">
+                <span
+                  [inlineSVG]="
+                    './assets/media/icons/duotune/general/gen021.svg'
+                  "
+                  class="svg-icon svg-icon-2 position-absolute top-50 translate-middle-y ms-4"
+                >
+                </span>
+                <input
+                  type="text"
+                  class="form-control ps-14"
+                  [formControl]="searchControl"
+                  [placeholder]="'search' | translate"
+                />
+              </div>
+              <span class="p-input-icon-left ms-3">
                 <p-button (click)="tableService.openMultiselect(ms1)">{{
                   "hideShowColumns" | translate
                 }}</p-button>
@@ -225,6 +241,18 @@
             </ng-container>
           </ng-template>
         </p-table>
+        <div class="my-9" *ngIf="pagination.TotalCount > pagination.PageSize">
+          <ngb-pagination
+            [collectionSize]="pagination.TotalCount"
+            [(page)]="pagination.PageNumber"
+            [maxSize]="3"
+            [rotate]="true"
+            [boundaryLinks]="true"
+            [pageSize]="pagination.PageSize"
+            (pageChange)="page($event)"
+          >
+          </ngb-pagination>
+        </div>
       </div>
     </div>
   </div>

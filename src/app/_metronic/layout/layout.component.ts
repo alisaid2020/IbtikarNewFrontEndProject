@@ -10,6 +10,10 @@ import { Subscription } from 'rxjs';
 import { LayoutService } from './core/layout.service';
 import { LayoutInitService } from './core/layout-init.service';
 import { ILayout, LayoutType } from './core/configs/config';
+import { E_USER_ROLES } from '@constants/general.constant';
+import { HelpersService } from '@services/helpers.service';
+import { NgxPermissionsService } from 'ngx-permissions';
+import { PermissionsService } from '@services/permissions.service';
 
 @Component({
   selector: 'app-layout',
@@ -63,7 +67,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private initService: LayoutInitService,
     private layout: LayoutService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private helpers: HelpersService,
+    private permissionsService: NgxPermissionsService,
+    private permissions: PermissionsService
   ) {
     // define layout type and load layout
     this.router.events.subscribe((event) => {
@@ -83,6 +90,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // const roles = this.helpers.getItemFromLocalStorage(E_USER_ROLES);
+    // this.permissionsService.loadPermissions(roles);
+
     const subscr = this.layout.layoutConfigSubject
       .asObservable()
       .subscribe((config) => {

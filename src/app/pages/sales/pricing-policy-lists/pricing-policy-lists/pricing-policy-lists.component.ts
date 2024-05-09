@@ -136,7 +136,7 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
     };
     firstValueFrom(
       this.dataService
-        .get(`${apiUrl}/XtraAndPos_PricePolicyList/GetPagedPriceListDetail`, {
+        .get(`${apiUrl}/XtraAndPos_PricePolicyList/GetPagedPriceList`, {
           params,
         })
         .pipe(

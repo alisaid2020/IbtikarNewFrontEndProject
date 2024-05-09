@@ -8,33 +8,33 @@ import { combineLatest, firstValueFrom } from 'rxjs';
 export const pricingPolicyListsResolver: ResolveFn<any> = (route, state) => {
   let dataService = inject(DataService);
   return firstValueFrom(
+    dataService.get(`${apiUrl}/XtraAndPos_PricePolicyList/GetPagedPriceList`, {
+      params: {
+        pageNumber: 1,
+        pageSize: PAGE_SIZE,
+      },
+    })
+  );
+};
+
+export const pricingPolicyListResolver: ResolveFn<any> = (route, state) => {
+  let dataService = inject(DataService);
+  const pricingPolicyBasicData = firstValueFrom(
+    dataService.get(`${apiUrl}/PriceList/GetById`, {
+      params: { id: route.params.id },
+    })
+  );
+  const pricingPolicyLinesData = firstValueFrom(
     dataService.get(
       `${apiUrl}/XtraAndPos_PricePolicyList/GetPagedPriceListDetail`,
       {
         params: {
           pageNumber: 1,
           pageSize: PAGE_SIZE,
+          priceListId: route.params.id,
         },
       }
     )
   );
-};
-
-export const pricingPolicyListResolver: ResolveFn<any> = (route, state) => {
-  let dataService = inject(DataService);
-  let arr = [];
-  const PricingPolicies = firstValueFrom(
-    dataService.get(`${apiUrl}/XtraAndPos_PricePolicyList/PriceListInit`)
-  );
-  arr.push(PricingPolicies);
-  if (route?.params?.id) {
-    const pricingPolicyList = firstValueFrom(
-      dataService.get(`${apiUrl}/PriceList/GetById`, {
-        params: { id: route.params.id },
-      })
-    );
-    arr.push(pricingPolicyList);
-  }
-
-  return combineLatest([...arr]);
+  return combineLatest([pricingPolicyBasicData, pricingPolicyLinesData]);
 };

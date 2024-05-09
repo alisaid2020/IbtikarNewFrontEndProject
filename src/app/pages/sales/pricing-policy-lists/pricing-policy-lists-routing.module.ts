@@ -18,9 +18,6 @@ const routes: Routes = [
   {
     path: 'add',
     component: AddNewPricingPolicyListComponent,
-    resolve: {
-      pricingPolicyList: pricingPolicyListResolver,
-    },
   },
   {
     path: ':id',

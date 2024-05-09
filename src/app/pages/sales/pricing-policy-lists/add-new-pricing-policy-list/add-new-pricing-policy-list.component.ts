@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { apiUrl } from '@constants/api.constant';
 import { TranslateService } from '@ngx-translate/core';
@@ -8,8 +8,16 @@ import { HelpersService } from '@services/helpers.service';
 import { TableService } from '@services/table.service';
 import { ToastService } from '@services/toast-service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription, firstValueFrom, tap } from 'rxjs';
-import { Toast } from 'src/app/shared/enums/toast.enum';
+import {
+  Subscription,
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+  map,
+  tap,
+} from 'rxjs';
+import { Toast } from '@enums/toast.enum';
+import { IPagination } from '@models/IPagination.model';
 import * as XLSX from 'xlsx';
 
 @Component({
@@ -18,10 +26,13 @@ import * as XLSX from 'xlsx';
 })
 export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   pricingPolicyList: any;
+  pricingPolicyLines: any;
   pricingPolicesObj: any;
+  pagination: IPagination;
+  searchControl = new FormControl('');
+  subs: Subscription[] = [];
   pricingPolicyListForm: FormGroup;
   _selectedColumns: any[] = [];
-  subs: Subscription[] = [];
   allColumns: any[] = [];
   barcodeItems: any[] = [];
   items: any[] = [];
@@ -65,16 +76,42 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     firstValueFrom(
       this.route.data.pipe(
+        map((res) => res?.pricingPolicyList),
         tap((res: any) => {
-          console.log(res);
-
-          this.pricingPolicesObj = res?.pricingPolicyList[0]?.Obj;
-          this.pricingPolicyList = res?.pricingPolicyList[1]?.Obj?.list[0];
-          this.initForm();
+          this.pricingPolicyList = res[0]?.Obj?.list[0];
+          this.setData(res[1].Obj);
         })
       )
     );
+    this.subs.push(
+      this.searchControl.valueChanges
+        .pipe(
+          distinctUntilChanged(),
+          debounceTime(500),
+          tap((term: any) => {
+            if (!term || term >= 1) {
+              this.pagination.PageNumber = 1;
+              this.getPaginatedLines();
+            }
+          })
+        )
+        .subscribe()
+    );
+    this.getPriceListInit();
+    this.initForm();
     await this.InitTable();
+  }
+
+  getPriceListInit(): void {
+    firstValueFrom(
+      this.dataService
+        .get(`${apiUrl}/XtraAndPos_PricePolicyList/PriceListInit`)
+        .pipe(
+          tap((res) => {
+            this.pricingPolicesObj = res?.Obj;
+          })
+        )
+    );
   }
 
   async InitTable() {
@@ -133,21 +170,25 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         (el: any) => (el = el.BranchId)
       );
     }
-    if (this.pricingPolicyList?.PriceListDetail?.length) {
-      this.linesArray.clear();
-      this.pricingPolicyList?.PriceListDetail.forEach((line: any) => {
-        let newLine = {
-          itemUniteId: { Id: line?.ItemUniteId },
-          parCode: { Barcode: line?.ParCode },
-          price: line?.Price,
-          priceMin: line?.PriceMin,
-          priceMax: line?.PriceMax,
-          commissionValue: line?.CommissionValue,
-          commissionPercentage: line?.CommissionPercentage,
-        };
-        this.addNewLine(newLine);
-      });
+    if (this.pricingPolicyLines?.length) {
+      this.updateLinesArray();
     }
+  }
+
+  updateLinesArray(): void {
+    this.linesArray.clear();
+    this.pricingPolicyLines.forEach((line: any) => {
+      let newLine = {
+        itemUniteId: { Id: line?.ItemUniteId },
+        parCode: { Barcode: line?.ParCode },
+        price: line?.Price,
+        priceMin: line?.PriceMin,
+        priceMax: line?.PriceMax,
+        commissionValue: line?.CommissionValue,
+        commissionPercentage: line?.CommissionPercentage,
+      };
+      this.addNewLine(newLine);
+    });
   }
 
   get linesArray(): FormArray {
@@ -245,6 +286,45 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       });
     };
     reader.readAsArrayBuffer(file);
+  }
+
+  setData(res: any): void {
+    this.pricingPolicyLines = res.PagedResult;
+    this.pagination = {
+      PageSize: res.PageSize,
+      PageNumber: res.PageNumber,
+      TotalCount: res.TotalCount,
+    };
+  }
+
+  page(pageNo: number): void {
+    this.pagination.PageNumber = pageNo;
+    this.getPaginatedLines();
+  }
+
+  getPaginatedLines(): void {
+    this.spinner.show();
+    let params: any = {
+      pageNumber: this.pagination.PageNumber,
+      pageSize: this.pagination.PageSize,
+      priceListId: this.pricingPolicyList.Id,
+    };
+    if (this.searchControl.value) {
+      params.searchValue = this.searchControl.value;
+    }
+    firstValueFrom(
+      this.dataService
+        .get(`${apiUrl}/XtraAndPos_PricePolicyList/GetPagedPriceListDetail`, {
+          params,
+        })
+        .pipe(
+          tap((res) => {
+            this.spinner.hide();
+            this.setData(res.Obj);
+            this.updateLinesArray();
+          })
+        )
+    );
   }
 
   submit(): void {
