@@ -178,8 +178,12 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   updateLinesArray(): void {
     this.linesArray.clear();
     this.pricingPolicyLines.forEach((line: any) => {
-      let newLine = {
-        itemUniteId: { Id: line?.ItemUniteId },
+      console.log(line);
+
+      let newLine: any = {
+        itemUniteId: {
+          Id: line?.ItemUniteId,
+        },
         parCode: { Barcode: line?.ParCode },
         price: line?.Price,
         priceMin: line?.PriceMin,

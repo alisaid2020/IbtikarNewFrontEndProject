@@ -110,15 +110,6 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
     if (!changes.items?.isFirstChange()) {
       this.selectComponent?.blur();
     }
-    // if (changes.items?.currentValue && !this.hasStaticValues) {
-    //   const item = changes.items?.currentValue.find(
-    //     (x: any) => x[this.bindValue] === this.control.value
-    //   );
-    //   if (!item) {
-    //     this.control.patchValue(null);
-    //     this.selectComponent?.blur();
-    //   }
-    // }
     if (this.apiUrl && changes?.customData?.currentValue) {
       this.customData = changes.customData.currentValue;
       this.loadSyncedItems();

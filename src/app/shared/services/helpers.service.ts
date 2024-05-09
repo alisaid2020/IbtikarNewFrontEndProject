@@ -63,7 +63,7 @@ export class HelpersService {
     if (item.NameEn) {
       return currLang === 'ar' ? item.NameAr : item.NameEn;
     }
-    return item.NameAr;
+    return item?.NameAr ? item.NameAr : null;
   }
 
   // remove empty lines from form array
