@@ -180,6 +180,9 @@
                     <app-ebtikar-input
                       [placeholder]="'price'"
                       [control]="linesArray.controls[i].get('price')!"
+                      (emitChanged)="
+                        updatedRows($event, linesArray.controls[i])
+                      "
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -190,6 +193,9 @@
                     <app-ebtikar-input
                       [placeholder]="'PriceMax'"
                       [control]="linesArray.controls[i].get('priceMax')!"
+                      (emitChanged)="
+                        updatedRows($event, linesArray.controls[i])
+                      "
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -200,6 +206,9 @@
                     <app-ebtikar-input
                       [placeholder]="'PriceMin'"
                       [control]="linesArray.controls[i].get('priceMin')!"
+                      (emitChanged)="
+                        updatedRows($event, linesArray.controls[i])
+                      "
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -212,6 +221,9 @@
                       [control]="
                         linesArray.controls[i].get('commissionPercentage')!
                       "
+                      (emitChanged)="
+                        updatedRows($event, linesArray.controls[i])
+                      "
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -222,6 +234,9 @@
                     <app-ebtikar-input
                       [placeholder]="'commissionValue'"
                       [control]="linesArray.controls[i].get('commissionValue')!"
+                      (emitChanged)="
+                        updatedRows($event, linesArray.controls[i])
+                      "
                     ></app-ebtikar-input>
                   </td>
                   <td *ngSwitchDefault style="min-width: 115px">
@@ -235,6 +250,7 @@
                 }
                 <td>
                   <button
+                    type="button"
                     class="btn btn-icon btn-danger ms-3"
                     (click)="remove(i)"
                   >
