@@ -16,7 +16,7 @@
       {{ "addNew" | translate }}
     </h1>
   </div>
-  <div class="ms-auto" *ngIf="!pricingPolicyList">
+  <div class="ms-auto" *ngIf="!pricingListData">
     <app-file-upload (changed)="selectedFile($event)"></app-file-upload>
   </div>
 </div>
@@ -27,7 +27,7 @@
         <div class="col-md-6" appAppArrowFocus>
           <app-ebtikar-select
             [items]="pricingPolicesObj?.group"
-            [uid]="pricingPolicyList?.PricePolicyId"
+            [uid]="pricingListData?.PricePolicyId"
             [hasMultipleLabels]="true"
             [placeholder]="'PricePolicy'"
             [label]="'PricePolicy'"
@@ -38,7 +38,7 @@
         <div class="col-md-6" appAppArrowFocus>
           <app-ebtikar-select
             [items]="pricingPolicesObj?.itemgroup"
-            [uid]="pricingPolicyList?.GroupId"
+            [uid]="pricingListData?.GroupId"
             [hasMultipleLabels]="true"
             [placeholder]="'ItemGroup'"
             [label]="'ItemGroup'"
@@ -49,7 +49,7 @@
         <div class="col-md-6" appAppArrowFocus>
           <app-ebtikar-select
             [items]="pricingPolicesObj?.Branches"
-            [uid]="pricingPolicyList?.Branches"
+            [uid]="pricingListData?.Branches"
             [IsMultiple]="true"
             [hasMultipleLabels]="true"
             [placeholder]="'branches'"
@@ -77,7 +77,7 @@
               <div
                 class="d-flex align-items-center ms-auto justify-content-end"
               >
-                <div class="position-relative" *ngIf="pricingPolicyList">
+                <div class="position-relative" *ngIf="pricingListData">
                   <span
                     [inlineSVG]="
                       './assets/media/icons/duotune/general/gen021.svg'
@@ -181,7 +181,7 @@
                       [placeholder]="'price'"
                       [control]="linesArray.controls[i].get('price')!"
                       (emitChanged)="
-                        updatedRows($event, linesArray.controls[i])
+                        updatedFieldsList($event, linesArray.controls[i])
                       "
                     ></app-ebtikar-input>
                   </td>
@@ -194,7 +194,7 @@
                       [placeholder]="'PriceMax'"
                       [control]="linesArray.controls[i].get('priceMax')!"
                       (emitChanged)="
-                        updatedRows($event, linesArray.controls[i])
+                        updatedFieldsList($event, linesArray.controls[i])
                       "
                     ></app-ebtikar-input>
                   </td>
@@ -207,7 +207,7 @@
                       [placeholder]="'PriceMin'"
                       [control]="linesArray.controls[i].get('priceMin')!"
                       (emitChanged)="
-                        updatedRows($event, linesArray.controls[i])
+                        updatedFieldsList($event, linesArray.controls[i])
                       "
                     ></app-ebtikar-input>
                   </td>
@@ -222,7 +222,7 @@
                         linesArray.controls[i].get('commissionPercentage')!
                       "
                       (emitChanged)="
-                        updatedRows($event, linesArray.controls[i])
+                        updatedFieldsList($event, linesArray.controls[i])
                       "
                     ></app-ebtikar-input>
                   </td>
@@ -235,7 +235,7 @@
                       [placeholder]="'commissionValue'"
                       [control]="linesArray.controls[i].get('commissionValue')!"
                       (emitChanged)="
-                        updatedRows($event, linesArray.controls[i])
+                        updatedFieldsList($event, linesArray.controls[i])
                       "
                     ></app-ebtikar-input>
                   </td>
@@ -263,9 +263,7 @@
         </p-table>
         <div
           class="my-9"
-          *ngIf="
-            pricingPolicyList && pagination.TotalCount > pagination.PageSize
-          "
+          *ngIf="pricingListData && pagination.TotalCount > pagination.PageSize"
         >
           <ngb-pagination
             [collectionSize]="pagination.TotalCount"

@@ -27,13 +27,13 @@ import * as XLSX from 'xlsx';
 export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   items: any[] = [];
   changedColumns: any;
-  pricingPolicyList: any;
+  pricingListData: any;
   pricingPolicyLines: any;
   pricingPolicesObj: any;
   allColumns: any[] = [];
   pagination: IPagination;
   barcodeItems: any[] = [];
-  updatedArray: any[] = [];
+  changedFieldsOnly: any[] = [];
   subs: Subscription[] = [];
   _selectedColumns: any[] = [];
   pricingPolicyListForm: FormGroup;
@@ -79,7 +79,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       this.route.data.pipe(
         map((res) => res?.pricingPolicyList),
         tap((res: any) => {
-          this.pricingPolicyList = res[0]?.Obj?.list[0];
+          this.pricingListData = res[0]?.Obj?.list[0];
           this.setData(res[1].Obj);
         })
       )
@@ -92,7 +92,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
           tap((term: any) => {
             if (!term || term >= 1) {
               this.pagination.PageNumber = 1;
-              this.getPaginatedLines();
+              this.getPaginatedItems();
             }
           })
         )
@@ -119,7 +119,6 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     let pricePolicyId;
     let groupId;
     let branches;
-
     this.pricingPolicyListForm = this.fb.group({
       pricePolicyId: [pricePolicyId],
       groupId: [groupId],
@@ -127,13 +126,13 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       priceListDetail: this.fb.array([this.newLine()]),
     });
 
-    if (this.pricingPolicyList) {
-      this.pricingPolicyList.Branches = this.pricingPolicyList?.Branches.map(
+    if (this.pricingListData) {
+      this.pricingListData.Branches = this.pricingListData?.Branches.map(
         (el: any) => (el = el.BranchId)
       );
     }
     if (this.pricingPolicyLines?.length) {
-      this.updateLinesArray();
+      this.addItemsToArray();
     }
   }
 
@@ -176,7 +175,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateLinesArray(): void {
+  addItemsToArray(): void {
     this.linesArray.clear();
     this.pricingPolicyLines.forEach((line: any) => {
       let newLine: any = {
@@ -191,7 +190,23 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         commissionValue: line?.CommissionValue,
         commissionPercentage: line?.CommissionPercentage,
       };
-      this.addNewLine(newLine);
+
+      let index = this.changedFieldsOnly.findIndex(
+        (el) => el.parCode == newLine.ParCode
+      );
+
+      if (index < 0) {
+        this.addNewLine(newLine);
+      } else {
+        newLine = {
+          ...this.changedFieldsOnly[index],
+          itemUniteId: {
+            Id: this.changedFieldsOnly[index]?.itemUniteId,
+          },
+          parCode: { Barcode: this.changedFieldsOnly[index]?.parCode },
+        };
+        this.addNewLine(newLine);
+      }
     });
   }
 
@@ -303,15 +318,15 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
 
   page(pageNo: number): void {
     this.pagination.PageNumber = pageNo;
-    this.getPaginatedLines();
+    this.getPaginatedItems();
   }
 
-  getPaginatedLines(): void {
+  getPaginatedItems(): void {
     this.spinner.show();
     let params: any = {
       pageNumber: this.pagination.PageNumber,
       pageSize: this.pagination.PageSize,
-      priceListId: this.pricingPolicyList.Id,
+      priceListId: this.pricingListData.Id,
     };
     if (this.searchControl.value) {
       params.searchValue = this.searchControl.value;
@@ -325,20 +340,20 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
           tap((res) => {
             this.spinner.hide();
             this.setData(res.Obj);
-            this.updateLinesArray();
+            this.addItemsToArray();
           })
         )
     );
   }
 
-  updatedRows(ev: any, row: any) {
-    let index = this.updatedArray.findIndex(
+  updatedFieldsList(ev: any, row: any) {
+    let index = this.changedFieldsOnly.findIndex(
       (el) => el.parCode == row.value.parCode
     );
-    if (!this.updatedArray?.length || index < 0) {
-      this.updatedArray.push(row.value);
+    if (!this.changedFieldsOnly?.length || index < 0) {
+      this.changedFieldsOnly.push(row.value);
     } else {
-      this.updatedArray[index] = row.value;
+      this.changedFieldsOnly[index] = row.value;
     }
   }
 
@@ -346,7 +361,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     this.spinner.show();
     let formValue = {
       ...this.pricingPolicyListForm.value,
-      priceListDetail: this.helpers.removeEmptyLines(this.linesArray),
+      priceListDetail: this.changedFieldsOnly,
     };
     let branchesLength = formValue?.branches?.filter(Number).length;
     if (branchesLength) {
@@ -354,8 +369,6 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         return { branchId: id };
       });
     }
-    console.log(formValue);
-    console.log(this.updatedArray);
 
     // if (this.pricingPolicyList) {
     //   firstValueFrom(
