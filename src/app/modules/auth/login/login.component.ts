@@ -10,7 +10,7 @@ import {
   ACCESS_TOKEN,
   ADMIN_PROFILE,
   E_USER_ROLE,
-  E_USER_ROLES,
+  E_USER_RoleSCREENS,
   REMEMBER_ME,
 } from '@constants/general.constant';
 
@@ -70,19 +70,18 @@ export class LoginComponent implements OnInit {
     firstValueFrom(
       this.dataService.post(loginApi, this.loginForm.value).pipe(
         tap((res) => {
+          this.spinner.hide();
+          this.helpers.setItemToLocalStorage(ADMIN_PROFILE, res);
+          this.helpers.setItemToLocalStorage(E_USER_ROLE, res.Obj.Role.NameEn);
           this.helpers.setItemToLocalStorage(ACCESS_TOKEN, res.Obj.AccessToken);
           this.helpers.setItemToLocalStorage(
             REMEMBER_ME,
             this.loginForm.value.rememberMe
           );
-
-          this.helpers.setItemToLocalStorage(ADMIN_PROFILE, res);
           this.helpers.setItemToLocalStorage(
-            E_USER_ROLES,
+            E_USER_RoleSCREENS,
             res.Obj.Role.RoleScreens
           );
-          this.helpers.setItemToLocalStorage(E_USER_ROLE, res.Obj.Role.Id);
-          this.spinner.hide();
           this.router.navigateByUrl('/');
         })
       )

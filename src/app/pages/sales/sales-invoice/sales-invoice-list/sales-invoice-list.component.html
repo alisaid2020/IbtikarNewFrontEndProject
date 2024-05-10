@@ -4,7 +4,11 @@
       {{ "salesInvoice" | translate }}
     </h1>
   </div>
-  <div class="ms-auto" routerLink="/sales-invoice/add">
+  <div
+    *ngxPermissionsOnly="['SaleInvoice-Create']"
+    class="ms-auto"
+    routerLink="/sales-invoice/add"
+  >
     <a class="btn btn-primary">{{ "addNew" | translate }}</a>
   </div>
 </div>

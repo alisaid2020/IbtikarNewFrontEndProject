@@ -24,11 +24,6 @@
         >
           <span class="menu-icon">
             <i [ngClass]="'fa' + ' ' + item.icon"></i>
-            <!-- <span
-              [inlineSVG]="'./assets/media/icons/duotune/' + item.icon"
-              class="svg-icon svg-icon-2"
-            >
-            </span> -->
           </span>
           <span class="menu-title" [translate]="item.name"></span>
         </a>
@@ -42,11 +37,6 @@
         <a class="menu-link">
           <span class="menu-icon">
             <i [ngClass]="'fa' + ' ' + item.icon"></i>
-            <!-- <span
-              [inlineSVG]="'./assets/media/icons/duotune/' + item.icon"
-              class="svg-icon svg-icon-2"
-            >
-            </span> -->
           </span>
           <span class="menu-title" [translate]="item.name"></span>
           <span class="menu-arrow"></span>
@@ -57,6 +47,7 @@
         >
           <div class="menu-item" *ngFor="let link of item?.children">
             <a
+              *ngxPermissionsOnly="[link?.permission]"
               class="menu-link without-sub"
               [routerLink]="link.route"
               routerLinkActive="active"

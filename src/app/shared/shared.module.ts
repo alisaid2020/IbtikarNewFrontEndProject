@@ -37,6 +37,7 @@ import { ButtonModule } from 'primeng/button';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FormatValuePipe } from './pipes/format-value.pipe';
 import { TableColumnDataPipe } from './pipes/table-column-data.pipe';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 const sharedModules: any[] = [
   NgApexchartsModule,
@@ -69,6 +70,7 @@ const sharedModules: any[] = [
   TableModule,
   ButtonModule,
   MultiSelectModule,
+  NgxPermissionsModule,
 ];
 const sharedComponents: any[] = [
   EbtikarInputComponent,

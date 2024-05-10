@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LayoutType } from '../../../core/configs/config';
 import { LayoutInitService } from '../../../core/layout-init.service';
 import { LayoutService } from '../../../core/layout.service';
+import { HelpersService } from '@services/helpers.service';
 
 @Component({
   selector: 'app-sidebar-menu',
@@ -10,15 +11,20 @@ import { LayoutService } from '../../../core/layout.service';
 })
 export class SidebarMenuComponent implements OnInit {
   navItems: any = [
+    {
+      name: 'dashboard',
+      route: '/dashboard',
+      icon: 'fa-users-viewfinder',
+    },
     // for menu of links
     {
       name: 'sales',
-      route: '/sales-invoice',
       icon: 'fa-bar-chart',
       children: [
         {
           title: 'salesInvoice',
           route: '/sales-invoice',
+          permission: 'SaleInvoice-GetAll',
         },
         // {
         //   title: 'salesReturn',
@@ -27,10 +33,12 @@ export class SidebarMenuComponent implements OnInit {
         {
           title: 'pricingPolicy',
           route: '/pricing-policy',
+          permission: 'SaleInvoice-GetAll',
         },
         {
           title: 'pricingPolicyLists',
           route: '/pricing-policy-lists',
+          permission: 'SaleInvoice-GetAll',
         },
         // {
         //   title: 'customerAccountStatement',
@@ -38,17 +46,12 @@ export class SidebarMenuComponent implements OnInit {
         // },
       ],
     },
-    // for link
-    // {
-    //   name: 'general',
-    //   route: '/general',
-    //   icon: 'fa-users-viewfinder',
-    // },
   ];
 
   constructor(
     private layoutInit: LayoutInitService,
-    public layout: LayoutService
+    public layout: LayoutService,
+    public helpers: HelpersService
   ) {}
 
   ngOnInit(): void {}

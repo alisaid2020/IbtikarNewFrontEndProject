@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { NgxPermissionsService } from 'ngx-permissions';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -11,7 +12,8 @@ export class HelpersService {
   showOverlay$ = new BehaviorSubject(false);
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private permissionsService: NgxPermissionsService
   ) {}
 
   setItemToLocalStorage(name: string, value: any): void {
@@ -80,5 +82,14 @@ export class HelpersService {
       }
     });
     return lines;
+  }
+
+  hasPermission(myPermission: any) {
+    const permissions = this.permissionsService.getPermissions();
+
+    const hasPermission = Object.keys(permissions).some(
+      (permission) => permission === myPermission
+    );
+    return hasPermission;
   }
 }
