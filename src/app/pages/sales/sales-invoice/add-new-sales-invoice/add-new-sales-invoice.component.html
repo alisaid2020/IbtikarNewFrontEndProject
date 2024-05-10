@@ -17,6 +17,7 @@
     </h1>
   </div>
   <button
+    *ngIf="IsMustOpenShift"
     type="button"
     class="btn btn-success ms-auto"
     (click)="openShiftDetails()"
@@ -51,7 +52,10 @@
           ></app-ebtikar-select>
         </div>
         <div
-          *ngIf="salesInvoiceInitObj?.isSalesPerson"
+          *ngIf="
+            helpers.getItemFromLocalStorage(userRole) === 'Admin' ||
+            invoiceInitObj?.isSalesPerson
+          "
           class="col-md-6"
           appAppArrowFocus
         >
@@ -62,6 +66,7 @@
             [control]="salesInvoiceForm.get('docDate')!"
           ></app-ebtikar-input>
         </div>
+
         <div class="col-md-6">
           <app-ebtikar-input
             [type]="'textArea'"
@@ -283,12 +288,12 @@
           class="col-md-4"
           *ngIf="
             salesInvoiceForm.get('visa')?.value &&
-            !salesInvoiceInitObj?.empHasAccount
+            !invoiceInitObj?.empHasAccount
           "
         >
           <app-ebtikar-select
             [hasStaticValues]="true"
-            [items]="salesInvoiceInitObj?.banks"
+            [items]="invoiceInitObj?.banks"
             [placeholder]="'bankId'"
             [label]="'bankId'"
             [bindValue]="'Id'"

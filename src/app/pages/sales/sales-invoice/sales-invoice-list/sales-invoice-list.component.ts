@@ -19,18 +19,19 @@ import { TableService } from '@services/table.service';
   templateUrl: './sales-invoice-list.component.html',
 })
 export class SalesInvoiceListComponent implements OnInit, OnDestroy {
-  invoices: any;
-  filterForm: FormGroup;
   pageNo = 1;
-  pageSize = PAGE_SIZE;
   filters: any;
-  showClearFilters: any;
-  _selectedColumns: any[] = [];
-  subs: Subscription[] = [];
-  allColumns: any[] = [];
-  defaultStorage = 'sales-invoice-list-default-selected';
-  tableStorage = 'sales-invoice-list-table';
+  invoices: any;
   changedColumns: any;
+  pageSize = PAGE_SIZE;
+  showClearFilters: any;
+  filterForm: FormGroup;
+  allColumns: any[] = [];
+  subs: Subscription[] = [];
+  isUserShiftOpened: boolean;
+  _selectedColumns: any[] = [];
+  tableStorage = 'sales-invoice-list-table';
+  defaultStorage = 'sales-invoice-list-default-selected';
   defaultSelected: any[] = [
     { field: 'Id', header: 'Id' },
     { field: 'BranchName', header: 'BranchName' },
@@ -64,6 +65,7 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
         })
       )
     );
+    this.checkIfUserShiftOpened();
     this.initForm();
     await this.InitTable();
   }
@@ -200,6 +202,20 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
               res.Obj.LayoutData,
               res.Obj.DisplayName
             );
+          })
+        )
+    );
+  }
+
+  checkIfUserShiftOpened(): void {
+    firstValueFrom(
+      this.dataService
+        .get(`${apiUrl}/ExtraAndPOS_Shift/IsUserShiftOpened`)
+        .pipe(
+          tap((res) => {
+            if (res.Obj.IsUserShiftOpened) {
+              this.isUserShiftOpened = res.Obj.IsUserShiftOpened;
+            }
           })
         )
     );

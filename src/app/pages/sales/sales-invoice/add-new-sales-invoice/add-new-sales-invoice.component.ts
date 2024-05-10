@@ -5,31 +5,33 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '@services/data.service';
 import { HelpersService } from '@services/helpers.service';
 import { TableService } from '@services/table.service';
-import { Subscription, firstValueFrom, tap } from 'rxjs';
+import { Subscription, firstValueFrom, map, tap } from 'rxjs';
 import { ShiftDetailsDrawerComponent } from '../shift-details-drawer/shift-details-drawer.component';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { E_USER_ROLE } from '@constants/general.constant';
 
 @Component({
   selector: 'app-add-new-sales-invoice',
   templateUrl: './add-new-sales-invoice.component.html',
 })
 export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
+  items: any = [];
+  changedColumns: any;
+  itemsUnits: any = [];
+  allColumns: any[] = [];
+  barcodeItems: any = [];
+  invoiceInitObj: any;
+  IsMustOpenShift: boolean;
+  userRole = E_USER_ROLE;
+  subs: Subscription[] = [];
   salesInvoiceForm: FormGroup;
   _selectedColumns: any[] = [];
-  subs: Subscription[] = [];
-  allColumns: any[] = [];
-  itemsUnits: any = [];
-  barcodeItems: any = [];
-  items: any = [];
   barcodeControls = [new FormControl()];
-  changedColumns: any;
-  salesInvoiceInitObj: any;
-  isUserShiftOpened: boolean;
-  defaultStorage = 'salesInvoiceLines-default-selected';
   tableStorage = 'salesInvoiceLines-table';
-  itemsByBarcodeApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemByBarcode`;
-  itemsByTermApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemsByTrim`;
+  defaultStorage = 'salesInvoiceLines-default-selected';
   clientsApi = `${apiUrl}/XtraAndPos_GeneralLookups/CustomerByTerm`;
+  itemsByTermApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemsByTrim`;
+  itemsByBarcodeApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemByBarcode`;
   defaultSelected: any[] = [
     { field: 'Barcode', header: 'Barcode' },
     { field: 'itemID', header: 'itemID' },
@@ -188,13 +190,11 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         .get(`${apiUrl}/XtraAndPos_GeneralLookups/SalesInvoiceInit`)
         .pipe(
           tap((res) => {
-            this.salesInvoiceInitObj = res.Obj;
-            console.log(this.salesInvoiceInitObj);
-
-            if (this.salesInvoiceInitObj.isSalesPerson) {
+            this.invoiceInitObj = res.Obj;
+            if (this.invoiceInitObj.isSalesPerson) {
               this.salesInvoiceForm.get('paymentType')?.setValue(2);
             }
-            if (!this.salesInvoiceInitObj.isSalesPerson) {
+            if (!this.invoiceInitObj.isSalesPerson) {
               this.salesInvoiceForm.get('paymentType')?.setValue(1);
             }
           })
@@ -262,7 +262,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   getBalance(ev: any, i: number): void {
     let params = {
       itemUnitId: ev.Id,
-      storeId: this.salesInvoiceInitObj.empStore,
+      storeId: this.invoiceInitObj.empStore,
     };
     firstValueFrom(
       this.dataService
@@ -313,7 +313,13 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   changeQuantity(ev: any, i: number) {
-    console.log('ev');
+    // console.log('ev');
+  }
+
+  runCalculations(i: number) {
+    let form = this.linesArray.controls[i];
+    let quantity = form.get('quantity')?.value;
+    let price = form.get('price')?.value;
   }
 
   checkIfUserShiftOpened(): void {
@@ -322,7 +328,12 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         .get(`${apiUrl}/ExtraAndPOS_Shift/IsUserShiftOpened`)
         .pipe(
           tap((res) => {
-            this.isUserShiftOpened = res.Obj.IsUserShiftOpened;
+            if (
+              res.Obj.IsUserShiftOpened &&
+              (res.Obj.IsMustOpenShift || res.Obj?.IsMustOpenShift == undefined)
+            ) {
+              this.IsMustOpenShift = true;
+            }
           })
         )
     );
@@ -345,7 +356,15 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     // });
   }
 
-  submit(): void {}
+  submit(): void {
+    let formValue = { ...this.salesInvoiceForm.value };
+    if (
+      this.helpers.getItemFromLocalStorage(this.userRole) !== 'Admin' ||
+      !this.invoiceInitObj?.isSalesPerson
+    ) {
+      delete formValue.docDate;
+    }
+  }
 
   ngOnDestroy(): void {
     this.subs.forEach((sub) => sub.unsubscribe());

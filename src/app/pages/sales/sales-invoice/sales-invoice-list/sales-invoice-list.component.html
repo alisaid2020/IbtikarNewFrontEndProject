@@ -4,6 +4,7 @@
       {{ "salesInvoice" | translate }}
     </h1>
   </div>
+  @if (isUserShiftOpened) {
   <div
     *ngxPermissionsOnly="['SaleInvoice-Create']"
     class="ms-auto"
@@ -11,6 +12,7 @@
   >
     <a class="btn btn-primary">{{ "addNew" | translate }}</a>
   </div>
+  }
 </div>
 <form [formGroup]="filterForm">
   <div class="row g-5">
