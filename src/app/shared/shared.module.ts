@@ -40,6 +40,7 @@ import { TableColumnDataPipe } from './pipes/table-column-data.pipe';
 import { NgxPermissionsModule } from 'ngx-permissions';
 
 const sharedModules: any[] = [
+  NgbNavModule,
   NgApexchartsModule,
   InlineSVGModule,
   FormsModule,
@@ -53,7 +54,6 @@ const sharedModules: any[] = [
   SweetAlert2Module,
   MatSliderModule,
   NgSelectModule,
-  NgbNavModule,
   NgbProgressbar,
   // NgbDropdownModule,
   MatCheckboxModule,

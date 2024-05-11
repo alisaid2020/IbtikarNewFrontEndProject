@@ -17,6 +17,7 @@ import { Toast } from '@enums/toast.enum';
   templateUrl: './add-new-sales-invoice.component.html',
 })
 export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
+  shiftData: any;
   items: any = [];
   changedColumns: any;
   itemsUnits: any = [];
@@ -81,6 +82,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.salesInvoiceInit();
     this.checkIfUserShiftOpened();
+    this.getShiftInfo();
     this.initForm();
     await this.initTableColumns();
     this.subs.push(
@@ -387,6 +389,16 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     );
   }
 
+  getShiftInfo(): void {
+    firstValueFrom(
+      this.dataService.get(`${apiUrl}/ExtraAndPOS_Shift/GetShiftInfo`).pipe(
+        tap((res) => {
+          this.shiftData = res.Obj;
+        })
+      )
+    );
+  }
+
   openShiftDetails(): void {
     const offCanvasRef = this.offcanvasService.open(
       ShiftDetailsDrawerComponent,
@@ -396,12 +408,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         panelClass: 'w-100 w-md-50',
       }
     );
-    // offCanvasRef.componentInstance.center = center;
-    // offCanvasRef.result.then((result) => {
-    //   if (result) {
-    //     this.getCenters();
-    //   }
-    // });
+    offCanvasRef.componentInstance.shiftData = this.shiftData;
   }
 
   submit(): void {

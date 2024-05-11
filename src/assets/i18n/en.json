@@ -41,5 +41,10 @@
   "shiftInfo": "Shift Info",
   "pricingPolicy": "Pricing Policy",
   "arabicName": "Arabic Name",
-  "englishName": "English Name"
+  "englishName": "English Name",
+  "DebtAmount": "اجمالي تحصيلات مستنداستلام",
+  "ExpensesAmount": "اجمالي مصروفات مستندصرف",
+  "InvoicesNo": "عدد فواتير المبيعات ",
+  "SalesInvoiceReturnNo": "عدد فواتير المرتجع",
+  "SalesInvoiceReturn": "مبلغ فواتير المرتجع"
 }

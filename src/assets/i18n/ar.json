@@ -41,5 +41,10 @@
   "shiftInfo": "بيانات الورديه",
   "pricingPolicy": "سياسات التسعير",
   "arabicName": "الإسم بالعربيه",
-  "englishName": "الإسم بالانجليزية"
+  "englishName": "الإسم بالانجليزية",
+  "DebtAmount": "اجمالي تحصيلات مستنداستلام",
+  "ExpensesAmount": "اجمالي مصروفات مستندصرف",
+  "InvoicesNo": "عدد فواتير المبيعات ",
+  "SalesInvoiceReturnNo": "عدد فواتير المرتجع",
+  "SalesInvoiceReturn": "مبلغ فواتير المرتجع"
 }
