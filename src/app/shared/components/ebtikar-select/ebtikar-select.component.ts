@@ -52,14 +52,13 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
   @Input() isPaginated!: boolean;
   @Input() queryParams: object;
   @Input() apiUrl!: string;
-  @Input() customData: any[];
+  @Input() customData: any[] = [];
   @Input() isAddNewLine?: any;
   @Input() uid?: any;
   @Input() searchByTerm: boolean;
   @Input() searchByBarcode: boolean;
 
   @Output() emitChanged = new EventEmitter<any>();
-
   @ViewChild('select', { static: false }) selectComponent: NgSelectComponent;
 
   pageNo = 1;
@@ -218,7 +217,10 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
           return this.dataService.get(`${this.apiUrl}`, { params }).pipe(
             catchError(() => of([])), // empty list on error
             map((res) => res.Obj),
-            tap(() => (this.loading = false))
+            tap(() => {
+              this.loading = false;
+              this.cd.markForCheck();
+            })
           );
         })
       )

@@ -192,7 +192,7 @@
                     <app-ebtikar-input
                       [placeholder]="'quantity'"
                       [control]="linesArray.controls[i].get('quantity')!"
-                      (emitChanged)="changeQuantity($event, i)"
+                      (emitChanged)="changeCalculation($event, i)"
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -203,6 +203,7 @@
                     <app-ebtikar-input
                       [placeholder]="'price'"
                       [control]="linesArray.controls[i].get('price')!"
+                      (emitChanged)="changeCalculation($event, i)"
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -213,6 +214,7 @@
                     <app-ebtikar-input
                       [placeholder]="'discount'"
                       [control]="linesArray.controls[i].get('discount')!"
+                      (emitChanged)="changeCalculation($event, i)"
                     ></app-ebtikar-input>
                   </td>
 
@@ -227,6 +229,7 @@
                 }
                 <td>
                   <button
+                    type="button"
                     class="btn btn-icon btn-danger ms-3"
                     (click)="remove(i)"
                   >
@@ -250,8 +253,8 @@
         <div class="col-md-4" appAppArrowFocus>
           <app-ebtikar-input
             [readonly]="true"
-            [placeholder]="'totalDiscount'"
-            [label]="'totalDiscount'"
+            [placeholder]="'totalVat'"
+            [label]="'totalVat'"
             [control]="salesInvoiceForm.get('totalVat')!"
           ></app-ebtikar-input>
         </div>
@@ -301,7 +304,7 @@
             [control]="salesInvoiceForm.get('bankId')!"
           ></app-ebtikar-select>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4" *ngIf="salesInvoiceForm.get('visa')?.value">
           <app-ebtikar-select
             [hasStaticValues]="true"
             [items]="visaTrxTypes"

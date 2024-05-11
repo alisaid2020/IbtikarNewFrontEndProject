@@ -370,6 +370,8 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       });
     }
 
+    console.log(formValue);
+
     // if (this.pricingPolicyList) {
     //   firstValueFrom(
     //     this.dataService

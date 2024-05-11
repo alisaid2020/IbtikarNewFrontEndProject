@@ -1,14 +1,16 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { apiUrl } from '@constants/api.constant';
-import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '@services/data.service';
-import { HelpersService } from '@services/helpers.service';
+import { TranslateService } from '@ngx-translate/core';
 import { TableService } from '@services/table.service';
-import { Subscription, firstValueFrom, map, tap } from 'rxjs';
-import { ShiftDetailsDrawerComponent } from '../shift-details-drawer/shift-details-drawer.component';
-import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { E_USER_ROLE } from '@constants/general.constant';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { HelpersService } from '@services/helpers.service';
+import { Subscription, firstValueFrom, map, tap } from 'rxjs';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { ShiftDetailsDrawerComponent } from '../shift-details-drawer/shift-details-drawer.component';
+import { ToastService } from '@services/toast-service';
+import { Toast } from '@enums/toast.enum';
 
 @Component({
   selector: 'app-add-new-sales-invoice',
@@ -19,7 +21,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   changedColumns: any;
   itemsUnits: any = [];
   allColumns: any[] = [];
-  barcodeItems: any = [];
+  barcodeItems: any[] = [];
   invoiceInitObj: any;
   IsMustOpenShift: boolean;
   userRole = E_USER_ROLE;
@@ -67,12 +69,14 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       val.includes(col)
     );
   }
-  helpers = inject(HelpersService);
-  translate = inject(TranslateService);
-  tableService = inject(TableService);
-  dataService = inject(DataService);
+
   fb = inject(FormBuilder);
+  helpers = inject(HelpersService);
+  dataService = inject(DataService);
+  tableService = inject(TableService);
+  translate = inject(TranslateService);
   offcanvasService = inject(NgbOffcanvas);
+  toast = inject(ToastService);
 
   async ngOnInit() {
     this.salesInvoiceInit();
@@ -89,7 +93,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   initForm(): void {
     let clientId;
     let paymentType;
-    let docDate;
+    let docDate = new Date();
     let notes;
     let cash;
     let visa;
@@ -104,9 +108,9 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let isMobile;
     let visaTrxType;
     let visaTrxNo;
-    let totalDisc;
-    let totalVat;
-    let totalNet;
+    let totalDisc = 0;
+    let totalVat = 0;
+    let totalNet = 0;
 
     this.salesInvoiceForm = this.fb.group({
       clientId: [clientId],
@@ -162,6 +166,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let balance = 0;
     let price = 0;
     let discount = 0;
+    let total = 0;
     return this.fb.group({
       itemID: [itemID],
       uniteId: [uniteId],
@@ -171,6 +176,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       balance: [balance],
       price: [price],
       discount: [discount],
+      total: [total],
     });
   }
 
@@ -222,39 +228,43 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectedItemByBarcode(ev: any, index: number) {
+  selectedItemByBarcode(ev: any, i: number) {
     if (ev) {
-      this.itemsUnits[index] = [{ unitId: ev.UnitId, name: ev.UnitName }];
-      this.items[index] = [{ ...ev, NameAr: ev.Item.NameAr }];
-      this.linesArray.controls[index].patchValue({
+      this.items[i] = [{ ...ev, NameAr: ev.Item?.NameAr }];
+      this.itemsUnits[i] = [{ unitId: ev?.UnitId, name: ev?.UnitName }];
+      this.linesArray.controls[i].patchValue({
         itemID: ev.ItemId,
         uniteId: ev.UnitId,
         vat: ev.Vat,
         productId: ev.Id,
       });
-      this.addNewLine();
-      this.getBalance(ev, index);
-      this.getPrice(ev, index);
+      this.getBalance(ev, i);
+      this.getPrice(ev, i);
     }
   }
 
-  selectedItemByName(ev: any, index: number) {
+  selectedItemByName(ev: any, i: number): void {
+    let form = this.linesArray.controls[i];
     if (ev) {
       ev.ItemUnits.forEach((el: any) => {
         el.name = el.UnitName;
         el.unitId = el.UnitId;
       });
-      this.itemsUnits[index] = ev.ItemUnits;
+      this.itemsUnits[i] = ev.ItemUnits;
+      if (this.itemsUnits[i]?.length && this.itemsUnits[i][0]?.Barcode) {
+        form.patchValue({
+          unitId: this.itemsUnits[i][0]?.unitId,
+        });
+        this.selectedUnit(this.itemsUnits[i][0], i);
+      }
     }
   }
 
   selectedUnit(ev: any, i: any) {
     let form = this.linesArray.controls[i];
-    const itemID = form.get('itemID')?.value;
-    const unitId = form.get('uniteId')?.value;
-    this.barcodeControls[i].setValue(ev?.Barcode);
     this.barcodeItems[i] = [ev];
-    form.patchValue({ vat: ev?.Vat, productId: ev.Id });
+    this.barcodeControls[i].setValue(ev?.Barcode);
+    form.patchValue({ vat: ev?.Vat, productId: ev?.Id });
     this.getBalance(ev, i);
     this.getPrice(ev, i);
   }
@@ -286,40 +296,78 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         .pipe(
           tap((res) => {
             this.linesArray.controls[i].patchValue({ price: res.Obj.price });
-            this.getDiscount(res.Obj, i);
+            this.checkForOffers(res.Obj, i);
           })
         )
     );
   }
 
-  getDiscount(ev: any, i: number) {
+  checkForOffers(itemPriceObj: any, i: number) {
     let form = this.linesArray.controls[i];
     let quantity = form.get('quantity')?.value;
+    let balance = form.get('balance')?.value;
     let price = form.get('price')?.value;
-    // let discount = form.get('discount')?.value;
-
-    if (ev.offers.ItemDiscount > 0 && quantity === ev.offers.ItemQty) {
-      let calculateDiscount =
-        (ev.offers.ItemDiscount / 100) * (price * quantity);
-      form.patchValue({ discount: calculateDiscount });
+    if (balance < quantity && this.invoiceInitObj.saleByMinus) {
+      this.addNewLine();
+    } else {
+      this.toast.show('Item Balance Not Allowed', {
+        classname: Toast.error,
+      });
     }
-
-    if (ev.offers.ItemDiscount > 0 && quantity !== ev.offers.ItemQty) {
-      form.patchValue({ discount: 0 });
+    if (itemPriceObj.offers.ItemDiscount > 0) {
+      if (quantity == itemPriceObj.offers.ItemQty) {
+        let discountValue =
+          quantity * price * (itemPriceObj.offers.ItemDiscount / 100);
+        form.patchValue({ discount: discountValue });
+      } else {
+        form.patchValue({ discount: 0 });
+      }
     }
-    //here code
-    if (ev.offers.freeitems.length > 0 && quantity === ev.offers.ItemQty) {
+    if (itemPriceObj.offers.freeitems.length > 0) {
+      if (quantity == itemPriceObj.offers.ItemQty) {
+      }
     }
+    this.runCalculations(i);
   }
 
-  changeQuantity(ev: any, i: number) {
-    // console.log('ev');
+  changeCalculation(ev: any, i: number) {
+    this.runCalculations(i);
   }
 
   runCalculations(i: number) {
     let form = this.linesArray.controls[i];
     let quantity = form.get('quantity')?.value;
     let price = form.get('price')?.value;
+    let vat = form.get('vat')?.value;
+    let total = form.get('total')?.value;
+    let discount = form.get('discount')?.value;
+    let vatValue = ((price * quantity - discount) * vat) / 100;
+    total = price * quantity - discount + vatValue;
+    form.patchValue({
+      total: total,
+    });
+    this.getTotalsOfInvoice();
+  }
+
+  getTotalsOfInvoice(): void {
+    const totalNet = this.linesArray.controls
+      .map((line: any) => line.value?.total)
+      .reduce((acc, curr) => acc + curr, 0);
+
+    const totalVat = this.linesArray.controls
+      .map((line: any) => line.value?.vat)
+      .reduce((acc, curr) => acc + curr, 0);
+
+    const totalDisc = this.linesArray.controls
+      .map((line: any) => line.value?.discount)
+      .reduce((acc, curr) => acc + curr, 0);
+
+    this.salesInvoiceForm.patchValue({
+      totalNet,
+      totalVat,
+      totalDisc,
+      cash: totalNet,
+    });
   }
 
   checkIfUserShiftOpened(): void {
