@@ -33,9 +33,9 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   allColumns: any[] = [];
   pagination: IPagination;
   barcodeItems: any[] = [];
-  changedFieldsOnly: any[] = [];
   subs: Subscription[] = [];
   _selectedColumns: any[] = [];
+  changedFieldsOnly: any[] = [];
   pricingPolicyListForm: FormGroup;
   searchControl = new FormControl('');
   defaultStorage = 'pricingPolicyLists-default-selected';
@@ -64,8 +64,8 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       val.includes(col)
     );
   }
-  fb = inject(FormBuilder);
   router = inject(Router);
+  fb = inject(FormBuilder);
   toast = inject(ToastService);
   route = inject(ActivatedRoute);
   helpers = inject(HelpersService);
@@ -79,8 +79,10 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       this.route.data.pipe(
         map((res) => res?.pricingPolicyList),
         tap((res: any) => {
-          this.pricingListData = res[0]?.Obj?.list[0];
-          this.setData(res[1].Obj);
+          if (res) {
+            this.pricingListData = res[0]?.Obj?.list[0];
+            this.setData(res[1].Obj);
+          }
         })
       )
     );
@@ -117,20 +119,20 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
 
   initForm(): void {
     let pricePolicyId;
-    let groupId;
-    let branches;
+    // let groupId;
+    // let branches;
     this.pricingPolicyListForm = this.fb.group({
       pricePolicyId: [pricePolicyId],
-      groupId: [groupId],
-      branches: [branches],
+      // groupId: [groupId],
+      // branches: [branches],
       priceListDetail: this.fb.array([this.newLine()]),
     });
 
-    if (this.pricingListData) {
-      this.pricingListData.Branches = this.pricingListData?.Branches.map(
-        (el: any) => (el = el.BranchId)
-      );
-    }
+    // if (this.pricingListData) {
+    //   this.pricingListData.Branches = this.pricingListData?.Branches.map(
+    //     (el: any) => (el = el.BranchId)
+    //   );
+    // }
     if (this.pricingPolicyLines?.length) {
       this.addItemsToArray();
     }
@@ -180,33 +182,24 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     this.pricingPolicyLines.forEach((line: any) => {
       let newLine: any = {
         ...line,
-        itemUniteId: {
+        ItemUniteId: {
           Id: line?.ItemUniteId,
         },
-        parCode: { Barcode: line?.ParCode },
-        price: line?.Price,
-        priceMin: line?.PriceMin,
-        priceMax: line?.PriceMax,
-        commissionValue: line?.CommissionValue,
-        commissionPercentage: line?.CommissionPercentage,
+        ParCode: { Barcode: line?.ParCode },
       };
-
       let index = this.changedFieldsOnly.findIndex(
-        (el) => el.parCode == newLine.ParCode
+        (el) => el.ParCode == newLine.ParCode.Barcode
       );
-
-      if (index < 0) {
-        this.addNewLine(newLine);
-      } else {
+      if (index >= 0) {
         newLine = {
           ...this.changedFieldsOnly[index],
-          itemUniteId: {
-            Id: this.changedFieldsOnly[index]?.itemUniteId,
+          ItemUniteId: {
+            Id: this.changedFieldsOnly[index]?.ItemUniteId,
           },
-          parCode: { Barcode: this.changedFieldsOnly[index]?.parCode },
+          ParCode: { Barcode: this.changedFieldsOnly[index]?.ParCode },
         };
-        this.addNewLine(newLine);
       }
+      this.addNewLine(newLine);
     });
   }
 
@@ -223,32 +216,30 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   }
 
   newLine(value?: any): FormGroup {
-    let itemUniteId;
-    let parCode;
-    let price;
-    let priceMin;
-    let priceMax;
-    let commissionValue;
-    let commissionPercentage;
+    let ParCode;
+    let ItemUniteId;
+    let Price;
+    let PriceMin;
+    let PriceMax;
+    let CommissionValue;
+    let CommissionPercentage;
     if (value) {
-      parCode = value?.parCode;
-      itemUniteId = value?.itemUniteId;
-      price = value?.price;
-      priceMin = value?.priceMin;
-      priceMax = value?.priceMax;
-      itemUniteId = value?.itemUniteId;
-      parCode = value?.parCode;
-      commissionValue = value?.commissionValue;
-      commissionPercentage = value?.commissionPercentage;
+      ParCode = value?.ParCode;
+      ItemUniteId = value?.ItemUniteId;
+      Price = value?.Price;
+      PriceMin = value?.PriceMin;
+      PriceMax = value?.PriceMax;
+      CommissionValue = value?.CommissionValue;
+      CommissionPercentage = value?.CommissionPercentage;
     }
     return this.fb.group({
-      itemUniteId: [itemUniteId],
-      parCode: [parCode],
-      price: [price],
-      priceMin: [priceMin],
-      priceMax: [priceMax],
-      commissionValue: [commissionValue],
-      commissionPercentage: [commissionPercentage],
+      ItemUniteId: [ItemUniteId],
+      ParCode: [ParCode],
+      Price: [Price],
+      PriceMin: [PriceMin],
+      PriceMax: [PriceMax],
+      CommissionValue: [CommissionValue],
+      CommissionPercentage: [CommissionPercentage],
     });
   }
 
@@ -260,7 +251,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
 
   selectedItemByBarcode(ev: any, i: any) {
     this.linesArray.controls[i].patchValue({
-      itemUniteId: ev.Id,
+      ItemUniteId: ev.Id,
     });
     this.items[i] = [ev];
     this.getPrice(ev, i);
@@ -269,7 +260,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
 
   selectedItemByName(ev: any, i: any) {
     this.linesArray.controls[i].patchValue({
-      parCode: ev.Barcode,
+      ParCode: ev.Barcode,
     });
     this.barcodeItems[i] = [ev];
   }
@@ -282,7 +273,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.linesArray.controls[i].patchValue({ price: res?.Obj?.price });
+            this.linesArray.controls[i].patchValue({ Price: res?.Obj?.price });
           })
         )
     );
@@ -348,7 +339,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
 
   updatedFieldsList(ev: any, row: any) {
     let index = this.changedFieldsOnly.findIndex(
-      (el) => el.parCode == row.value.parCode
+      (el) => el.ParCode == row.value.ParCode
     );
     if (!this.changedFieldsOnly?.length || index < 0) {
       this.changedFieldsOnly.push(row.value);
@@ -363,12 +354,12 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       ...this.pricingPolicyListForm.value,
       priceListDetail: this.changedFieldsOnly,
     };
-    let branchesLength = formValue?.branches?.filter(Number).length;
-    if (branchesLength) {
-      formValue.branches = formValue.branches.filter(Number).map((id: any) => {
-        return { branchId: id };
-      });
-    }
+    // let branchesLength = formValue?.branches?.filter(Number).length;
+    // if (branchesLength) {
+    //   formValue.branches = formValue.branches.filter(Number).map((id: any) => {
+    //     return { branchId: id };
+    //   });
+    // }
 
     console.log(formValue);
 
@@ -376,7 +367,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     //   firstValueFrom(
     //     this.dataService
     //       .post(
-    //         `${apiUrl}/XtraAndPos_PricePolicyList/Update?id=${this.pricingPolicyList.Id}`,
+    //         `${apiUrl}/XtraAndPos_PricePolicyList/UpdatePriceListDetail`,
     //         formValue
     //       )
     //       .pipe(

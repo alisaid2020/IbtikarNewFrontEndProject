@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { apiUrl } from '@constants/api.constant';
 import { DataService } from '@services/data.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -82,6 +88,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   spinner = inject(NgxSpinnerService);
   translate = inject(TranslateService);
   offcanvasService = inject(NgbOffcanvas);
+  constructor(private cd: ChangeDetectorRef) {}
 
   async ngOnInit() {
     this.salesInvoiceInit();
@@ -257,19 +264,13 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         el.unitId = el.UnitId;
       });
       this.itemsUnits[i] = ev.ItemUnits;
-      if (this.itemsUnits[i]?.length && this.itemsUnits[i][0]?.Barcode) {
-        form.patchValue({
-          unitId: this.itemsUnits[i][0]?.unitId,
-        });
-        this.selectedUnit(this.itemsUnits[i][0], i);
-      }
     }
   }
 
   selectedUnit(ev: any, i: any) {
     let form = this.linesArray.controls[i];
     this.barcodeItems[i] = [ev];
-    this.barcodeControls[i].setValue(ev?.Barcode);
+    this.barcodeControls[i].patchValue(ev?.Barcode);
     form.patchValue({ vat: ev?.Vat, productId: ev?.Id });
     this.getBalance(ev, i);
     this.getPrice(ev, i);
