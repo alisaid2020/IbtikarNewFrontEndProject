@@ -19,12 +19,7 @@ export const pricingPolicyListsResolver: ResolveFn<any> = (route, state) => {
 
 export const pricingPolicyListResolver: ResolveFn<any> = (route, state) => {
   let dataService = inject(DataService);
-  const pricingPolicyBasicData = firstValueFrom(
-    dataService.get(`${apiUrl}/PriceList/GetById`, {
-      params: { id: route.params.id },
-    })
-  );
-  const pricingPolicyLinesData = firstValueFrom(
+  return firstValueFrom(
     dataService.get(
       `${apiUrl}/XtraAndPos_PricePolicyList/GetPagedPriceListDetail`,
       {
@@ -36,5 +31,4 @@ export const pricingPolicyListResolver: ResolveFn<any> = (route, state) => {
       }
     )
   );
-  return combineLatest([pricingPolicyBasicData, pricingPolicyLinesData]);
 };

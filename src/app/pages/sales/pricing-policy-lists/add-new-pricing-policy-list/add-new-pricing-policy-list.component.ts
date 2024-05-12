@@ -1,5 +1,11 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { apiUrl } from '@constants/api.constant';
 import { TranslateService } from '@ngx-translate/core';
@@ -27,10 +33,10 @@ import * as XLSX from 'xlsx';
 export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   items: any[] = [];
   changedColumns: any;
-  pricingListData: any;
-  pricingPolicyLines: any;
+  priceListId: number;
   pricingPolicesObj: any;
   allColumns: any[] = [];
+  pricingPolicyLines: any;
   pagination: IPagination;
   barcodeItems: any[] = [];
   subs: Subscription[] = [];
@@ -75,13 +81,14 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   translate = inject(TranslateService);
 
   async ngOnInit() {
+    this.getPriceListInit();
     firstValueFrom(
       this.route.data.pipe(
         map((res) => res?.pricingPolicyList),
         tap((res: any) => {
           if (res) {
-            this.pricingListData = res[0]?.Obj?.list[0];
-            this.setData(res[1].Obj);
+            this.priceListId = +this.route.snapshot.paramMap.get('id')!;
+            this.setData(res.Obj);
           }
         })
       )
@@ -100,7 +107,6 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         )
         .subscribe()
     );
-    this.getPriceListInit();
     this.initForm();
     await this.InitTable();
   }
@@ -118,16 +124,15 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   }
 
   initForm(): void {
-    let pricePolicyId;
+    let PricePolicyId = this.priceListId;
     // let groupId;
     // let branches;
     this.pricingPolicyListForm = this.fb.group({
-      pricePolicyId: [pricePolicyId],
+      PricePolicyId: [PricePolicyId, [Validators.required]],
       // groupId: [groupId],
       // branches: [branches],
-      priceListDetail: this.fb.array([this.newLine()]),
+      PriceListDetail: this.fb.array([this.newLine()]),
     });
-
     // if (this.pricingListData) {
     //   this.pricingListData.Branches = this.pricingListData?.Branches.map(
     //     (el: any) => (el = el.BranchId)
@@ -184,17 +189,19 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         ...line,
         ItemUniteId: {
           Id: line?.ItemUniteId,
+          NameAr: line?.NameAr,
+          NameEn: line?.NameEn,
         },
         ParCode: { Barcode: line?.ParCode },
       };
-      let index = this.changedFieldsOnly.findIndex(
-        (el) => el.ParCode == newLine.ParCode.Barcode
-      );
+      let index = this.changedFieldsOnly.findIndex((el) => el.Id == newLine.Id);
       if (index >= 0) {
         newLine = {
           ...this.changedFieldsOnly[index],
           ItemUniteId: {
             Id: this.changedFieldsOnly[index]?.ItemUniteId,
+            NameAr: this.changedFieldsOnly[index]?.NameAr,
+            NameEn: this.changedFieldsOnly[index]?.NameEn,
           },
           ParCode: { Barcode: this.changedFieldsOnly[index]?.ParCode },
         };
@@ -204,7 +211,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   }
 
   get linesArray(): FormArray {
-    return this.pricingPolicyListForm.get('priceListDetail') as FormArray;
+    return this.pricingPolicyListForm.get('PriceListDetail') as FormArray;
   }
 
   addNewLine(value?: any): void {
@@ -216,6 +223,8 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   }
 
   newLine(value?: any): FormGroup {
+    let Id = 0;
+    let PriceListId;
     let ParCode;
     let ItemUniteId;
     let Price;
@@ -232,7 +241,13 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       CommissionValue = value?.CommissionValue;
       CommissionPercentage = value?.CommissionPercentage;
     }
+    if (this.pricingPolicyLines?.length) {
+      Id = value?.Id;
+      PriceListId = null;
+    }
     return this.fb.group({
+      Id: [Id],
+      PriceListId: [PriceListId],
       ItemUniteId: [ItemUniteId],
       ParCode: [ParCode],
       Price: [Price],
@@ -254,8 +269,8 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       ItemUniteId: ev.Id,
     });
     this.items[i] = [ev];
-    this.getPrice(ev, i);
     this.addNewLine();
+    this.getPrice(ev, i);
   }
 
   selectedItemByName(ev: any, i: any) {
@@ -317,7 +332,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     let params: any = {
       pageNumber: this.pagination.PageNumber,
       pageSize: this.pagination.PageSize,
-      priceListId: this.pricingListData.Id,
+      priceListId: this.priceListId,
     };
     if (this.searchControl.value) {
       params.searchValue = this.searchControl.value;
@@ -350,10 +365,14 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
 
   submit(): void {
     this.spinner.show();
-    let formValue = {
-      ...this.pricingPolicyListForm.value,
-      priceListDetail: this.changedFieldsOnly,
-    };
+    if (!this.pricingPolicyLines?.length) {
+      this.changedFieldsOnly.forEach((field) => {
+        field.PriceListId = this.pricingPolicyListForm.value.PricePolicyId;
+      });
+    }
+
+    console.log(this.changedFieldsOnly);
+
     // let branchesLength = formValue?.branches?.filter(Number).length;
     // if (branchesLength) {
     //   formValue.branches = formValue.branches.filter(Number).map((id: any) => {
@@ -361,18 +380,15 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     //   });
     // }
 
-    console.log(formValue);
-
     // if (this.pricingPolicyList) {
     //   firstValueFrom(
     //     this.dataService
     //       .post(
     //         `${apiUrl}/XtraAndPos_PricePolicyList/UpdatePriceListDetail`,
-    //         formValue
+    //         this.changedFieldsOnly
     //       )
     //       .pipe(
     //         tap((res) => {
-    //           console.log(res);
     //           this.spinner.hide();
     //           this.router.navigateByUrl('/pricing-policy-lists');
     //           this.toast.show(Toast.updated, {
@@ -385,7 +401,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     // }
     // firstValueFrom(
     //   this.dataService
-    //     .post(`${apiUrl}/XtraAndPos_PricePolicyList/Create`, formValue)
+    //     .post(`${apiUrl}/XtraAndPos_PricePolicyList/UpdatePriceListDetail`, this.changedFieldsOnly)
     //     .pipe(
     //       tap((res) => {
     //         this.spinner.hide();
