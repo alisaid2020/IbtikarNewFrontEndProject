@@ -198,6 +198,12 @@ ng-select.ng-select-single .ng-select-container .ng-value-container .ng-value {
     border-color: $red;
   }
 }
+.read-only {
+  input {
+    background-color: rgba($color: #eee, $alpha: 0.8) !important;
+    pointer-events: none;
+  }
+}
 
 .drag-preview {
   z-index: 1000000 !important;

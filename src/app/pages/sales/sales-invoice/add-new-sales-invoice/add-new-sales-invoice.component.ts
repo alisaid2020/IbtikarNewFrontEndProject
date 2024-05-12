@@ -353,15 +353,15 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
 
   getTotalsOfInvoice(): void {
     const totalNet = this.linesArray.controls
-      .map((line: any) => line.value?.total)
+      .map((line: any) => +line.value?.total)
       .reduce((acc, curr) => acc + curr, 0);
 
     const totalVat = this.linesArray.controls
-      .map((line: any) => line.value?.vat)
+      .map((line: any) => +line.value?.vat)
       .reduce((acc, curr) => acc + curr, 0);
 
     const totalDisc = this.linesArray.controls
-      .map((line: any) => line.value?.discount)
+      .map((line: any) => +line.value?.discount)
       .reduce((acc, curr) => acc + curr, 0);
 
     this.salesInvoiceForm.patchValue({

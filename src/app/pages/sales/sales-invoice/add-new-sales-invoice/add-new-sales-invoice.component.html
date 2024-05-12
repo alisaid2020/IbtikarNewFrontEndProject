@@ -244,6 +244,7 @@
       <div class="row g-5 mt-5">
         <div class="col-md-4" appAppArrowFocus>
           <app-ebtikar-input
+            class="read-only"
             [readonly]="true"
             [placeholder]="'totalDiscount'"
             [label]="'totalDiscount'"
@@ -252,6 +253,7 @@
         </div>
         <div class="col-md-4" appAppArrowFocus>
           <app-ebtikar-input
+            class="read-only"
             [readonly]="true"
             [placeholder]="'totalVat'"
             [label]="'totalVat'"
@@ -260,6 +262,7 @@
         </div>
         <div class="col-md-4" appAppArrowFocus>
           <app-ebtikar-input
+            class="read-only"
             [readonly]="true"
             [placeholder]="'totalNet'"
             [label]="'totalNet'"
@@ -295,7 +298,6 @@
           "
         >
           <app-ebtikar-select
-            [hasStaticValues]="true"
             [items]="invoiceInitObj?.banks"
             [placeholder]="'bankId'"
             [label]="'bankId'"
