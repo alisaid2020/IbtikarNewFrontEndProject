@@ -1,10 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  inject,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { apiUrl } from '@constants/api.constant';
 import { DataService } from '@services/data.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -88,7 +82,6 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   spinner = inject(NgxSpinnerService);
   translate = inject(TranslateService);
   offcanvasService = inject(NgbOffcanvas);
-  constructor(private cd: ChangeDetectorRef) {}
 
   async ngOnInit() {
     this.salesInvoiceInit();
@@ -258,22 +251,34 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
 
   selectedItemByName(ev: any, i: number): void {
     let form = this.linesArray.controls[i];
+    this.itemsUnits[i] = [];
+    this.barcodeItems[i] = [];
+    this.barcodeControls[i].patchValue(null);
+    form.patchValue({
+      uniteId: null,
+    });
     if (ev) {
-      ev.ItemUnits.forEach((el: any) => {
+      ev?.ItemUnits?.forEach((el: any) => {
         el.name = el.UnitName;
         el.unitId = el.UnitId;
       });
-      this.itemsUnits[i] = ev.ItemUnits;
+      this.itemsUnits[i] = ev?.ItemUnits;
+      form.patchValue({
+        uniteId: this.itemsUnits[i][0]?.unitId,
+      });
     }
+    this.selectedUnit(this.itemsUnits[i][0], i);
   }
 
   selectedUnit(ev: any, i: any) {
-    let form = this.linesArray.controls[i];
-    this.barcodeItems[i] = [ev];
-    this.barcodeControls[i].patchValue(ev?.Barcode);
-    form.patchValue({ vat: ev?.Vat, productId: ev?.Id });
-    this.getBalance(ev, i);
-    this.getPrice(ev, i);
+    if (ev) {
+      let form = this.linesArray.controls[i];
+      this.barcodeItems[i] = [ev];
+      this.barcodeControls[i].patchValue(ev?.Barcode);
+      form.patchValue({ vat: ev?.Vat, productId: ev?.Id });
+      this.getBalance(ev, i);
+      this.getPrice(ev, i);
+    }
   }
 
   getBalance(ev: any, i: number): void {
