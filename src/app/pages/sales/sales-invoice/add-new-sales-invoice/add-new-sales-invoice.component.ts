@@ -11,6 +11,8 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ShiftDetailsDrawerComponent } from '../shift-details-drawer/shift-details-drawer.component';
 import { ToastService } from '@services/toast-service';
 import { Toast } from '@enums/toast.enum';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-new-sales-invoice',
@@ -71,13 +73,15 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     );
   }
 
+  router = inject(Router);
   fb = inject(FormBuilder);
+  toast = inject(ToastService);
   helpers = inject(HelpersService);
   dataService = inject(DataService);
   tableService = inject(TableService);
+  spinner = inject(NgxSpinnerService);
   translate = inject(TranslateService);
   offcanvasService = inject(NgbOffcanvas);
-  toast = inject(ToastService);
 
   async ngOnInit() {
     this.salesInvoiceInit();
@@ -412,6 +416,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   submit(): void {
+    this.spinner.show();
     let formValue = { ...this.salesInvoiceForm.value };
     if (
       this.helpers.getItemFromLocalStorage(this.userRole) !== 'Admin' ||
@@ -419,6 +424,20 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     ) {
       delete formValue.docDate;
     }
+    firstValueFrom(
+      this.dataService
+        .post(
+          `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForMobile`,
+          formValue
+        )
+        .pipe(
+          tap((_) => {
+            this.spinner.hide();
+            this.toast.show(Toast.added, { classname: Toast.success });
+            this.router.navigateByUrl('/sales-invoice');
+          })
+        )
+    );
   }
 
   ngOnDestroy(): void {
