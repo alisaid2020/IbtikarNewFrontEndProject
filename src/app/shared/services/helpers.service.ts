@@ -70,18 +70,11 @@ export class HelpersService {
 
   // remove empty lines from form array
   removeEmptyLines(myFormArray: FormArray): any {
-    const lines: any = [];
-    myFormArray.controls.forEach((formGroup: any, index: any) => {
-      const values = Object.values(formGroup.controls);
-      const isEmpty = values.every(
-        (control: any) => control.value == ('' || null || undefined)
-      );
-      if (!isEmpty) {
-        const line = formGroup.value;
-        lines.push(line);
-      }
-    });
-    return lines;
+    return myFormArray.controls
+      .filter((formGroup: any) =>
+        Object.values(formGroup.controls).some((control: any) => control.value)
+      )
+      .map((formGroup) => formGroup.value);
   }
 
   hasPermission(myPermission: any) {

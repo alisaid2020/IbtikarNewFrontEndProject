@@ -168,7 +168,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let uniteId;
     let productId;
     let vat = 0;
-    let quantity = 1;
+    let quantity = 0;
     let balance = 0;
     let price = 0;
     let discount = 0;
@@ -235,38 +235,50 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   selectedItemByBarcode(ev: any, i: number) {
-    if (ev) {
-      this.items[i] = [{ ...ev, NameAr: ev.Item?.NameAr }];
-      this.itemsUnits[i] = [{ unitId: ev?.UnitId, name: ev?.UnitName }];
-      this.linesArray.controls[i].patchValue({
-        itemID: ev.ItemId,
-        uniteId: ev.UnitId,
-        vat: ev.Vat,
-        productId: ev.Id,
+    let form = this.linesArray.controls[i];
+    if (!ev) {
+      this.items[i] = [];
+      this.itemsUnits[i] = [];
+      form.patchValue({
+        uniteId: null,
+        itemID: null,
+        vat: null,
+        productId: null,
       });
-      this.getBalance(ev, i);
-      this.getPrice(ev, i);
+      return;
     }
+    this.items[i] = [{ ...ev, NameAr: ev.Item?.NameAr }];
+    this.itemsUnits[i] = [{ unitId: ev?.UnitId, name: ev?.UnitName }];
+    this.linesArray.controls[i].patchValue({
+      itemID: ev.ItemId,
+      uniteId: ev.UnitId,
+      vat: ev.Vat,
+      productId: ev.Id,
+      quantity: 1,
+    });
+    this.getBalance(ev, i);
+    this.getPrice(ev, i);
   }
 
   selectedItemByName(ev: any, i: number): void {
     let form = this.linesArray.controls[i];
-    this.itemsUnits[i] = [];
-    this.barcodeItems[i] = [];
-    this.barcodeControls[i].patchValue(null);
-    form.patchValue({
-      uniteId: null,
-    });
-    if (ev) {
-      ev?.ItemUnits?.forEach((el: any) => {
-        el.name = el.UnitName;
-        el.unitId = el.UnitId;
-      });
-      this.itemsUnits[i] = ev?.ItemUnits;
+    if (!ev) {
+      this.itemsUnits[i] = [];
+      this.barcodeItems[i] = [];
+      this.barcodeControls[i].patchValue(null);
       form.patchValue({
-        uniteId: this.itemsUnits[i][0]?.unitId,
+        uniteId: null,
       });
+      return;
     }
+    ev?.ItemUnits?.forEach((el: any) => {
+      el.name = el.UnitName;
+      el.unitId = el.UnitId;
+    });
+    this.itemsUnits[i] = ev?.ItemUnits;
+    form.patchValue({
+      uniteId: this.itemsUnits[i][0]?.unitId,
+    });
     this.selectedUnit(this.itemsUnits[i][0], i);
   }
 
@@ -275,7 +287,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       let form = this.linesArray.controls[i];
       this.barcodeItems[i] = [ev];
       this.barcodeControls[i].patchValue(ev?.Barcode);
-      form.patchValue({ vat: ev?.Vat, productId: ev?.Id });
+      form.patchValue({ vat: ev?.Vat, productId: ev?.Id, quantity: 1 });
       this.getBalance(ev, i);
       this.getPrice(ev, i);
     }
@@ -423,7 +435,10 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
 
   submit(): void {
     this.spinner.show();
-    let formValue = { ...this.salesInvoiceForm.value };
+    let formValue = {
+      ...this.salesInvoiceForm.value,
+      saleInvoiceDetails: this.helpers.removeEmptyLines(this.linesArray),
+    };
     if (
       this.helpers.getItemFromLocalStorage(this.userRole) !== 'Admin' ||
       !this.invoiceInitObj?.isSalesPerson
