@@ -17,31 +17,68 @@
     </h1>
   </div>
 </div>
-<form [formGroup]="salesInvoiceForm">
+<form [formGroup]="salesInvoiceForm" class="disabled-form">
   <div class="card mb-5 mb-xxl-8">
     <div class="card-body">
       <div class="row g-5">
         <div class="col-md-6" appAppArrowFocus>
-          <app-ebtikar-select
-            [apiUrl]="InvoiceApi"
-            [placeholder]="'saleInvoiceId'"
-            [label]="'saleInvoiceId'"
+          <label>saleInvoiceId</label>
+          <ng-select
+            appendTo="body"
+            class="disabled-form__enabled"
+            formControlName="saleInvoiceId"
+            [items]="salesInvoices"
+            [bindLabel]="'InvoiceNumber'"
             [bindValue]="'Id'"
-            [searchByTerm]="true"
-            [bindLabel]="'Id'"
-            [control]="salesInvoiceForm.get('saleInvoiceId')!"
-          ></app-ebtikar-select>
+            [loading]="salesInvoiceLoading"
+            [multiple]="true"
+            [virtualScroll]="false"
+            [placeholder]="'saleInvoiceId' | translate"
+            notFoundText="لم يتم ايجاد بيانات"
+            loadingText="جاري التحميل."
+            typeToSearchText="اكتب للبحث"
+            (add)="filterSaleOrders($event)"
+            (remove)="removeSaleOrder($event)"
+            (change)="onChangeSource($event)"
+            (search)="searchInSaleInvoices($event)"
+          ></ng-select>
         </div>
         <div class="col-md-6" appAppArrowFocus>
           <app-ebtikar-select
-            [apiUrl]="clientsApi"
-            [hasMultipleLabels]="true"
+            [items]="selectClients"
             [placeholder]="'clientName'"
             [label]="'clientName'"
             [bindValue]="'Id'"
-            [searchByTerm]="true"
+            [bindLabel]="'clientName'"
+            [clearable]="false"
             [control]="salesInvoiceForm.get('clientId')!"
           ></app-ebtikar-select>
+        </div>
+        <div class="col-md-6 disabled-form__enabled" appAppArrowFocus>
+          <app-ebtikar-select
+            [hasStaticValues]="true"
+            [items]="paymentTypes"
+            [placeholder]="'paymentType'"
+            [label]="'paymentType'"
+            [bindValue]="'value'"
+            [bindLabel]="'name'"
+            [control]="salesInvoiceForm.get('paymentType')!"
+          ></app-ebtikar-select>
+        </div>
+        <div
+          *ngIf="
+            helpers.getItemFromLocalStorage(userRole) === 'Admin' ||
+            salesReturnFound?.isSalesPerson
+          "
+          class="col-md-6"
+          appAppArrowFocus
+        >
+          <app-ebtikar-input
+            [type]="'datepicker'"
+            [placeholder]="'date'"
+            [label]="'date'"
+            [control]="salesInvoiceForm.get('docDate')!"
+          ></app-ebtikar-input>
         </div>
       </div>
     </div>
