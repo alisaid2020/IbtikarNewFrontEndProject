@@ -19,6 +19,13 @@ const Routing: Routes = [
       ),
   },
   {
+    path: 'sales-return',
+    loadChildren: () =>
+      import('./sales/sales-return/sales-return.module').then(
+        (m) => m.SalesReturnModule
+      ),
+  },
+  {
     path: 'pricing-policy',
     loadChildren: () =>
       import('./sales/pricing-policy/pricing-policy.module').then(

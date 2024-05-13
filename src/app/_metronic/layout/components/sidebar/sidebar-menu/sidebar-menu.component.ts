@@ -26,10 +26,11 @@ export class SidebarMenuComponent implements OnInit {
           route: '/sales-invoice',
           permission: 'SaleInvoice-GetAll',
         },
-        // {
-        //   title: 'salesReturn',
-        //   route: '/sales-return',
-        // },
+        {
+          title: 'salesReturn',
+          route: '/sales-return',
+          permission: 'SaleInvoice-GetAll',
+        },
         {
           title: 'pricingPolicy',
           route: '/pricing-policy',
