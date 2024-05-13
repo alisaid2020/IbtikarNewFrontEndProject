@@ -5,12 +5,43 @@
     </h1>
   </div>
   <div class="ms-auto">
-    <a class="btn btn-primary" routerLink="/pricing-policy-lists/add">{{
+    <a class="btn btn-primary" routerLink="/sales-return/add">{{
       "addNew" | translate
     }}</a>
   </div>
 </div>
-
+<form [formGroup]="filterForm">
+  <div class="row g-5">
+    <div class="col-md-3">
+      <app-ebtikar-input
+        [type]="'datepicker'"
+        [label]="'fromDate'"
+        [placeholder]="'fromDate'"
+        [control]="filterForm.get('fromDate')!"
+      ></app-ebtikar-input>
+    </div>
+    <div class="col-md-3">
+      <app-ebtikar-input
+        [type]="'datepicker'"
+        [label]="'toDate'"
+        [placeholder]="'toDate'"
+        [control]="filterForm.get('toDate')!"
+      ></app-ebtikar-input>
+    </div>
+  </div>
+  <div class="mt-5">
+    <button type="button" class="btn btn-primary me-5" (click)="applyFilter()">
+      {{ "apply" | translate }}
+    </button>
+    <button
+      *ngIf="showClearFilters"
+      class="btn btn-light-danger"
+      (click)="clearFilters()"
+    >
+      {{ "clear" | translate }}
+    </button>
+  </div>
+</form>
 <div class="card mb-5 mb-xxl-8 mt-7">
   <div class="card-body p-0">
     <p-table

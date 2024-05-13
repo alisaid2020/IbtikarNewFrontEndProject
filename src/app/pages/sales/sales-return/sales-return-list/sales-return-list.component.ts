@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { apiUrl } from '@constants/api.constant';
 import { PAGE_SIZE } from '@constants/general.constant';
@@ -19,16 +20,18 @@ import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/c
   templateUrl: './sales-return-list.component.html',
 })
 export class SalesReturnListComponent implements OnInit, OnDestroy {
-  _selectedColumns: any[] = [];
-  pageNo: number = 1;
   filters: any = {};
-  subs: Subscription[] = [];
-  allColumns: any[] = [];
-  pagination: IPagination;
-  defaultStorage = 'sales-return-default-selected';
-  tableStorage = 'sales-return-table';
+  pageNo: number = 1;
   changedColumns: any;
   salesReturnList: any;
+  filterForm: FormGroup;
+  allColumns: any[] = [];
+  pagination: IPagination;
+  subs: Subscription[] = [];
+  showClearFilters: boolean;
+  _selectedColumns: any[] = [];
+  tableStorage = 'sales-return-table';
+  defaultStorage = 'sales-return-default-selected';
   defaultSelected: any[] = [
     { field: 'Id', header: 'Id' },
     { field: 'BranchName', header: 'BranchName' },
@@ -43,14 +46,15 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
     );
   }
 
-  translate = inject(TranslateService);
-  helpers = inject(HelpersService);
-  tableService = inject(TableService);
-  dataService = inject(DataService);
-  route = inject(ActivatedRoute);
-  spinner = inject(NgxSpinnerService);
-  toast = inject(ToastService);
   modal = inject(NgbModal);
+  toast = inject(ToastService);
+  route = inject(ActivatedRoute);
+  helpers = inject(HelpersService);
+  dataService = inject(DataService);
+  tableService = inject(TableService);
+  spinner = inject(NgxSpinnerService);
+  translate = inject(TranslateService);
+  fb = inject(FormBuilder);
 
   async ngOnInit() {
     firstValueFrom(
@@ -62,7 +66,17 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
         })
       )
     );
+    this.initForm();
     await this.InitTable();
+  }
+
+  initForm(): void {
+    let fromDate;
+    let toDate;
+    this.filterForm = this.fb.group({
+      fromDate: [fromDate],
+      toDate: [toDate],
+    });
   }
 
   async InitTable() {
@@ -184,6 +198,24 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
       PageNumber: res.PageNumber,
       TotalCount: res.TotalCount,
     };
+  }
+
+  applyFilter(): void {
+    Object.keys(this.filterForm.value).forEach((el) => {
+      if (this.filterForm.value[el] === null) {
+        delete this.filterForm.value[el];
+        return;
+      }
+      this.showClearFilters = true;
+    });
+    this.filters = this.filterForm.value;
+    this.getSalesReturnList();
+  }
+
+  clearFilters(): void {
+    this.filterForm.reset();
+    this.filters = {};
+    this.showClearFilters = false;
   }
 
   ngOnDestroy(): void {
