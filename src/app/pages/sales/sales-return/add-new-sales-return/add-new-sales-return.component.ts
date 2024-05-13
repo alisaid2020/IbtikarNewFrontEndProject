@@ -49,7 +49,7 @@ export class AddNewSalesReturnComponent implements OnInit {
     { field: 'Discount', header: 'Discount' },
   ];
   selectClients: any[] = [];
-  paymentTypes: any = [
+  paymentTypes = [
     { name: 'cash', value: 1 },
     { name: 'debt', value: 2 },
   ];
@@ -160,7 +160,7 @@ export class AddNewSalesReturnComponent implements OnInit {
 
   searchInSaleInvoices(ev: any) {
     this.salesInvoiceLoading = true;
-    let params = { data: +ev.term };
+    let params = { data: ev.term };
     firstValueFrom(
       this.dataService
         .get(`${apiUrl}/ExtraAndPOS_ReturnSaleInvoice/GetByNo`, { params })
@@ -168,14 +168,10 @@ export class AddNewSalesReturnComponent implements OnInit {
           tap((res) => {
             this.salesInvoiceLoading = false;
             this.salesReturnFound = res.Obj.invoice;
-
-            console.log(this.salesReturnFound);
-
             this.salesInvoiceForm.patchValue({
               clientId: this.salesReturnFound.ClientId,
               paymentType: this.salesReturnFound.PaymentType,
             });
-
             this.selectClients = [
               {
                 Id: this.salesReturnFound.ClientId,
