@@ -34,7 +34,12 @@
     </div>
   </div>
   <div class="mt-5">
-    <button type="button" class="btn btn-primary me-5" (click)="applyFilter()">
+    <button
+      type="button"
+      [disabled]="filterForm.invalid"
+      class="btn btn-primary me-5"
+      (click)="applyFilter()"
+    >
       {{ "apply" | translate }}
     </button>
     <button
@@ -116,9 +121,9 @@
       </ng-template>
     </p-table>
   </div>
-  <div class="my-9" *ngIf="100 > pageSize">
+  <div class="my-9" *ngIf="pagination.TotalCount! > pageSize">
     <ngb-pagination
-      [collectionSize]="100"
+      [collectionSize]="pagination.TotalCount!"
       [(page)]="pageNo"
       [maxSize]="3"
       [rotate]="true"

@@ -77,8 +77,8 @@ export class AddNewSalesReturnComponent implements OnInit {
   initForm(): void {
     let clientId;
     let saleInvoiceId;
-    let paymentType;
     let docDate = new Date();
+    let paymentType;
     // let notes;
     // let cash;
     // let visa;
@@ -100,8 +100,8 @@ export class AddNewSalesReturnComponent implements OnInit {
     this.salesInvoiceForm = this.fb.group({
       clientId: [clientId],
       saleInvoiceId: [saleInvoiceId],
-      paymentType: [paymentType],
       docDate: [docDate],
+      paymentType: [paymentType],
       // notes: [notes],
       // totalDisc: [totalDisc],
       // cash: [cash],
@@ -168,10 +168,14 @@ export class AddNewSalesReturnComponent implements OnInit {
           tap((res) => {
             this.salesInvoiceLoading = false;
             this.salesReturnFound = res.Obj.invoice;
+
+            console.log(this.salesReturnFound);
+
             this.salesInvoiceForm.patchValue({
               clientId: this.salesReturnFound.ClientId,
               paymentType: this.salesReturnFound.PaymentType,
             });
+
             this.selectClients = [
               {
                 Id: this.salesReturnFound.ClientId,

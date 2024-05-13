@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { apiUrl, salesInvoicesApi } from '@constants/api.constant';
 import { PAGE_SIZE } from '@constants/general.constant';
@@ -13,6 +13,7 @@ import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/c
 import { Toast } from 'src/app/shared/enums/toast.enum';
 import { HelpersService } from '@services/helpers.service';
 import { TableService } from '@services/table.service';
+import { IPagination } from '@models/IPagination.model';
 
 @Component({
   selector: 'app-sales-invoice',
@@ -20,10 +21,11 @@ import { TableService } from '@services/table.service';
 })
 export class SalesInvoiceListComponent implements OnInit, OnDestroy {
   pageNo = 1;
+  pagination: IPagination;
   filters: any;
   invoices: any;
   changedColumns: any;
-  pageSize = PAGE_SIZE;
+  pageSize: number = PAGE_SIZE;
   showClearFilters: any;
   filterForm: FormGroup;
   allColumns: any[] = [];
@@ -61,7 +63,7 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
       this.route.data.pipe(
         map((res) => res.invoiceList),
         tap((res) => {
-          this.invoices = res.Obj.trx;
+          this.setData(res);
         })
       )
     );
@@ -74,8 +76,8 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
     let fromDate;
     let toDate;
     this.filterForm = this.fb.group({
-      fromDate: [fromDate],
-      toDate: [toDate],
+      fromDate: [fromDate, [Validators.required]],
+      toDate: [toDate, [Validators.required]],
     });
   }
 
@@ -137,11 +139,18 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.invoices = res.Obj.trx;
+            this.setData(res);
             this.spinner.hide();
           })
         )
     );
+  }
+
+  setData(res: any): void {
+    this.invoices = res.Obj.trx;
+    this.pagination = {
+      TotalCount: res.Obj.totalCount,
+    };
   }
 
   applyFilter(): void {
@@ -152,7 +161,10 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
       }
       this.showClearFilters = true;
     });
-    this.filters = this.filterForm.value;
+    this.filters = {
+      toDate: this.filterForm.value.toDate.toISOString(),
+      fromDate: this.filterForm.value.toDate.toISOString(),
+    };
     this.getInvoices();
   }
 
@@ -160,6 +172,8 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
     this.filterForm.reset();
     this.filters = {};
     this.showClearFilters = false;
+    this.pageNo = 1;
+    this.getInvoices();
   }
 
   delete(item: any): void {

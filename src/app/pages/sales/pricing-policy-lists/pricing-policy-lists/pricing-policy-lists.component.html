@@ -80,14 +80,14 @@
       </ng-template>
     </p-table>
   </div>
-  <div class="my-9" *ngIf="pagination.TotalCount > pagination.PageSize">
+  <div class="my-9" *ngIf="pagination.TotalCount! > pagination.PageSize!">
     <ngb-pagination
-      [collectionSize]="pagination.TotalCount"
-      [(page)]="pagination.PageNumber"
+      [collectionSize]="pagination.TotalCount!"
+      [(page)]="pagination.PageNumber!"
       [maxSize]="3"
       [rotate]="true"
       [boundaryLinks]="true"
-      [pageSize]="pagination.PageSize"
+      [pageSize]="pagination.PageSize!"
       (pageChange)="page($event)"
     >
     </ngb-pagination>

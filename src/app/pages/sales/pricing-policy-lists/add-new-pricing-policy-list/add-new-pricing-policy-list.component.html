@@ -268,16 +268,16 @@
           class="my-9"
           *ngIf="
             pricingPolicyLines?.length &&
-            pagination.TotalCount > pagination.PageSize
+            pagination.TotalCount! > pagination.PageSize!
           "
         >
           <ngb-pagination
             [collectionSize]="pagination.TotalCount"
-            [(page)]="pagination.PageNumber"
+            [(page)]="pagination.PageNumber!"
             [maxSize]="3"
             [rotate]="true"
             [boundaryLinks]="true"
-            [pageSize]="pagination.PageSize"
+            [pageSize]="pagination.PageSize!"
             (pageChange)="page($event)"
           >
           </ngb-pagination>
