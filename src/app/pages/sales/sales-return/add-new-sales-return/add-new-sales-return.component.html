@@ -1,1 +1,49 @@
-<p>add-new-sales-return works!</p>
+<div class="app-toolbar pb-3 pb-md-6 d-flex">
+  <div class="me-5">
+    <a
+      routerLink="active"
+      [routerLink]="'/sales-return'"
+      class="btn btn-icon btn-light"
+    >
+      <span
+        [inlineSVG]="'./assets/media/icons/duotune/arrows/arr063.svg'"
+        class="svg-icon svg-icon-3 text-gray-800 fw-bolder"
+      ></span>
+    </a>
+  </div>
+  <div class="page-title d-flex flex-column justify-content-center flex-wrap">
+    <h1 class="page-heading d-flex text-dark fw-bold fs-2 my-0">
+      {{ "addNew" | translate }}
+    </h1>
+  </div>
+</div>
+<form [formGroup]="salesInvoiceForm">
+  <div class="card mb-5 mb-xxl-8">
+    <div class="card-body">
+      <div class="row g-5">
+        <div class="col-md-6" appAppArrowFocus>
+          <app-ebtikar-select
+            [apiUrl]="InvoiceApi"
+            [placeholder]="'saleInvoiceId'"
+            [label]="'saleInvoiceId'"
+            [bindValue]="'Id'"
+            [searchByTerm]="true"
+            [bindLabel]="'Id'"
+            [control]="salesInvoiceForm.get('saleInvoiceId')!"
+          ></app-ebtikar-select>
+        </div>
+        <div class="col-md-6" appAppArrowFocus>
+          <app-ebtikar-select
+            [apiUrl]="clientsApi"
+            [hasMultipleLabels]="true"
+            [placeholder]="'clientName'"
+            [label]="'clientName'"
+            [bindValue]="'Id'"
+            [searchByTerm]="true"
+            [control]="salesInvoiceForm.get('clientId')!"
+          ></app-ebtikar-select>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

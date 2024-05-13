@@ -198,10 +198,21 @@ ng-select.ng-select-single .ng-select-container .ng-value-container .ng-value {
     border-color: $red;
   }
 }
-.read-only {
-  input {
+.disabled-form {
+  .ng-select-container,
+  input,
+  textarea {
     background-color: rgba($color: #eee, $alpha: 0.8) !important;
     pointer-events: none;
+  }
+  &__enabled {
+    .ng-select-container,
+    input,
+    textarea {
+      opacity: 1;
+      pointer-events: initial;
+      background-color: #fff;
+    }
   }
 }
 
