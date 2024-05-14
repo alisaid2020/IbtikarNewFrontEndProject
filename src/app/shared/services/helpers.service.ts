@@ -10,6 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class HelpersService {
   showOverlay$ = new BehaviorSubject(false);
+  salesSettings$ = new BehaviorSubject(null);
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private translate: TranslateService,

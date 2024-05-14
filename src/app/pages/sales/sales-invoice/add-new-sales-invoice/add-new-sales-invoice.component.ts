@@ -21,17 +21,16 @@ import { Router } from '@angular/router';
 export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   shiftData: any;
   items: any = [];
+  invoiceInitObj: any;
   changedColumns: any;
   itemsUnits: any = [];
+  userRole = E_USER_ROLE;
   allColumns: any[] = [];
   barcodeItems: any[] = [];
-  invoiceInitObj: any;
   IsMustOpenShift: boolean;
-  userRole = E_USER_ROLE;
   subs: Subscription[] = [];
   salesInvoiceForm: FormGroup;
   _selectedColumns: any[] = [];
-  barcodeControls = [new FormControl()];
   tableStorage = 'salesInvoiceLines-table';
   defaultStorage = 'salesInvoiceLines-default-selected';
   clientsApi = `${apiUrl}/XtraAndPos_GeneralLookups/CustomerByTerm`;
@@ -101,10 +100,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let paymentType;
     let docDate = new Date();
     let notes;
-    let cash;
-    let visa;
     let bankId;
-    let debt;
     let isPendingPayment;
     let treasuryId;
     let exchangePrice;
@@ -117,6 +113,9 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let totalDisc = 0;
     let totalVat = 0;
     let totalNet = 0;
+    let cash = 0;
+    let visa = 0;
+    let debt = 0;
 
     this.salesInvoiceForm = this.fb.group({
       clientId: [clientId],
@@ -148,7 +147,6 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   addNewLine(value?: any): void {
-    this.barcodeControls.push(new FormControl());
     if (value) {
       this.linesArray.push(this.newLine(value));
       return;
@@ -159,24 +157,27 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   remove(i: number) {
     if (this.linesArray.length > 1) {
       this.linesArray.removeAt(i);
-      this.barcodeControls.splice(i, 1);
     }
   }
 
   newLine(value?: any): FormGroup {
+    let barcode;
     let itemID;
     let uniteId;
     let productId;
     let vat = 0;
+    let vatAmount = 0;
     let quantity = 0;
     let balance = 0;
     let price = 0;
     let discount = 0;
     let total = 0;
     return this.fb.group({
+      barcode: [barcode],
       itemID: [itemID],
       uniteId: [uniteId],
       vat: [vat],
+      vatAmount: [vatAmount],
       productId: [productId],
       quantity: [quantity],
       balance: [balance],
@@ -234,6 +235,10 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     }
   }
 
+  changePaymentType(ev: any) {
+    this.fillPaymentMethodWithTotal();
+  }
+
   selectedItemByBarcode(ev: any, i: number) {
     let form = this.linesArray.controls[i];
     if (!ev) {
@@ -265,9 +270,9 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     if (!ev) {
       this.itemsUnits[i] = [];
       this.barcodeItems[i] = [];
-      this.barcodeControls[i].patchValue(null);
       form.patchValue({
         uniteId: null,
+        barcode: null,
       });
       return;
     }
@@ -286,8 +291,12 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     if (ev) {
       let form = this.linesArray.controls[i];
       this.barcodeItems[i] = [ev];
-      this.barcodeControls[i].patchValue(ev?.Barcode);
-      form.patchValue({ vat: ev?.Vat, productId: ev?.Id, quantity: 1 });
+      form.patchValue({
+        vat: ev?.Vat,
+        productId: ev?.Id,
+        quantity: 1,
+        barcode: ev?.Barcode,
+      });
       this.getBalance(ev, i);
       this.getPrice(ev, i);
     }
@@ -354,10 +363,6 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     this.runCalculations(i);
   }
 
-  changeCalculation(ev: any, i: number) {
-    this.runCalculations(i);
-  }
-
   runCalculations(i: number) {
     let form = this.linesArray.controls[i];
     let quantity = form.get('quantity')?.value;
@@ -365,10 +370,11 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let vat = form.get('vat')?.value;
     let total = form.get('total')?.value;
     let discount = form.get('discount')?.value;
-    let vatValue = ((price * quantity - discount) * vat) / 100;
-    total = price * quantity - discount + vatValue;
+    let vatAmount = ((price * quantity - discount) * vat) / 100;
+    total = price * quantity - discount + vatAmount;
     form.patchValue({
       total: total,
+      vatAmount: vatAmount,
     });
     this.getTotalsOfInvoice();
   }
@@ -379,7 +385,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       .reduce((acc, curr) => acc + curr, 0);
 
     const totalVat = this.linesArray.controls
-      .map((line: any) => +line.value?.vat)
+      .map((line: any) => +line.value?.vatAmount)
       .reduce((acc, curr) => acc + curr, 0);
 
     const totalDisc = this.linesArray.controls
@@ -390,7 +396,50 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       totalNet,
       totalVat,
       totalDisc,
-      cash: totalNet,
+    });
+    this.fillPaymentMethodWithTotal();
+  }
+
+  fillPaymentMethodWithTotal(): void {
+    let paymentType = this.salesInvoiceForm.get('paymentType')!.value;
+    let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
+    let visa = this.salesInvoiceForm.get('visa')!.value;
+    let cash = this.salesInvoiceForm.get('cash')!.value;
+    if (paymentType === 1) {
+      this.salesInvoiceForm.patchValue({ cash: totalNet - visa, debt: 0 });
+    }
+    if (paymentType === 2) {
+      this.salesInvoiceForm.patchValue({
+        debt: totalNet - visa,
+        cash: 0,
+      });
+    }
+  }
+
+  changeInVisa(ev: any): void {
+    let paymentType = this.salesInvoiceForm.get('paymentType')!.value;
+    let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
+    let cash = this.salesInvoiceForm.get('cash')!.value;
+    let debt = this.salesInvoiceForm.get('debt')!.value;
+    let val = +ev.target.value;
+    if (paymentType === 1) {
+      this.salesInvoiceForm.patchValue({
+        cash: totalNet - debt - val,
+      });
+    }
+    if (paymentType === 2) {
+      this.salesInvoiceForm.patchValue({
+        debt: totalNet - cash - val,
+      });
+    }
+  }
+
+  changeInCash(ev: any): void {
+    let val = +ev.target.value;
+    let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
+    let visa = this.salesInvoiceForm.get('visa')!.value;
+    this.salesInvoiceForm.patchValue({
+      debt: totalNet - visa - val,
     });
   }
 
@@ -445,20 +494,22 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     ) {
       delete formValue.docDate;
     }
-    firstValueFrom(
-      this.dataService
-        .post(
-          `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForMobile`,
-          formValue
-        )
-        .pipe(
-          tap((_) => {
-            this.spinner.hide();
-            this.toast.show(Toast.added, { classname: Toast.success });
-            this.router.navigateByUrl('/sales-invoice');
-          })
-        )
-    );
+    console.log(formValue);
+
+    // firstValueFrom(
+    //   this.dataService
+    //     .post(
+    //       `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForMobile`,
+    //       formValue
+    //     )
+    //     .pipe(
+    //       tap((_) => {
+    //         this.spinner.hide();
+    //         this.toast.show(Toast.added, { classname: Toast.success });
+    //         this.router.navigateByUrl('/sales-invoice');
+    //       })
+    //     )
+    // );
   }
 
   ngOnDestroy(): void {

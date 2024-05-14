@@ -49,6 +49,7 @@
             [bindValue]="'value'"
             [bindLabel]="'name'"
             [control]="salesInvoiceForm.get('paymentType')!"
+            (emitChanged)="changePaymentType($event)"
           ></app-ebtikar-select>
         </div>
         <div
@@ -149,7 +150,7 @@
                       [bindValue]="'Barcode'"
                       [bindLabel]="'Barcode'"
                       [searchByBarcode]="true"
-                      [control]="barcodeControls[i]"
+                      [control]="linesArray.controls[i].get('barcode')!"
                       (emitChanged)="selectedItemByBarcode($event, i)"
                     ></app-ebtikar-select>
                   </td>
@@ -192,7 +193,7 @@
                     <app-ebtikar-input
                       [placeholder]="'quantity'"
                       [control]="linesArray.controls[i].get('quantity')!"
-                      (emitChanged)="changeCalculation($event, i)"
+                      (emitChanged)="runCalculations(i)"
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -203,7 +204,7 @@
                     <app-ebtikar-input
                       [placeholder]="'price'"
                       [control]="linesArray.controls[i].get('price')!"
-                      (emitChanged)="changeCalculation($event, i)"
+                      (emitChanged)="runCalculations(i)"
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -214,7 +215,7 @@
                     <app-ebtikar-input
                       [placeholder]="'discount'"
                       [control]="linesArray.controls[i].get('discount')!"
-                      (emitChanged)="changeCalculation($event, i)"
+                      (emitChanged)="runCalculations(i)"
                     ></app-ebtikar-input>
                   </td>
 
@@ -269,11 +270,17 @@
             [control]="salesInvoiceForm.get('totalNet')!"
           ></app-ebtikar-input>
         </div>
-        <div class="col-md-4">
+        <div
+          class="col-md-4"
+          [class.disabled-form]="
+            salesInvoiceForm.get('paymentType')?.value === 1
+          "
+        >
           <app-ebtikar-input
             [placeholder]="'cash'"
             [label]="'cash'"
             [control]="salesInvoiceForm.get('cash')!"
+            (emitChanged)="changeInCash($event)"
           ></app-ebtikar-input>
         </div>
         <div class="col-md-4">
@@ -281,7 +288,22 @@
             [placeholder]="'visa'"
             [label]="'visa'"
             [control]="salesInvoiceForm.get('visa')!"
+            (emitChanged)="changeInVisa($event)"
           ></app-ebtikar-input>
+        </div>
+        <div
+          class="col-md-4"
+          *ngIf="salesInvoiceForm.get('paymentType')?.value === 2"
+          [class.disabled-form]="
+            salesInvoiceForm.get('paymentType')?.value === 2
+          "
+        >
+          <app-ebtikar-input
+            [label]="'debt'"
+            [placeholder]="'debt'"
+            [control]="salesInvoiceForm.get('debt')!"
+          >
+          </app-ebtikar-input>
         </div>
         <div class="col-md-4" *ngIf="salesInvoiceForm.get('visa')?.value">
           <app-ebtikar-input
@@ -290,6 +312,7 @@
             [control]="salesInvoiceForm.get('visaTrxNo')!"
           ></app-ebtikar-input>
         </div>
+
         <div
           class="col-md-4"
           *ngIf="
@@ -316,17 +339,6 @@
             [bindValue]="'value'"
             [control]="salesInvoiceForm.get('visaTrxType')!"
           ></app-ebtikar-select>
-        </div>
-        <div
-          class="col-md-4"
-          *ngIf="salesInvoiceForm.get('paymentType')?.value === 2"
-        >
-          <app-ebtikar-input
-            [label]="'debt'"
-            [placeholder]="'debt'"
-            [control]="salesInvoiceForm.get('debt')!"
-          >
-          </app-ebtikar-input>
         </div>
       </div>
     </div>
