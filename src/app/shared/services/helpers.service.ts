@@ -9,7 +9,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class HelpersService {
   showOverlay = signal(false);
-  salesSettings = signal(null);
+  salesSettings: any = signal(null);
 
   constructor(
     @Inject(DOCUMENT) private document: Document,

@@ -120,7 +120,9 @@
                 {{ column.header | translate }}
               </th>
               }
-              <th class="bg-primary fw-bolder text-white fs-5">Actions</th>
+              <th class="bg-primary fw-bolder text-white fs-5">
+                {{ "actions" | translate }}
+              </th>
             </tr>
           </ng-template>
           <ng-template
@@ -139,14 +141,14 @@
                 @for (col of columns; track $index) {
                 <ng-container [ngSwitch]="col.header">
                   <td
-                    *ngSwitchCase="'Barcode'"
+                    *ngSwitchCase="'barcode'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
                       [apiUrl]="itemsByBarcodeApi"
                       [customData]="barcodeItems[i]"
-                      [placeholder]="'Barcode'"
+                      [placeholder]="'barcode'"
                       [bindValue]="'Barcode'"
                       [bindLabel]="'Barcode'"
                       [searchByBarcode]="true"
@@ -155,14 +157,14 @@
                     ></app-ebtikar-select>
                   </td>
                   <td
-                    *ngSwitchCase="'itemID'"
+                    *ngSwitchCase="'item'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
                       [apiUrl]="itemsByTermApi"
                       [customData]="items[i]"
-                      [placeholder]="'productName'"
+                      [placeholder]="'item'"
                       [bindValue]="'ItemId'"
                       [bindLabel]="'NameAr'"
                       [searchByTerm]="true"
@@ -171,7 +173,7 @@
                     ></app-ebtikar-select>
                   </td>
                   <td
-                    *ngSwitchCase="'uniteId'"
+                    *ngSwitchCase="'unit'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
@@ -221,9 +223,7 @@
 
                   <td *ngSwitchDefault style="min-width: 115px">
                     {{
-                      col?.header
-                        | tableColumnData : rowData.value
-                        | formatValue
+                      col?.field | tableColumnData : rowData.value | formatValue
                     }}
                   </td>
                 </ng-container>
@@ -265,8 +265,8 @@
           <app-ebtikar-input
             class="disabled-form"
             [readonly]="true"
-            [placeholder]="'totalNet'"
-            [label]="'totalNet'"
+            [placeholder]="'net'"
+            [label]="'net'"
             [control]="salesInvoiceForm.get('totalNet')!"
           ></app-ebtikar-input>
         </div>
@@ -322,8 +322,8 @@
         >
           <app-ebtikar-select
             [items]="invoiceInitObj?.banks"
-            [placeholder]="'bankId'"
-            [label]="'bankId'"
+            [placeholder]="'bankAccount'"
+            [label]="'bankAccount'"
             [bindValue]="'Id'"
             [bindLabel]="'BankName'"
             [control]="salesInvoiceForm.get('bankId')!"

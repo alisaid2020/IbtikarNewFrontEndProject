@@ -358,8 +358,14 @@ ng-select.ng-select-single .ng-select-container .ng-value-container .ng-value {
   }
   th,
   td {
+    text-align: center;
+  }
+  .t-border {
+    border: 0;
+    border-right: 1px solid #ded7d7;
     [dir="rtl"] & {
-      text-align: right !important;
+      border: 0;
+      border-left: 1px solid #ded7d7;
     }
   }
   tr {

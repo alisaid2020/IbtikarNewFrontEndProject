@@ -7,7 +7,7 @@ import { E_USER_ROLE } from '@constants/general.constant';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { HelpersService } from '@services/helpers.service';
 import { Subscription, firstValueFrom, map, tap } from 'rxjs';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ShiftDetailsDrawerComponent } from '../shift-details-drawer/shift-details-drawer.component';
 import { ToastService } from '@services/toast-service';
 import { Toast } from '@enums/toast.enum';
@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   shiftData: any;
   items: any = [];
+  isRoundToTwoNumbers: boolean;
   invoiceInitObj: any;
   changedColumns: any;
   itemsUnits: any = [];
@@ -37,15 +38,15 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   itemsByTermApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemsByTrim`;
   itemsByBarcodeApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemByBarcode`;
   defaultSelected: any[] = [
-    { field: 'Barcode', header: 'Barcode' },
-    { field: 'itemID', header: 'itemID' },
-    { field: 'uniteId', header: 'uniteId' },
+    { field: 'Barcode', header: 'barcode' },
+    { field: 'itemID', header: 'item' },
+    { field: 'uniteId', header: 'unit' },
     { field: 'quantity', header: 'quantity' },
     { field: 'balance', header: 'balance' },
     { field: 'price', header: 'price' },
     { field: 'vat', header: 'vat' },
     { field: 'discount', header: 'discount' },
-    { field: 'total', header: 'total' },
+    { field: 'total', header: 'net' },
   ];
   paymentTypes = [
     { name: 'cash', value: 1 },
@@ -56,15 +57,15 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     { name: 'Transfer', value: 2 },
   ];
   invoiceLineKeys = [
-    'Price',
-    'Barcode',
-    'Item',
-    'Unit',
-    'Quantity',
-    'Balance',
-    'Vat',
-    'Discount',
-    'Total',
+    'price',
+    'barcode',
+    'item',
+    'unit',
+    'quantity',
+    'balance',
+    'vat',
+    'discount',
+    'total',
   ];
   set selectedColumns(val: any[]) {
     this._selectedColumns = this.defaultSelected.filter((col: any) =>
@@ -83,6 +84,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   offcanvasService = inject(NgbOffcanvas);
 
   async ngOnInit() {
+    this.isRoundToTwoNumbers = this.helpers.salesSettings()?.RoundToTwoNumbers;
     this.salesInvoiceInit();
     this.checkIfUserShiftOpened();
     this.getShiftInfo();
