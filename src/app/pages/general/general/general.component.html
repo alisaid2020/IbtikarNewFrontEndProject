@@ -18,7 +18,7 @@
           [(ngModel)]="changedColumns"
           optionLabel="header"
           filterBy="translatedName"
-          (onPanelHide)="helpers.showOverlay$.next(false)"
+          (onPanelHide)="helpers.showOverlay.set(false)"
           (onChange)="changeInHideShow($event)"
         >
           <ng-template let-option pTemplate="Item">

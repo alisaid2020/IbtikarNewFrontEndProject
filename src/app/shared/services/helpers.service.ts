@@ -1,16 +1,16 @@
 import { DOCUMENT } from '@angular/common';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, signal } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HelpersService {
-  showOverlay$ = new BehaviorSubject(false);
-  salesSettings$ = new BehaviorSubject(null);
+  showOverlay = signal(false);
+  salesSettings = signal(null);
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private translate: TranslateService,

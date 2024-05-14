@@ -115,7 +115,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         .get(`${apiUrl}/XtraAndPos_SalesSettings/GetSalesSettings`)
         .pipe(
           tap((res) => {
-            this.helpers.salesSettings$.next(res.Obj);
+            this.helpers.salesSettings.set(res.Obj);
           })
         )
     );

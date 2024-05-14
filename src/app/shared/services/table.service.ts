@@ -17,8 +17,8 @@ export class TableService {
   translate = inject(TranslateService);
 
   openMultiselect(multiSelect: MultiSelect): void {
-    let showOverlayValue: boolean = this.helpers.showOverlay$.getValue();
-    this.helpers.showOverlay$.next(!showOverlayValue);
+    let showOverlayValue: boolean = this.helpers.showOverlay();
+    this.helpers.showOverlay.set(!showOverlayValue);
     multiSelect.show();
   }
 

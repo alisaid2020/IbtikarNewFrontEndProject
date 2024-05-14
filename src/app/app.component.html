@@ -15,6 +15,6 @@
 
 <div
   class="overlay-box"
-  [class.show]="helpers.showOverlay$.getValue()"
-  (click)="helpers.showOverlay$.next(false)"
+  [class.show]="helpers.showOverlay()"
+  (click)="helpers.showOverlay.set(false)"
 ></div>
