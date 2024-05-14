@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { apiUrl } from '@constants/api.constant';
 import { E_USER_ROLE } from '@constants/general.constant';
@@ -24,6 +24,7 @@ export class AddNewSalesReturnComponent implements OnInit {
   subs: Subscription[] = [];
   _selectedColumns: any[] = [];
   allColumns: any[] = [];
+  items: any[] = [];
   tableStorage = 'salesReturnLines-table';
   defaultStorage = 'salesReturnLines-default-selected';
   clientsApi = `${apiUrl}/XtraAndPos_GeneralLookups/CustomerByTerm`;
@@ -40,18 +41,22 @@ export class AddNewSalesReturnComponent implements OnInit {
   ];
   defaultSelected: any[] = [
     { field: 'Barcode', header: 'Barcode' },
-    { field: 'Item', header: 'Item' },
-    { field: 'CorrectQty', header: 'CorrectQty' },
-    { field: 'ReturnedQty', header: 'ReturnedQty' },
-    { field: 'Quantity', header: 'Quantity' },
-    { field: 'Price', header: 'Price' },
-    { field: 'Vat', header: 'Vat' },
-    { field: 'Discount', header: 'Discount' },
+    { field: 'itemID', header: 'itemID' },
+    { field: 'correctQty', header: 'correctQty' },
+    { field: 'returnedQty', header: 'returnedQty' },
+    { field: 'quantity', header: 'quantity' },
+    { field: 'price', header: 'price' },
+    { field: 'vat', header: 'vat' },
+    { field: 'discount', header: 'discount' },
   ];
   selectClients: any[] = [];
   paymentTypes = [
     { name: 'cash', value: 1 },
     { name: 'debt', value: 2 },
+  ];
+  visaTrxTypes = [
+    { name: 'Mada', value: 1 },
+    { name: 'Transfer', value: 2 },
   ];
   userRole = E_USER_ROLE;
 
@@ -79,7 +84,8 @@ export class AddNewSalesReturnComponent implements OnInit {
     let saleInvoiceId;
     let docDate = new Date();
     let paymentType;
-    // let notes;
+    let notes;
+    let saleInvoiceReturnDetails = this.fb.array([]);
     // let cash;
     // let visa;
     // let bankId;
@@ -102,7 +108,7 @@ export class AddNewSalesReturnComponent implements OnInit {
       saleInvoiceId: [saleInvoiceId],
       docDate: [docDate],
       paymentType: [paymentType],
-      // notes: [notes],
+      notes: [notes],
       // totalDisc: [totalDisc],
       // cash: [cash],
       // visa: [visa],
@@ -117,7 +123,7 @@ export class AddNewSalesReturnComponent implements OnInit {
       // isMobile: [isMobile],
       // visaTrxType: [visaTrxType],
       // visaTrxNo: [visaTrxNo],
-      // saleInvoiceDetails: this.fb.array([this.newLine()]),
+      saleInvoiceReturnDetails: saleInvoiceReturnDetails,
       // totalVat: [totalVat],
       // totalNet: [totalNet],
     });
@@ -158,28 +164,102 @@ export class AddNewSalesReturnComponent implements OnInit {
 
   onChangeSource(ev: any) {}
 
+  get linesArray(): FormArray {
+    return this.salesInvoiceForm.get('saleInvoiceReturnDetails') as FormArray;
+  }
+
   searchInSaleInvoices(ev: any) {
-    this.salesInvoiceLoading = true;
-    let params = { data: ev.term };
-    firstValueFrom(
-      this.dataService
-        .get(`${apiUrl}/ExtraAndPOS_ReturnSaleInvoice/GetByNo`, { params })
-        .pipe(
-          tap((res) => {
-            this.salesInvoiceLoading = false;
-            this.salesReturnFound = res.Obj.invoice;
-            this.salesInvoiceForm.patchValue({
-              clientId: this.salesReturnFound.ClientId,
-              paymentType: this.salesReturnFound.PaymentType,
-            });
-            this.selectClients = [
-              {
-                Id: this.salesReturnFound.ClientId,
-                clientName: this.salesReturnFound.ClientName,
-              },
-            ];
-          })
-        )
-    );
+    if (ev.term?.length >= 1) {
+      this.salesInvoiceLoading = true;
+      let params = { data: ev.term };
+      firstValueFrom(
+        this.dataService
+          .get(`${apiUrl}/ExtraAndPOS_ReturnSaleInvoice/GetByNo`, { params })
+          .pipe(
+            tap((res) => {
+              this.salesInvoiceLoading = false;
+              this.extractInvoiceLines(res.Obj.invoice.SaleInvoiceDetails);
+              this.salesReturnFound = res.Obj.invoice;
+              this.salesInvoiceForm.patchValue({
+                clientId: this.salesReturnFound.ClientId,
+                paymentType: this.salesReturnFound.PaymentType,
+                notes: this.salesReturnFound.Notes,
+              });
+              this.selectClients = [
+                {
+                  Id: this.salesReturnFound.ClientId,
+                  clientName: this.salesReturnFound.ClientName,
+                },
+              ];
+            })
+          )
+      );
+    }
+  }
+
+  newLine(value?: any): FormGroup {
+    let itemID;
+    let uniteId;
+    let productId;
+    let vat = 0;
+    let quantity = 0;
+    let balance = 0;
+    let price = 0;
+    let discount = 0;
+    let total = 0;
+    let returnedQty = 0;
+    let saleInvoiceDetailId;
+    let correctQty = 0;
+    if (value) {
+      itemID = value.ItemID;
+      returnedQty = value.ReturnedQty;
+      discount = value.Discount;
+      vat = value.Vat;
+      price = value.Price;
+      saleInvoiceDetailId = value.Id;
+      uniteId = value.UniteId;
+      productId = value.ProductId;
+      correctQty = value.Quantity;
+    }
+    return this.fb.group({
+      itemID: [itemID],
+      uniteId: [uniteId],
+      returnedQty: [returnedQty],
+      saleInvoiceDetailId: [saleInvoiceDetailId],
+      vat: [vat],
+      productId: [productId],
+      quantity: [quantity],
+      correctQty: [correctQty],
+      balance: [balance],
+      price: [price],
+      discount: [discount],
+      total: [total],
+    });
+  }
+
+  addNewLine(value?: any): void {
+    if (value) {
+      this.linesArray.push(this.newLine(value));
+      return;
+    }
+    this.linesArray.push(this.newLine());
+  }
+
+  remove(i: number) {
+    if (this.linesArray.length > 1) {
+      this.linesArray.removeAt(i);
+    }
+  }
+
+  extractInvoiceLines(saleInvoiceDetails: any[]) {
+    if (this.linesArray.value?.length > 0) {
+      this.linesArray.clear();
+    }
+    saleInvoiceDetails.forEach((line, i: number) => {
+      this.addNewLine(line);
+      this.items[i] = [
+        { ItemId: line.ItemID, NameAr: line.NameAr, NameEn: line.NameEn },
+      ];
+    });
   }
 }

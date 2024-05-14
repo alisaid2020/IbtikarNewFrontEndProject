@@ -80,7 +80,284 @@
             [control]="salesInvoiceForm.get('docDate')!"
           ></app-ebtikar-input>
         </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [type]="'textArea'"
+            [placeholder]="'notes'"
+            [label]="'notes'"
+            [control]="salesInvoiceForm.get('notes')!"
+          ></app-ebtikar-input>
+        </div>
       </div>
+      <div class="row mt-5">
+        <p-table
+          [columns]="_selectedColumns"
+          [value]="linesArray.controls"
+          styleClass="p-datatable-gridlines p-datatable-striped"
+          [stateKey]="tableStorage"
+          columnResizeMode="expand"
+        >
+          <ng-template pTemplate="caption">
+            <div class="d-flex align-items-center">
+              <h2 class="d-flex fs-3 mb-0">
+                <i class="fa-solid fa-cart-shopping text-primary fs-1 me-3"></i>
+                {{ "products" | translate }}
+              </h2>
+              <span class="p-input-icon-left ms-auto">
+                <p-button (click)="tableService.openMultiselect(ms1)">{{
+                  "hideShowColumns" | translate
+                }}</p-button>
+                <p-multiSelect
+                  #ms1
+                  appendTo="body"
+                  [options]="allColumns"
+                  [(ngModel)]="changedColumns"
+                  [ngModelOptions]="{ standalone: true }"
+                  optionLabel="header"
+                  filterBy="translatedName"
+                  (onPanelHide)="helpers.showOverlay$.next(false)"
+                  (onChange)="changeInHideShow($event)"
+                >
+                  <ng-template let-option pTemplate="Item">
+                    {{ option.translatedName }}
+                  </ng-template>
+                </p-multiSelect>
+              </span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              @for (column of columns; track $index) {
+              <th class="bg-primary fw-bolder text-white fs-5">
+                {{ column.header | translate }}
+              </th>
+              }
+              <th class="bg-primary fw-bolder text-white fs-5">Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template
+            pTemplate="body"
+            let-rowData
+            let-columns="columns"
+            let-i="rowIndex"
+          >
+            <ng-container formArrayName="saleInvoiceReturnDetails">
+              <tr
+                [formGroupName]="i"
+                [style.background-color]="
+                  i % 2 !== 0 ? '#add8e633' : 'rgb(250 250 250)'
+                "
+              >
+                @for (col of columns; track $index) {
+                <ng-container [ngSwitch]="col.header">
+                  <td
+                    *ngSwitchCase="'Barcode'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <!-- <app-ebtikar-select
+                      [apiUrl]="itemsByBarcodeApi"
+                      [customData]="barcodeItems[i]"
+                      [placeholder]="'Barcode'"
+                      [bindValue]="'Barcode'"
+                      [bindLabel]="'Barcode'"
+                      [searchByBarcode]="true"
+                      [control]="barcodeControls[i]"
+                      (emitChanged)="selectedItemByBarcode($event, i)"
+                    ></app-ebtikar-select> -->
+                  </td>
+                  <td
+                    *ngSwitchCase="'itemID'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      [hasMultipleLabels]="true"
+                      [items]="items[i]"
+                      [placeholder]="'productName'"
+                      [bindValue]="'ItemId'"
+                      [clearable]="false"
+                      [control]="linesArray.controls[i].get('itemID')!"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
+                    *ngSwitchCase="'uniteId'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <!-- <app-ebtikar-select
+                      [hasStaticValues]="true"
+                      [placeholder]="'selectUnit'"
+                      [items]="itemsUnits[i]"
+                      [bindValue]="'unitId'"
+                      [bindLabel]="'name'"
+                      [control]="linesArray.controls[i].get('uniteId')!"
+                      (emitChanged)="selectedUnit($event, i)"
+                    ></app-ebtikar-select> -->
+                  </td>
+                  <td
+                    *ngSwitchCase="'correctQty'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-input
+                      [placeholder]="'returnedQty'"
+                      [control]="linesArray.controls[i].get('correctQty')!"
+                    ></app-ebtikar-input>
+                  </td>
+                  <td
+                    *ngSwitchCase="'returnedQty'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-input
+                      [placeholder]="'returnedQty'"
+                      [control]="linesArray.controls[i].get('returnedQty')!"
+                    ></app-ebtikar-input>
+                  </td>
+                  <td
+                    *ngSwitchCase="'quantity'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                    class="disabled-form__enabled"
+                  >
+                    <app-ebtikar-input
+                      [placeholder]="'quantity'"
+                      [control]="linesArray.controls[i].get('quantity')!"
+                    ></app-ebtikar-input>
+                  </td>
+                  <td
+                    *ngSwitchCase="'price'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-input
+                      [placeholder]="'price'"
+                      [control]="linesArray.controls[i].get('price')!"
+                    ></app-ebtikar-input>
+                  </td>
+                  <td
+                    *ngSwitchCase="'discount'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-input
+                      [placeholder]="'discount'"
+                      [control]="linesArray.controls[i].get('discount')!"
+                    ></app-ebtikar-input>
+                  </td>
+
+                  <td *ngSwitchDefault style="min-width: 115px">
+                    {{
+                      col?.header
+                        | tableColumnData : rowData.value
+                        | formatValue
+                    }}
+                  </td>
+                </ng-container>
+                }
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-icon btn-danger ms-3"
+                    (click)="remove(i)"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+          </ng-template>
+        </p-table>
+      </div>
+      <!-- <div class="row g-5 mt-5">
+        <div class="col-md-4" appAppArrowFocus>
+          <app-ebtikar-input
+            class="disabled-form"
+            [readonly]="true"
+            [placeholder]="'totalDiscount'"
+            [label]="'totalDiscount'"
+            [control]="salesInvoiceForm.get('totalDisc')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-4" appAppArrowFocus>
+          <app-ebtikar-input
+            class="disabled-form"
+            [readonly]="true"
+            [placeholder]="'totalVat'"
+            [label]="'totalVat'"
+            [control]="salesInvoiceForm.get('totalVat')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-4" appAppArrowFocus>
+          <app-ebtikar-input
+            class="disabled-form"
+            [readonly]="true"
+            [placeholder]="'totalNet'"
+            [label]="'totalNet'"
+            [control]="salesInvoiceForm.get('totalNet')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-4">
+          <app-ebtikar-input
+            [placeholder]="'cash'"
+            [label]="'cash'"
+            [control]="salesInvoiceForm.get('cash')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-4">
+          <app-ebtikar-input
+            [placeholder]="'visa'"
+            [label]="'visa'"
+            [control]="salesInvoiceForm.get('visa')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-4" *ngIf="salesInvoiceForm.get('visa')?.value">
+          <app-ebtikar-input
+            [placeholder]="'visaTrxNo'"
+            [label]="'visaTrxNo'"
+            [control]="salesInvoiceForm.get('visaTrxNo')!"
+          ></app-ebtikar-input>
+        </div>
+        <div
+          class="col-md-4"
+          *ngIf="
+            salesInvoiceForm.get('visa')?.value &&
+            !invoiceInitObj?.empHasAccount
+          "
+        >
+          <app-ebtikar-select
+            [items]="invoiceInitObj?.banks"
+            [placeholder]="'bankId'"
+            [label]="'bankId'"
+            [bindValue]="'Id'"
+            [bindLabel]="'BankName'"
+            [control]="salesInvoiceForm.get('bankId')!"
+          ></app-ebtikar-select>
+        </div>
+        <div class="col-md-4" *ngIf="salesInvoiceForm.get('visa')?.value">
+          <app-ebtikar-select
+            [hasStaticValues]="true"
+            [items]="visaTrxTypes"
+            [placeholder]="'visaTrxType'"
+            [label]="'visaTrxType'"
+            [bindLabel]="'name'"
+            [bindValue]="'value'"
+            [control]="salesInvoiceForm.get('visaTrxType')!"
+          ></app-ebtikar-select>
+        </div>
+        <div
+          class="col-md-4"
+          *ngIf="salesInvoiceForm.get('paymentType')?.value === 2"
+        >
+          <app-ebtikar-input
+            [label]="'debt'"
+            [placeholder]="'debt'"
+            [control]="salesInvoiceForm.get('debt')!"
+          >
+          </app-ebtikar-input>
+        </div>
+      </div> -->
     </div>
   </div>
 </form>
