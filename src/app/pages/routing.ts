@@ -39,7 +39,13 @@ const Routing: Routes = [
         (m) => m.PricingPolicyListsModule
       ),
   },
-
+  {
+    path: 'sales-settings',
+    loadChildren: () =>
+      import('./sales/sales-settings/sales-settings.module').then(
+        (m) => m.SalesSettingsModule
+      ),
+  },
   {
     path: '**',
     redirectTo: 'error/404',

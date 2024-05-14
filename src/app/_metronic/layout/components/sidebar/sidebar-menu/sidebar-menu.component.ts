@@ -41,6 +41,11 @@ export class SidebarMenuComponent implements OnInit {
           route: '/pricing-policy-lists',
           permission: 'SaleInvoice-GetAll',
         },
+        {
+          title: 'salesSettings',
+          route: '/sales-settings',
+          permission: 'SaleInvoice-GetAll',
+        },
         // {
         //   title: 'customerAccountStatement',
         //   route: '/customer-account-statement',
