@@ -21,7 +21,7 @@ import { Router } from '@angular/router';
 export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   shiftData: any;
   items: any = [];
-  isRoundToTwoNumbers: boolean;
+  isRoundToTwoNumbers: any;
   invoiceInitObj: any;
   changedColumns: any;
   itemsUnits: any = [];
@@ -367,13 +367,23 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
 
   runCalculations(i: number) {
     let form = this.linesArray.controls[i];
-    let quantity = form.get('quantity')?.value;
-    let price = form.get('price')?.value;
-    let vat = form.get('vat')?.value;
-    let total = form.get('total')?.value;
-    let discount = form.get('discount')?.value;
-    let vatAmount = ((price * quantity - discount) * vat) / 100;
-    total = price * quantity - discount + vatAmount;
+    let price: any = form.get('price')?.value;
+    let quantity: any = form.get('quantity')?.value;
+    let discount: any = form.get('discount')?.value;
+    let vat: any = form.get('vat')?.value;
+    let total: any = form.get('total')?.value;
+    let vatAmount: any;
+
+    if (this.isRoundToTwoNumbers) {
+      vatAmount = Math.round(((price * quantity - discount) * vat) / 100);
+      total = price * quantity - discount + vatAmount;
+    } else {
+      let part1 = Math.round(price * quantity * 1000) / 1000;
+      let part2 = Math.round((part1 - discount) * 1000) / 1000;
+      let part3 = Math.round(part2 * vat * 1000) / 1000;
+      vatAmount = Math.round((part3 / 100) * 1000) / 1000;
+      total = Math.round((part2 + vatAmount) * 1000) / 1000;
+    }
     form.patchValue({
       total: total,
       vatAmount: vatAmount,
@@ -382,22 +392,22 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   getTotalsOfInvoice(): void {
-    const totalNet = this.linesArray.controls
+    let totalNet = this.linesArray.controls
       .map((line: any) => +line.value?.total)
       .reduce((acc, curr) => acc + curr, 0);
 
-    const totalVat = this.linesArray.controls
+    let totalVat = this.linesArray.controls
       .map((line: any) => +line.value?.vatAmount)
       .reduce((acc, curr) => acc + curr, 0);
 
-    const totalDisc = this.linesArray.controls
+    let totalDisc = this.linesArray.controls
       .map((line: any) => +line.value?.discount)
       .reduce((acc, curr) => acc + curr, 0);
 
     this.salesInvoiceForm.patchValue({
-      totalNet,
-      totalVat,
-      totalDisc,
+      totalNet: Math.round(totalNet * 1000) / 1000,
+      totalVat: Math.round(totalVat * 1000) / 1000,
+      totalDisc: Math.round(totalDisc * 1000) / 1000,
     });
     this.fillPaymentMethodWithTotal();
   }

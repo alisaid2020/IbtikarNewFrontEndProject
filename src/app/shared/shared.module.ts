@@ -38,6 +38,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { FormatValuePipe } from './pipes/format-value.pipe';
 import { TableColumnDataPipe } from './pipes/table-column-data.pipe';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 const sharedModules: any[] = [
   NgbNavModule,
@@ -71,6 +72,7 @@ const sharedModules: any[] = [
   ButtonModule,
   MultiSelectModule,
   NgxPermissionsModule,
+  InputNumberModule,
 ];
 const sharedComponents: any[] = [
   EbtikarInputComponent,

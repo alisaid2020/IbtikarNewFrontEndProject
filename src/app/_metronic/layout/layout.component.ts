@@ -6,7 +6,7 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { Subscription, firstValueFrom, tap } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { LayoutService } from './core/layout.service';
 import { LayoutInitService } from './core/layout-init.service';
 import { ILayout, LayoutType } from './core/configs/config';
@@ -14,7 +14,6 @@ import { E_USER_RoleSCREENS } from '@constants/general.constant';
 import { HelpersService } from '@services/helpers.service';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { DataService } from '@services/data.service';
-import { apiUrl } from '@constants/api.constant';
 
 @Component({
   selector: 'app-layout',
@@ -91,7 +90,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.checkRoundToTwoNumbers();
     const roleScreens =
       this.helpers.getItemFromLocalStorage(E_USER_RoleSCREENS);
     const permissions = roleScreens.flatMap((screen: any) =>
@@ -108,17 +106,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.updateProps(config);
       });
     this.unsubscribe.push(subscr);
-  }
-  checkRoundToTwoNumbers(): void {
-    firstValueFrom(
-      this.dataService
-        .get(`${apiUrl}/XtraAndPos_SalesSettings/GetSalesSettings`)
-        .pipe(
-          tap((res) => {
-            this.helpers.salesSettings.set(res.Obj);
-          })
-        )
-    );
   }
 
   updateProps(config: ILayout) {

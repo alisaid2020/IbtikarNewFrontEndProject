@@ -24,6 +24,21 @@
     <span *ngIf="addon" class="addon">{{ addon }}</span>
   </div>
 
+  <ng-container *ngSwitchCase="'number'">
+    <p-inputNumber
+      [placeholder]="placeholder | translate"
+      [formControl]="formControl"
+      [readonly]="readonly"
+      [autocomplete]="'off'"
+      [locale]="'en-US'"
+      [minFractionDigits]="0"
+      [maxFractionDigits]="6"
+      mode="decimal"
+      (onInput)="getChangedItem($event)"
+    >
+    </p-inputNumber>
+  </ng-container>
+
   <ng-container *ngSwitchCase="'datepicker'">
     <input
       class="form-control"

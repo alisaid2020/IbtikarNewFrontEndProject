@@ -1,9 +1,12 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
-import { EBTIKARLANG } from './shared/constants/general.constant';
+import { ACCESS_TOKEN, EBTIKARLANG } from './shared/constants/general.constant';
 import { HelpersService } from './shared/services/helpers.service';
 import { ThemeModeService } from './_metronic/partials/layout/theme-mode-switcher/theme-mode.service';
+import { firstValueFrom, tap } from 'rxjs';
+import { apiUrl } from '@constants/api.constant';
+import { DataService } from '@services/data.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -36,8 +39,24 @@ export class AppComponent implements OnInit {
       }
     });
   }
+  dataService = inject(DataService);
 
   ngOnInit() {
     this.modeService.init();
+    if (this.helpers.checkItemFromLocalStorage(ACCESS_TOKEN)) {
+      this.checkRoundToTwoNumbers();
+    }
+  }
+
+  checkRoundToTwoNumbers(): void {
+    firstValueFrom(
+      this.dataService
+        .get(`${apiUrl}/XtraAndPos_SalesSettings/GetSalesSettings`)
+        .pipe(
+          tap((res) => {
+            this.helpers.salesSettings.set(res.Obj);
+          })
+        )
+    );
   }
 }
