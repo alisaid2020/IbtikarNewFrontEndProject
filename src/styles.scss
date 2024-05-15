@@ -218,7 +218,8 @@ ng-select.ng-select-single .ng-select-container .ng-value-container .ng-value {
 .disabled-form {
   .ng-select-container,
   .form-control,
-  textarea {
+  textarea,
+  .p-inputnumber-input {
     background-color: rgba($color: #eee, $alpha: 0.8) !important;
     pointer-events: none;
   }

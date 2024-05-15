@@ -23,8 +23,9 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   items: any = [];
   isRoundToTwoNumbers: any;
   invoiceInitObj: any;
+  itemPriceObj: any;
   changedColumns: any;
-  itemsUnits: any = [];
+  units: any = [];
   userRole = E_USER_ROLE;
   allColumns: any[] = [];
   barcodeItems: any[] = [];
@@ -46,7 +47,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     { field: 'price', header: 'price' },
     { field: 'vat', header: 'vat' },
     { field: 'discount', header: 'discount' },
-    { field: 'total', header: 'net' },
+    { field: 'totalPriceAfterVat', header: 'totalPriceAfterVat' },
   ];
   paymentTypes = [
     { name: 'cash', value: 1 },
@@ -157,9 +158,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   remove(i: number) {
-    if (this.linesArray.length > 1) {
-      this.linesArray.removeAt(i);
-    }
+    this.linesArray.removeAt(i);
   }
 
   newLine(value?: any): FormGroup {
@@ -174,6 +173,18 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let price = 0;
     let discount = 0;
     let totalPriceAfterVat = 0;
+    if (value) {
+      productBarcode = value.ProductBarcode;
+      itemID = value.ItemID;
+      uniteId = value.UniteId;
+      vat = value.Vat;
+      vatAmount = value.VatAmount;
+      quantity = value.Quantity;
+      balance = value.Balance;
+      price = value.Price;
+      discount = value.Discount;
+      totalPriceAfterVat = value.TotalPriceAfterVat;
+    }
     return this.fb.group({
       productBarcode: [productBarcode],
       itemID: [itemID],
@@ -245,7 +256,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let form = this.linesArray.controls[i];
     if (!ev) {
       this.items[i] = [];
-      this.itemsUnits[i] = [];
+      this.units[i] = [];
       form.patchValue({
         uniteId: null,
         itemID: null,
@@ -255,7 +266,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       return;
     }
     this.items[i] = [{ ...ev, NameAr: ev.Item?.NameAr }];
-    this.itemsUnits[i] = [{ unitId: ev?.UnitId, name: ev?.UnitName }];
+    this.units[i] = [{ unitId: ev?.UnitId, name: ev?.UnitName }];
     this.linesArray.controls[i].patchValue({
       itemID: ev.ItemId,
       uniteId: ev.UnitId,
@@ -270,7 +281,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   selectedItemByName(ev: any, i: number): void {
     let form = this.linesArray.controls[i];
     if (!ev) {
-      this.itemsUnits[i] = [];
+      this.units[i] = [];
       this.barcodeItems[i] = [];
       form.patchValue({
         uniteId: null,
@@ -282,11 +293,11 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       el.name = el.UnitName;
       el.unitId = el.UnitId;
     });
-    this.itemsUnits[i] = ev?.ItemUnits;
+    this.units[i] = ev?.ItemUnits;
     form.patchValue({
-      uniteId: this.itemsUnits[i][0]?.unitId,
+      uniteId: this.units[i][0]?.unitId,
     });
-    this.selectedUnit(this.itemsUnits[i][0], i);
+    this.selectedUnit(this.units[i][0], i);
   }
 
   selectedUnit(ev: any, i: any) {
@@ -330,36 +341,68 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
+            this.itemPriceObj = res.Obj;
             this.linesArray.controls[i].patchValue({ price: res.Obj.price });
-            this.checkForOffers(res.Obj, i);
+            this.checkForOffers(i);
           })
         )
     );
   }
 
-  checkForOffers(itemPriceObj: any, i: number) {
+  changeInQuantity(i: any): void {
+    this.checkForOffers(i);
+  }
+
+  checkForOffers(i: number) {
     let form = this.linesArray.controls[i];
     let quantity = form.get('quantity')?.value;
     let balance = form.get('balance')?.value;
     let price = form.get('price')?.value;
+
     if (balance < quantity && this.invoiceInitObj.saleByMinus) {
       this.addNewLine();
     } else {
-      this.toast.show('Item Balance Not Allowed', {
-        classname: Toast.error,
-      });
+      // this.toast.show('Item Balance Not Allowed', {
+      //   classname: Toast.error,
+      // });
+      // this.remove(i);
+      // this.addNewLine();
     }
-    if (itemPriceObj.offers.ItemDiscount > 0) {
-      if (quantity == itemPriceObj.offers.ItemQty) {
+    if (this.itemPriceObj.offers.ItemDiscount > 0) {
+      if (quantity == this.itemPriceObj.offers.ItemQty) {
         let discountValue =
-          quantity * price * (itemPriceObj.offers.ItemDiscount / 100);
+          quantity * price * (this.itemPriceObj.offers.ItemDiscount / 100);
         form.patchValue({ discount: discountValue });
       } else {
         form.patchValue({ discount: 0 });
       }
     }
-    if (itemPriceObj.offers.freeitems.length > 0) {
-      if (quantity == itemPriceObj.offers.ItemQty) {
+
+    if (
+      this.itemPriceObj.offers.freeitems?.length > 0 &&
+      this.itemPriceObj.offers.ItemUnites?.length > 0
+    ) {
+      if (quantity == this.itemPriceObj.offers.ItemQty) {
+        this.itemPriceObj.offers.freeitems.forEach((item: any) => {
+          let freeItems = this.itemPriceObj.offers.ItemUnites.filter(
+            (ele: any) => (ele.Id = item.FreeItemId)
+          );
+          freeItems.forEach((freeItem: any) => {
+            let newLine = {
+              ProductBarcode: freeItem.Barcode,
+              ItemID: freeItem.ItemId,
+              UniteId: freeItem.UnitId,
+              Vat: 0,
+              Price: 0,
+              TotalPriceAfterVat: 0,
+              Balance: 0,
+              VatAmount: 0,
+              Quantity: item.FreeItemQuantity,
+              Discount: 0,
+            };
+            this.addNewLine(newLine);
+          });
+        });
       }
     }
     this.runCalculations(i);

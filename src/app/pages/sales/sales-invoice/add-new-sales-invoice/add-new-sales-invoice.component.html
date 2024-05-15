@@ -180,7 +180,7 @@
                     <app-ebtikar-select
                       [hasStaticValues]="true"
                       [placeholder]="'selectUnit'"
-                      [items]="itemsUnits[i]"
+                      [items]="units[i]"
                       [bindValue]="'unitId'"
                       [bindLabel]="'name'"
                       [control]="linesArray.controls[i].get('uniteId')!"
@@ -196,7 +196,7 @@
                       [type]="'number'"
                       [placeholder]="'quantity'"
                       [control]="linesArray.controls[i].get('quantity')!"
-                      (emitChanged)="runCalculations(i)"
+                      (emitChanged)="changeInQuantity(i)"
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -235,6 +235,7 @@
                   <button
                     type="button"
                     class="btn btn-icon btn-danger ms-3"
+                    [disabled]="linesArray.value?.length === 1"
                     (click)="remove(i)"
                   >
                     <i class="fas fa-trash"></i>
