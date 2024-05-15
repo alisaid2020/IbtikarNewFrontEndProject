@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { apiUrl } from '@constants/api.constant';
@@ -16,7 +16,9 @@ import { Subscription, firstValueFrom, tap } from 'rxjs';
   selector: 'app-add-new-sales-return',
   templateUrl: './add-new-sales-return.component.html',
 })
-export class AddNewSalesReturnComponent implements OnInit {
+export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
+  isRoundToTwoNumbers: any;
+  invoiceInitObj: any;
   items: any[] = [];
   units: any[] = [];
   changedColumns: any;
@@ -48,6 +50,7 @@ export class AddNewSalesReturnComponent implements OnInit {
   defaultSelected: any[] = [
     { field: 'Barcode', header: 'Barcode' },
     { field: 'itemID', header: 'itemID' },
+    { field: 'uniteId', header: 'uniteId' },
     { field: 'correctQty', header: 'correctQty' },
     { field: 'returnedQty', header: 'returnedQty' },
     { field: 'quantity', header: 'quantity' },
@@ -55,15 +58,10 @@ export class AddNewSalesReturnComponent implements OnInit {
     { field: 'vat', header: 'vat' },
     { field: 'discount', header: 'discount' },
     { field: 'totalPriceAfterVat', header: 'totalPriceAfterVat' },
-    { field: 'uniteId', header: 'uniteId' },
   ];
   paymentTypes = [
     { name: 'cash', value: 1 },
     { name: 'debt', value: 2 },
-  ];
-  visaTrxTypes = [
-    { name: 'Mada', value: 1 },
-    { name: 'Transfer', value: 2 },
   ];
 
   router = inject(Router);
@@ -76,6 +74,8 @@ export class AddNewSalesReturnComponent implements OnInit {
   translate = inject(TranslateService);
 
   async ngOnInit() {
+    this.isRoundToTwoNumbers = this.helpers.salesSettings()?.RoundToTwoNumbers;
+    this.salesInvoiceInit();
     this.initForm();
     await this.initTableColumns();
     this.subs.push(
@@ -198,13 +198,10 @@ export class AddNewSalesReturnComponent implements OnInit {
     let totalPriceAfterVat = 0;
     let vatAmount = 0;
     let uniteId;
-
     let docDate;
     let quantity = 0;
 
     if (value) {
-      // console.log(value);
-
       itemID = value.ItemID;
       productId = value.ProductId;
       vat = value.Vat;
@@ -294,5 +291,140 @@ export class AddNewSalesReturnComponent implements OnInit {
         { unitId: line.UniteId, NameAr: 'sjdnsj', NameEn: 'nsajamlk' },
       ];
     });
+  }
+
+  changeInQuantity(ev: any, i: any) {
+    let form = this.linesArray.controls[i];
+    let balance = form.get('correctQty')!.value;
+    if (ev.value > balance) {
+      this.toast.show('quantity greater than balance', {
+        classname: Toast.error,
+      });
+      return;
+    }
+    this.runCalculations(i);
+  }
+
+  runCalculations(i: number) {
+    let form = this.linesArray.controls[i];
+    let price: any = form.get('price')?.value;
+    let quantity: any = form.get('quantity')?.value;
+    let discount: any = form.get('discount')?.value;
+    let vat: any = form.get('vat')?.value;
+    let totalPriceAfterVat: any = form.get('totalPriceAfterVat')?.value;
+    let vatAmount: any;
+
+    if (this.isRoundToTwoNumbers) {
+      let p1 = Math.round(price * quantity);
+      let p2 = Math.round(p1 - discount);
+      let p3 = Math.round(p2 * vat);
+      vatAmount = Math.round(p3 / 100);
+      totalPriceAfterVat = p2 + vatAmount;
+    } else {
+      let part1 = Math.round(price * quantity * 1000) / 1000;
+      let part2 = Math.round((part1 - discount) * 1000) / 1000;
+      let part3 = Math.round(part2 * vat * 1000) / 1000;
+      vatAmount = Math.round((part3 / 100) * 1000) / 1000;
+      totalPriceAfterVat = Math.round((part2 + vatAmount) * 1000) / 1000;
+    }
+    form.patchValue({
+      totalPriceAfterVat: totalPriceAfterVat,
+      vatAmount: vatAmount,
+    });
+    this.getTotalsOfInvoice();
+  }
+
+  getTotalsOfInvoice(): void {
+    let totalNet = this.linesArray.controls
+      .map((line: any) => +line.value?.totalPriceAfterVat)
+      .reduce((acc, curr) => acc + curr, 0);
+
+    let totalVat = this.linesArray.controls
+      .map((line: any) => +line.value?.vatAmount)
+      .reduce((acc, curr) => acc + curr, 0);
+
+    let totalDisc = this.linesArray.controls
+      .map((line: any) => +line.value?.discount)
+      .reduce((acc, curr) => acc + curr, 0);
+
+    this.salesInvoiceForm.patchValue({
+      totalNet: Math.round(totalNet * 1000) / 1000,
+      totalVat: Math.round(totalVat * 1000) / 1000,
+      totalDisc: Math.round(totalDisc * 1000) / 1000,
+    });
+    this.fillPaymentMethodWithTotal();
+  }
+
+  fillPaymentMethodWithTotal(): void {
+    let paymentType = this.salesInvoiceForm.get('paymentType')!.value;
+    let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
+    if (paymentType === 1) {
+      this.salesInvoiceForm.patchValue({ cash: totalNet, debt: 0 });
+    }
+    if (paymentType === 2) {
+      this.salesInvoiceForm.patchValue({
+        debt: totalNet,
+        cash: 0,
+      });
+    }
+  }
+
+  changeInCash(ev: any): void {
+    let val = +ev.target.value;
+    let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
+    let visa = this.salesInvoiceForm.get('visa')!.value;
+    this.salesInvoiceForm.patchValue({
+      debt: totalNet - val,
+    });
+  }
+
+  salesInvoiceInit(): void {
+    firstValueFrom(
+      this.dataService
+        .get(`${apiUrl}/XtraAndPos_GeneralLookups/SalesInvoiceInit`)
+        .pipe(
+          tap((res) => {
+            this.invoiceInitObj = res.Obj;
+            if (this.invoiceInitObj.isSalesPerson) {
+              this.salesInvoiceForm.get('paymentType')?.setValue(2);
+            }
+            if (!this.invoiceInitObj.isSalesPerson) {
+              this.salesInvoiceForm.get('paymentType')?.setValue(1);
+            }
+          })
+        )
+    );
+  }
+
+  submit(): void {
+    this.spinner.show();
+    let formValue = {
+      ...this.salesInvoiceForm.value,
+      saleInvoiceDetails: this.helpers.removeEmptyLines(this.linesArray),
+    };
+    if (
+      this.helpers.getItemFromLocalStorage(this.userRole) !== 'Admin' ||
+      !this.invoiceInitObj?.isSalesPerson
+    ) {
+      delete formValue.docDate;
+    }
+    // firstValueFrom(
+    //   this.dataService
+    //     .post(
+    //       `${apiUrl}/XtraAndPos_StoreInvoiceReturn/CreateInvoiceReturnForMobile`,
+    //       formValue
+    //     )
+    //     .pipe(
+    //       tap((_) => {
+    //         this.spinner.hide();
+    //         this.toast.show(Toast.added, { classname: Toast.success });
+    //         this.router.navigateByUrl('/sales-invoice');
+    //       })
+    //     )
+    // );
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach((sub) => sub.unsubscribe());
   }
 }

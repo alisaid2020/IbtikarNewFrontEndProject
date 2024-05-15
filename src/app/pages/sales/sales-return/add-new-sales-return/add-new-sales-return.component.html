@@ -216,8 +216,10 @@
                     class="disabled-form__enabled"
                   >
                     <app-ebtikar-input
+                      [type]="'number'"
                       [placeholder]="'quantity'"
                       [control]="linesArray.controls[i].get('quantity')!"
+                      (emitChanged)="changeInQuantity($event, i)"
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -292,7 +294,12 @@
             [control]="salesInvoiceForm.get('totalNet')!"
           ></app-ebtikar-input>
         </div>
-        <div class="col-md-4">
+        <div
+          class="col-md-4"
+          [class.disabled-form]="
+            salesInvoiceForm.get('paymentType')?.value === 1
+          "
+        >
           <app-ebtikar-input
             [placeholder]="'cash'"
             [label]="'cash'"
@@ -310,6 +317,15 @@
           >
           </app-ebtikar-input>
         </div>
+      </div>
+    </div>
+    <div class="card-footer d-flex align-items-activity py-6 px-9">
+      <div class="d-flex gap-3 ms-auto">
+        <app-submit-button
+          [isDisabled]="salesInvoiceForm.invalid"
+          [buttonText]="'save'"
+          (btnClick)="submit()"
+        ></app-submit-button>
       </div>
     </div>
   </div>
