@@ -318,7 +318,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   getBalance(ev: any, i: number): void {
     let params = {
       itemUnitId: ev.Id,
-      storeId: this.invoiceInitObj.empStore,
+      storeId: this.invoiceInitObj.empStore || 1,
     };
     firstValueFrom(
       this.dataService
@@ -334,6 +334,9 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   getPrice(ev: any, i: number): void {
+    let quantity = this.linesArray.controls[i].get('quantity')?.value;
+    let balance = this.linesArray.controls[i].get('balance')?.value;
+
     firstValueFrom(
       this.dataService
         .get(`${apiUrl}/XtraAndPos_GeneralLookups/ItemPriceList`, {
@@ -342,32 +345,30 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         .pipe(
           tap((res) => {
             this.itemPriceObj = res.Obj;
+            if (balance < quantity && !this.invoiceInitObj.saleByMinus) {
+              this.toast.show('Item Balance Not Allowed', {
+                classname: Toast.error,
+              });
+              this.remove(i);
+              this.items[i] = [];
+              this.barcodeItems[i] = [];
+              this.units[i] = [];
+              this.addNewLine();
+              return;
+            }
             this.linesArray.controls[i].patchValue({ price: res.Obj.price });
             this.checkForOffers(i);
+            this.addNewLine();
           })
         )
     );
   }
 
-  changeInQuantity(i: any): void {
-    this.checkForOffers(i);
-  }
-
   checkForOffers(i: number) {
     let form = this.linesArray.controls[i];
     let quantity = form.get('quantity')?.value;
-    let balance = form.get('balance')?.value;
     let price = form.get('price')?.value;
 
-    if (balance < quantity && this.invoiceInitObj.saleByMinus) {
-      this.addNewLine();
-    } else {
-      // this.toast.show('Item Balance Not Allowed', {
-      //   classname: Toast.error,
-      // });
-      // this.remove(i);
-      // this.addNewLine();
-    }
     if (this.itemPriceObj.offers.ItemDiscount > 0) {
       if (quantity == this.itemPriceObj.offers.ItemQty) {
         let discountValue =
@@ -475,21 +476,29 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   changeInVisa(ev: any): void {
-    let paymentType = this.salesInvoiceForm.get('paymentType')!.value;
-    let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
-    let cash = this.salesInvoiceForm.get('cash')!.value;
-    let debt = this.salesInvoiceForm.get('debt')!.value;
-    let val = ev.value;
-    if (paymentType === 1) {
-      this.salesInvoiceForm.patchValue({
-        cash: totalNet - debt - val,
-      });
+    if (ev.value) {
+      let val = ev.value;
+      let paymentType = this.salesInvoiceForm.get('paymentType')!.value;
+      let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
+      let cash = this.salesInvoiceForm.get('cash')!.value;
+      let debt = this.salesInvoiceForm.get('debt')!.value;
+      if (paymentType === 1) {
+        this.salesInvoiceForm.patchValue({
+          cash: totalNet - debt - val,
+        });
+      }
+      if (paymentType === 2) {
+        this.salesInvoiceForm.patchValue({
+          debt: totalNet - cash - val,
+        });
+      }
+      return;
     }
-    if (paymentType === 2) {
-      this.salesInvoiceForm.patchValue({
-        debt: totalNet - cash - val,
-      });
-    }
+    this.salesInvoiceForm.patchValue({
+      bankId: null,
+      visaTrxType: null,
+      visaTrxNo: null,
+    });
   }
 
   changeInCash(ev: any): void {
@@ -552,22 +561,20 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     ) {
       delete formValue.docDate;
     }
-    console.log(formValue);
-
-    // firstValueFrom(
-    //   this.dataService
-    //     .post(
-    //       `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForMobile`,
-    //       formValue
-    //     )
-    //     .pipe(
-    //       tap((_) => {
-    //         this.spinner.hide();
-    //         this.toast.show(Toast.added, { classname: Toast.success });
-    //         this.router.navigateByUrl('/sales-invoice');
-    //       })
-    //     )
-    // );
+    firstValueFrom(
+      this.dataService
+        .post(
+          `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForMobile`,
+          formValue
+        )
+        .pipe(
+          tap((_) => {
+            this.spinner.hide();
+            this.toast.show(Toast.added, { classname: Toast.success });
+            this.router.navigateByUrl('/sales-invoice');
+          })
+        )
+    );
   }
 
   ngOnDestroy(): void {

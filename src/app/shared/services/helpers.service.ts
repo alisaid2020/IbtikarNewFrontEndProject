@@ -80,7 +80,6 @@ export class HelpersService {
 
   hasPermission(myPermission: any) {
     const permissions = this.permissionsService.getPermissions();
-
     const hasPermission = Object.keys(permissions).some(
       (permission) => permission === myPermission
     );
