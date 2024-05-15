@@ -436,7 +436,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
     let cash = this.salesInvoiceForm.get('cash')!.value;
     let debt = this.salesInvoiceForm.get('debt')!.value;
-    let val = +ev.target.value;
+    let val = ev.value;
     if (paymentType === 1) {
       this.salesInvoiceForm.patchValue({
         cash: totalNet - debt - val,
@@ -450,7 +450,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   changeInCash(ev: any): void {
-    let val = +ev.target.value;
+    let val = ev.value;
     let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
     let visa = this.salesInvoiceForm.get('visa')!.value;
     this.salesInvoiceForm.patchValue({

@@ -241,6 +241,10 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     this.linesArray.push(this.newLine());
   }
 
+  changePaymentType(ev: any) {
+    this.fillPaymentMethodWithTotal();
+  }
+
   remove(i: number) {
     if (this.linesArray.length > 1) {
       this.linesArray.removeAt(i);
@@ -370,9 +374,8 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
   }
 
   changeInCash(ev: any): void {
-    let val = +ev.target.value;
+    let val = ev.value;
     let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
-    let visa = this.salesInvoiceForm.get('visa')!.value;
     this.salesInvoiceForm.patchValue({
       debt: totalNet - val,
     });
@@ -408,6 +411,9 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     ) {
       delete formValue.docDate;
     }
+
+    console.log(formValue);
+
     // firstValueFrom(
     //   this.dataService
     //     .post(

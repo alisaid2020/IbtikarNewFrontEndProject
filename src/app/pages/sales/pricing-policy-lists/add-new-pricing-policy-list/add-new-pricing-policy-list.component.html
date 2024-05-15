@@ -31,7 +31,7 @@
             [placeholder]="'PricePolicy'"
             [label]="'PricePolicy'"
             [bindValue]="'Id'"
-            [disabled]="priceListId ? true : false"
+            [disabled]="priceListData?.Id ? true : false"
             [control]="pricingPolicyListForm.get('PricePolicyId')!"
           ></app-ebtikar-select>
         </div>

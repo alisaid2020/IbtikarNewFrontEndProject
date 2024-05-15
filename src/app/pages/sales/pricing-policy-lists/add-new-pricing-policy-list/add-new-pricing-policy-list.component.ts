@@ -33,7 +33,7 @@ import * as XLSX from 'xlsx';
 export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   items: any[] = [];
   changedColumns: any;
-  priceListId: number;
+  priceListData: any;
   pricingPolicesObj: any;
   allColumns: any[] = [];
   pricingPolicyLines: any;
@@ -87,7 +87,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         map((res) => res?.pricingPolicyList),
         tap((res: any) => {
           if (res) {
-            this.priceListId = +this.route.snapshot.paramMap.get('id')!;
+            this.priceListData = res.Obj.PriceList;
             this.setData(res.Obj);
           }
         })
@@ -124,9 +124,14 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   }
 
   initForm(): void {
-    let PricePolicyId = this.priceListId;
+    let PricePolicyId = this.priceListData?.Id;
     // let groupId;
     // let branches;
+
+    if (this.priceListData) {
+      PricePolicyId = this.priceListData?.Id;
+    }
+
     this.pricingPolicyListForm = this.fb.group({
       PricePolicyId: [PricePolicyId, [Validators.required]],
       // groupId: [groupId],
@@ -211,7 +216,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   }
 
   get linesArray(): FormArray {
-    return this.pricingPolicyListForm.get('PriceListDetail') as FormArray;
+    return this.pricingPolicyListForm.get('PriceListDetail')! as FormArray;
   }
 
   addNewLine(value?: any): void {
@@ -241,7 +246,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       CommissionValue = value?.CommissionValue;
       CommissionPercentage = value?.CommissionPercentage;
     }
-    if (this.pricingPolicyLines?.length) {
+    if (this.priceListData) {
       Id = value?.Id;
       PriceListId = null;
     }
@@ -332,7 +337,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     let params: any = {
       pageNumber: this.pagination.PageNumber,
       pageSize: this.pagination.PageSize,
-      priceListId: this.priceListId,
+      priceListId: this.priceListData?.Id,
     };
     if (this.searchControl.value) {
       params.searchValue = this.searchControl.value;
@@ -365,7 +370,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
 
   submit(): void {
     this.spinner.show();
-    if (!this.pricingPolicyLines?.length) {
+    if (!this.priceListData) {
       this.changedFieldsOnly.forEach((field) => {
         field.PriceListId = this.pricingPolicyListForm.value.PricePolicyId;
       });

@@ -249,6 +249,7 @@
         <div class="col-md-4" appAppArrowFocus>
           <app-ebtikar-input
             class="disabled-form"
+            [type]="'number'"
             [readonly]="true"
             [placeholder]="'totalDiscount'"
             [label]="'totalDiscount'"
@@ -257,6 +258,7 @@
         </div>
         <div class="col-md-4" appAppArrowFocus>
           <app-ebtikar-input
+            [type]="'number'"
             class="disabled-form"
             [readonly]="true"
             [placeholder]="'totalVat'"
@@ -266,6 +268,7 @@
         </div>
         <div class="col-md-4" appAppArrowFocus>
           <app-ebtikar-input
+            [type]="'number'"
             class="disabled-form"
             [readonly]="true"
             [placeholder]="'net'"
@@ -280,6 +283,7 @@
           "
         >
           <app-ebtikar-input
+            [type]="'number'"
             [placeholder]="'cash'"
             [label]="'cash'"
             [control]="salesInvoiceForm.get('cash')!"
@@ -288,6 +292,7 @@
         </div>
         <div class="col-md-4">
           <app-ebtikar-input
+            [type]="'number'"
             [placeholder]="'visa'"
             [label]="'visa'"
             [control]="salesInvoiceForm.get('visa')!"
@@ -302,6 +307,7 @@
           "
         >
           <app-ebtikar-input
+            [type]="'number'"
             [label]="'debt'"
             [placeholder]="'debt'"
             [control]="salesInvoiceForm.get('debt')!"

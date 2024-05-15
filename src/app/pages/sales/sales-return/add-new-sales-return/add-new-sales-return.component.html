@@ -60,6 +60,7 @@
             [bindLabel]="'name'"
             [bindValue]="'value'"
             [control]="salesInvoiceForm.get('paymentType')!"
+            (emitChanged)="changePaymentType($event)"
           ></app-ebtikar-select>
         </div>
         <div
@@ -195,6 +196,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
+                      [type]="'number'"
                       [placeholder]="'returnedQty'"
                       [control]="linesArray.controls[i].get('correctQty')!"
                     ></app-ebtikar-input>
@@ -205,6 +207,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
+                      [type]="'number'"
                       [placeholder]="'returnedQty'"
                       [control]="linesArray.controls[i].get('returnedQty')!"
                     ></app-ebtikar-input>
@@ -228,6 +231,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
+                      [type]="'number'"
                       [placeholder]="'price'"
                       [control]="linesArray.controls[i].get('price')!"
                     ></app-ebtikar-input>
@@ -238,6 +242,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
+                      [type]="'number'"
                       [placeholder]="'discount'"
                       [control]="linesArray.controls[i].get('discount')!"
                     ></app-ebtikar-input>
@@ -269,6 +274,7 @@
       <div class="row g-5 mt-5">
         <div class="col-md-4" appAppArrowFocus>
           <app-ebtikar-input
+            [type]="'number'"
             class="disabled-form"
             [readonly]="true"
             [placeholder]="'totalDiscount'"
@@ -278,6 +284,7 @@
         </div>
         <div class="col-md-4" appAppArrowFocus>
           <app-ebtikar-input
+            [type]="'number'"
             class="disabled-form"
             [readonly]="true"
             [placeholder]="'totalVat'"
@@ -287,6 +294,7 @@
         </div>
         <div class="col-md-4" appAppArrowFocus>
           <app-ebtikar-input
+            [type]="'number'"
             class="disabled-form"
             [readonly]="true"
             [placeholder]="'totalNet'"
@@ -296,21 +304,26 @@
         </div>
         <div
           class="col-md-4"
-          [class.disabled-form]="
-            salesInvoiceForm.get('paymentType')?.value === 1
+          [class.disabled-form__enabled]="
+            salesInvoiceForm.get('paymentType')?.value === 2
           "
+          appAppArrowFocus
         >
           <app-ebtikar-input
+            [type]="'number'"
             [placeholder]="'cash'"
             [label]="'cash'"
             [control]="salesInvoiceForm.get('cash')!"
+            (emitChanged)="changeInCash($event)"
           ></app-ebtikar-input>
         </div>
         <div
           class="col-md-4"
+          appAppArrowFocus
           *ngIf="salesInvoiceForm.get('paymentType')?.value === 2"
         >
           <app-ebtikar-input
+            [type]="'number'"
             [label]="'debt'"
             [placeholder]="'debt'"
             [control]="salesInvoiceForm.get('debt')!"

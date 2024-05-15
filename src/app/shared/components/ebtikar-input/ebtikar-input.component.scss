@@ -130,8 +130,12 @@
       }
     }
 
+    p-inputnumber,
+    .p-inputnumber {
+      display: block !important;
+    }
     .p-inputnumber-input {
-      width: 100%;
+      width: 100% !important;
       padding: 0.775rem 1rem;
       font-size: 1.1rem;
       font-weight: 500;
