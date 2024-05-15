@@ -22,26 +22,23 @@
     <div class="card-body">
       <div class="row g-5">
         <div class="col-md-6" appAppArrowFocus>
-          <label>saleInvoiceId</label>
-          <ng-select
-            appendTo="body"
-            class="disabled-form__enabled"
-            formControlName="saleInvoiceId"
-            [items]="salesInvoices"
-            [bindLabel]="'InvoiceNumber'"
-            [bindValue]="'Id'"
-            [loading]="salesInvoiceLoading"
-            [multiple]="true"
-            [virtualScroll]="false"
-            [placeholder]="'saleInvoiceId' | translate"
-            notFoundText="لم يتم ايجاد بيانات"
-            loadingText="جاري التحميل."
-            typeToSearchText="اكتب للبحث"
-            (add)="filterSaleOrders($event)"
-            (remove)="removeSaleOrder($event)"
-            (change)="onChangeSource($event)"
-            (search)="searchInSaleInvoices($event)"
-          ></ng-select>
+          <label class="form-label">{{ "InvoiceNumber" | translate }}</label>
+          <div class="search-field-button disabled-form__enabled">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="invoiceNumber"
+              [formControl]="invoiceNumber"
+            />
+            <button
+              class="btn btn-icon btn-warning position-absolute top-0 left-0"
+              type="button"
+              [disabled]="!invoiceNumber.value"
+              (click)="searchInvoiceNumber()"
+            >
+              <i class="fa-solid fa-magnifying-glass fs-2"></i>
+            </button>
+          </div>
         </div>
         <div class="col-md-6" appAppArrowFocus>
           <app-ebtikar-select
@@ -270,7 +267,7 @@
           </ng-template>
         </p-table>
       </div>
-      <!-- <div class="row g-5 mt-5">
+      <div class="row g-5 mt-5">
         <div class="col-md-4" appAppArrowFocus>
           <app-ebtikar-input
             class="disabled-form"
@@ -305,47 +302,6 @@
             [control]="salesInvoiceForm.get('cash')!"
           ></app-ebtikar-input>
         </div>
-        <div class="col-md-4">
-          <app-ebtikar-input
-            [placeholder]="'visa'"
-            [label]="'visa'"
-            [control]="salesInvoiceForm.get('visa')!"
-          ></app-ebtikar-input>
-        </div>
-        <div class="col-md-4" *ngIf="salesInvoiceForm.get('visa')?.value">
-          <app-ebtikar-input
-            [placeholder]="'visaTrxNo'"
-            [label]="'visaTrxNo'"
-            [control]="salesInvoiceForm.get('visaTrxNo')!"
-          ></app-ebtikar-input>
-        </div>
-        <div
-          class="col-md-4"
-          *ngIf="
-            salesInvoiceForm.get('visa')?.value &&
-            !invoiceInitObj?.empHasAccount
-          "
-        >
-          <app-ebtikar-select
-            [items]="invoiceInitObj?.banks"
-            [placeholder]="'bankId'"
-            [label]="'bankId'"
-            [bindValue]="'Id'"
-            [bindLabel]="'BankName'"
-            [control]="salesInvoiceForm.get('bankId')!"
-          ></app-ebtikar-select>
-        </div>
-        <div class="col-md-4" *ngIf="salesInvoiceForm.get('visa')?.value">
-          <app-ebtikar-select
-            [hasStaticValues]="true"
-            [items]="visaTrxTypes"
-            [placeholder]="'visaTrxType'"
-            [label]="'visaTrxType'"
-            [bindLabel]="'name'"
-            [bindValue]="'value'"
-            [control]="salesInvoiceForm.get('visaTrxType')!"
-          ></app-ebtikar-select>
-        </div>
         <div
           class="col-md-4"
           *ngIf="salesInvoiceForm.get('paymentType')?.value === 2"
@@ -357,7 +313,7 @@
           >
           </app-ebtikar-input>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </form>

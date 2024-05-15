@@ -1,8 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { apiUrl } from '@constants/api.constant';
 import { E_USER_ROLE } from '@constants/general.constant';
+import { Toast } from '@enums/toast.enum';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '@services/data.service';
 import { HelpersService } from '@services/helpers.service';
@@ -16,15 +17,18 @@ import { Subscription, firstValueFrom, tap } from 'rxjs';
   templateUrl: './add-new-sales-return.component.html',
 })
 export class AddNewSalesReturnComponent implements OnInit {
-  salesInvoiceForm: FormGroup;
-  salesInvoiceLoading: boolean;
-  salesReturnFound: any;
-  salesInvoices: any[] = [];
-  changedColumns: any;
-  subs: Subscription[] = [];
-  _selectedColumns: any[] = [];
-  allColumns: any[] = [];
   items: any[] = [];
+  changedColumns: any;
+  salesReturnFound: any;
+  allColumns: any[] = [];
+  userRole = E_USER_ROLE;
+  salesInvoices: any[] = [];
+  subs: Subscription[] = [];
+  selectClients: any[] = [];
+  salesInvoiceForm: FormGroup;
+  _selectedColumns: any[] = [];
+  salesInvoiceLoading: boolean;
+  invoiceNumber = new FormControl();
   tableStorage = 'salesReturnLines-table';
   defaultStorage = 'salesReturnLines-default-selected';
   clientsApi = `${apiUrl}/XtraAndPos_GeneralLookups/CustomerByTerm`;
@@ -49,7 +53,6 @@ export class AddNewSalesReturnComponent implements OnInit {
     { field: 'vat', header: 'vat' },
     { field: 'discount', header: 'discount' },
   ];
-  selectClients: any[] = [];
   paymentTypes = [
     { name: 'cash', value: 1 },
     { name: 'debt', value: 2 },
@@ -58,7 +61,6 @@ export class AddNewSalesReturnComponent implements OnInit {
     { name: 'Mada', value: 1 },
     { name: 'Transfer', value: 2 },
   ];
-  userRole = E_USER_ROLE;
 
   router = inject(Router);
   fb = inject(FormBuilder);
@@ -80,28 +82,24 @@ export class AddNewSalesReturnComponent implements OnInit {
   }
 
   initForm(): void {
+    let cash;
+    let debt;
     let clientId;
+    let notes;
     let saleInvoiceId;
     let docDate = new Date();
+    let isPendingPayment;
+    let saleInvoiceNo;
+    let treasuryId;
+    let exchangePrice;
+    let clientType;
+    let docType;
     let paymentType;
-    let notes;
+    let storeId;
+    let totalDisc;
+    let totalNet;
+    let totalVat;
     let saleInvoiceReturnDetails = this.fb.array([]);
-    // let cash;
-    // let visa;
-    // let bankId;
-    // let debt;
-    // let isPendingPayment;
-    // let treasuryId;
-    // let exchangePrice;
-    // let clientType;
-    // let docType;
-    // let storeId;
-    // let isMobile;
-    // let visaTrxType;
-    // let visaTrxNo;
-    // let totalDisc = 0;
-    // let totalVat = 0;
-    // let totalNet = 0;
 
     this.salesInvoiceForm = this.fb.group({
       clientId: [clientId],
@@ -109,23 +107,19 @@ export class AddNewSalesReturnComponent implements OnInit {
       docDate: [docDate],
       paymentType: [paymentType],
       notes: [notes],
-      // totalDisc: [totalDisc],
-      // cash: [cash],
-      // visa: [visa],
-      // bankId: [bankId],
-      // debt: [debt],
-      // isPendingPayment: [isPendingPayment],
-      // treasuryId: [treasuryId],
-      // exchangePrice: [exchangePrice],
-      // clientType: [clientType],
-      // docType: [docType],
-      // storeId: [storeId],
-      // isMobile: [isMobile],
-      // visaTrxType: [visaTrxType],
-      // visaTrxNo: [visaTrxNo],
+      totalDisc: [totalDisc],
+      cash: [cash],
+      debt: [debt],
+      isPendingPayment: [isPendingPayment],
+      treasuryId: [treasuryId],
+      exchangePrice: [exchangePrice],
+      clientType: [clientType],
+      docType: [docType],
+      storeId: [storeId],
+      saleInvoiceNo: [saleInvoiceNo],
       saleInvoiceReturnDetails: saleInvoiceReturnDetails,
-      // totalVat: [totalVat],
-      // totalNet: [totalNet],
+      totalNet: [totalNet],
+      totalVat: [totalVat],
     });
   }
 
@@ -158,43 +152,31 @@ export class AddNewSalesReturnComponent implements OnInit {
       this.helpers.setItemToLocalStorage(this.tableStorage, ts);
     }
   }
-  filterSaleOrders(ev: any) {}
-
-  removeSaleOrder(ev: any) {}
-
-  onChangeSource(ev: any) {}
 
   get linesArray(): FormArray {
     return this.salesInvoiceForm.get('saleInvoiceReturnDetails') as FormArray;
   }
 
-  searchInSaleInvoices(ev: any) {
-    if (ev.term?.length >= 1) {
-      this.salesInvoiceLoading = true;
-      let params = { data: ev.term };
-      firstValueFrom(
-        this.dataService
-          .get(`${apiUrl}/ExtraAndPOS_ReturnSaleInvoice/GetByNo`, { params })
-          .pipe(
-            tap((res) => {
-              this.salesInvoiceLoading = false;
-              this.extractInvoiceLines(res.Obj.invoice.SaleInvoiceDetails);
+  searchInvoiceNumber(): void {
+    this.spinner.show();
+    let params = { data: +this.invoiceNumber.value };
+    firstValueFrom(
+      this.dataService
+        .get(`${apiUrl}/ExtraAndPOS_ReturnSaleInvoice/GetByNo`, { params })
+        .pipe(
+          tap((res) => {
+            this.spinner.hide();
+            if (res?.Obj) {
               this.salesReturnFound = res.Obj.invoice;
-              this.salesInvoiceForm.patchValue({
-                clientId: this.salesReturnFound.ClientId,
-                paymentType: this.salesReturnFound.PaymentType,
-                notes: this.salesReturnFound.Notes,
+              this.extractInvoiceLines();
+            } else {
+              this.toast.show('NoInvoiceMatchThatNumber', {
+                classname: Toast.error,
               });
-              this.selectClients = [
-                {
-                  Id: this.salesReturnFound.ClientId,
-                  clientName: this.salesReturnFound.ClientName,
-                },
-              ];
-            })
-          )
-      );
-    }
+            }
+          })
+        )
+    );
   }
 
   newLine(value?: any): FormGroup {
@@ -251,11 +233,22 @@ export class AddNewSalesReturnComponent implements OnInit {
     }
   }
 
-  extractInvoiceLines(saleInvoiceDetails: any[]) {
+  extractInvoiceLines() {
+    this.salesInvoiceForm.patchValue({
+      clientId: this.salesReturnFound.ClientId,
+      paymentType: this.salesReturnFound.PaymentType,
+      notes: this.salesReturnFound.Notes,
+    });
+    this.selectClients = [
+      {
+        Id: this.salesReturnFound.ClientId,
+        clientName: this.salesReturnFound.ClientName,
+      },
+    ];
     if (this.linesArray.value?.length > 0) {
       this.linesArray.clear();
     }
-    saleInvoiceDetails.forEach((line, i: number) => {
+    this.salesReturnFound.SaleInvoiceDetails.forEach((line: any, i: number) => {
       this.addNewLine(line);
       this.items[i] = [
         { ItemId: line.ItemID, NameAr: line.NameAr, NameEn: line.NameEn },

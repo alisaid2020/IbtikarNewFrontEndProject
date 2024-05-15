@@ -460,3 +460,17 @@ div,
 div:hover {
   scrollbar-color: #2c569b #eee;
 }
+
+.search-field-button {
+  position: relative;
+  button {
+    position: absolute;
+    z-index: 999;
+    top: 0.15px !important;
+    right: 0;
+    [dir="rtl"] & {
+      right: unset;
+      left: 0;
+    }
+  }
+}

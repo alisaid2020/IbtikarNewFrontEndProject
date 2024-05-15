@@ -38,7 +38,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   itemsByTermApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemsByTrim`;
   itemsByBarcodeApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemByBarcode`;
   defaultSelected: any[] = [
-    { field: 'Barcode', header: 'barcode' },
+    { field: 'productBarcode', header: 'barcode' },
     { field: 'itemID', header: 'item' },
     { field: 'uniteId', header: 'unit' },
     { field: 'quantity', header: 'quantity' },
@@ -163,7 +163,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   newLine(value?: any): FormGroup {
-    let barcode;
+    let productBarcode;
     let itemID;
     let uniteId;
     let productId;
@@ -173,9 +173,9 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let balance = 0;
     let price = 0;
     let discount = 0;
-    let total = 0;
+    let totalPriceAfterVat = 0;
     return this.fb.group({
-      barcode: [barcode],
+      productBarcode: [productBarcode],
       itemID: [itemID],
       uniteId: [uniteId],
       vat: [vat],
@@ -185,7 +185,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       balance: [balance],
       price: [price],
       discount: [discount],
-      total: [total],
+      totalPriceAfterVat: [totalPriceAfterVat],
     });
   }
 
@@ -274,7 +274,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       this.barcodeItems[i] = [];
       form.patchValue({
         uniteId: null,
-        barcode: null,
+        productBarcode: null,
       });
       return;
     }
@@ -297,7 +297,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         vat: ev?.Vat,
         productId: ev?.Id,
         quantity: 1,
-        barcode: ev?.Barcode,
+        productBarcode: ev?.Barcode,
       });
       this.getBalance(ev, i);
       this.getPrice(ev, i);
@@ -371,21 +371,24 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let quantity: any = form.get('quantity')?.value;
     let discount: any = form.get('discount')?.value;
     let vat: any = form.get('vat')?.value;
-    let total: any = form.get('total')?.value;
+    let totalPriceAfterVat: any = form.get('totalPriceAfterVat')?.value;
     let vatAmount: any;
 
     if (this.isRoundToTwoNumbers) {
-      vatAmount = Math.round(((price * quantity - discount) * vat) / 100);
-      total = price * quantity - discount + vatAmount;
+      let p1 = Math.round(price * quantity);
+      let p2 = Math.round(p1 - discount);
+      let p3 = Math.round(p2 * vat);
+      vatAmount = Math.round(p3 / 100);
+      totalPriceAfterVat = p2 + vatAmount;
     } else {
       let part1 = Math.round(price * quantity * 1000) / 1000;
       let part2 = Math.round((part1 - discount) * 1000) / 1000;
       let part3 = Math.round(part2 * vat * 1000) / 1000;
       vatAmount = Math.round((part3 / 100) * 1000) / 1000;
-      total = Math.round((part2 + vatAmount) * 1000) / 1000;
+      totalPriceAfterVat = Math.round((part2 + vatAmount) * 1000) / 1000;
     }
     form.patchValue({
-      total: total,
+      totalPriceAfterVat: totalPriceAfterVat,
       vatAmount: vatAmount,
     });
     this.getTotalsOfInvoice();
@@ -393,7 +396,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
 
   getTotalsOfInvoice(): void {
     let totalNet = this.linesArray.controls
-      .map((line: any) => +line.value?.total)
+      .map((line: any) => +line.value?.totalPriceAfterVat)
       .reduce((acc, curr) => acc + curr, 0);
 
     let totalVat = this.linesArray.controls
