@@ -152,16 +152,14 @@
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
-                    <!-- <app-ebtikar-select
-                      [apiUrl]="itemsByBarcodeApi"
-                      [customData]="barcodeItems[i]"
-                      [placeholder]="'Barcode'"
+                    <app-ebtikar-select
+                      [items]="barcodeItems[i]"
+                      [placeholder]="'barcode'"
                       [bindValue]="'Barcode'"
                       [bindLabel]="'Barcode'"
-                      [searchByBarcode]="true"
-                      [control]="barcodeControls[i]"
-                      (emitChanged)="selectedItemByBarcode($event, i)"
-                    ></app-ebtikar-select> -->
+                      [clearable]="false"
+                      [control]="linesArray.controls[i].get('productBarcode')!"
+                    ></app-ebtikar-select>
                   </td>
                   <td
                     *ngSwitchCase="'itemID'"
@@ -182,15 +180,14 @@
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
-                    <!-- <app-ebtikar-select
-                      [hasStaticValues]="true"
+                    <app-ebtikar-select
+                      [hasMultipleLabels]="true"
                       [placeholder]="'selectUnit'"
-                      [items]="itemsUnits[i]"
+                      [items]="units[i]"
                       [bindValue]="'unitId'"
-                      [bindLabel]="'name'"
+                      [clearable]="false"
                       [control]="linesArray.controls[i].get('uniteId')!"
-                      (emitChanged)="selectedUnit($event, i)"
-                    ></app-ebtikar-select> -->
+                    ></app-ebtikar-select>
                   </td>
                   <td
                     *ngSwitchCase="'correctQty'"

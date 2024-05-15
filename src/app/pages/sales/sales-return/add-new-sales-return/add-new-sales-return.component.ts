@@ -18,6 +18,7 @@ import { Subscription, firstValueFrom, tap } from 'rxjs';
 })
 export class AddNewSalesReturnComponent implements OnInit {
   items: any[] = [];
+  units: any[] = [];
   changedColumns: any;
   salesReturnFound: any;
   allColumns: any[] = [];
@@ -25,6 +26,7 @@ export class AddNewSalesReturnComponent implements OnInit {
   salesInvoices: any[] = [];
   subs: Subscription[] = [];
   selectClients: any[] = [];
+  barcodeItems: any[] = [];
   salesInvoiceForm: FormGroup;
   _selectedColumns: any[] = [];
   salesInvoiceLoading: boolean;
@@ -52,6 +54,8 @@ export class AddNewSalesReturnComponent implements OnInit {
     { field: 'price', header: 'price' },
     { field: 'vat', header: 'vat' },
     { field: 'discount', header: 'discount' },
+    { field: 'totalPriceAfterVat', header: 'totalPriceAfterVat' },
+    { field: 'uniteId', header: 'uniteId' },
   ];
   paymentTypes = [
     { name: 'cash', value: 1 },
@@ -168,6 +172,8 @@ export class AddNewSalesReturnComponent implements OnInit {
             this.spinner.hide();
             if (res?.Obj) {
               this.salesReturnFound = res.Obj.invoice;
+              console.log(this.salesReturnFound);
+
               this.extractInvoiceLines();
             } else {
               this.toast.show('NoInvoiceMatchThatNumber', {
@@ -181,27 +187,36 @@ export class AddNewSalesReturnComponent implements OnInit {
 
   newLine(value?: any): FormGroup {
     let itemID;
-    let uniteId;
     let productId;
     let vat = 0;
-    let quantity = 0;
-    let balance = 0;
     let price = 0;
     let discount = 0;
-    let total = 0;
     let returnedQty = 0;
     let saleInvoiceDetailId;
     let correctQty = 0;
+    let productBarcode;
+    let totalPriceAfterVat = 0;
+    let vatAmount = 0;
+    let uniteId;
+
+    let docDate;
+    let quantity = 0;
+
     if (value) {
+      // console.log(value);
+
       itemID = value.ItemID;
-      returnedQty = value.ReturnedQty;
-      discount = value.Discount;
+      productId = value.ProductId;
       vat = value.Vat;
       price = value.Price;
+      discount = value.Discount;
+      returnedQty = value.ReturnedQty;
       saleInvoiceDetailId = value.Id;
-      uniteId = value.UniteId;
-      productId = value.ProductId;
       correctQty = value.Quantity;
+      productBarcode = value.ProductBarcode;
+      totalPriceAfterVat = value.TotalPriceAfterVat;
+      vatAmount = value.VatAmount;
+      uniteId = value.UniteId;
     }
     return this.fb.group({
       itemID: [itemID],
@@ -212,10 +227,12 @@ export class AddNewSalesReturnComponent implements OnInit {
       productId: [productId],
       quantity: [quantity],
       correctQty: [correctQty],
-      balance: [balance],
       price: [price],
       discount: [discount],
-      total: [total],
+      totalPriceAfterVat: [totalPriceAfterVat],
+      docDate: [docDate],
+      productBarcode: [productBarcode],
+      vatAmount: [vatAmount],
     });
   }
 
@@ -238,6 +255,20 @@ export class AddNewSalesReturnComponent implements OnInit {
       clientId: this.salesReturnFound.ClientId,
       paymentType: this.salesReturnFound.PaymentType,
       notes: this.salesReturnFound.Notes,
+      totalNet: this.salesReturnFound.TotalInvoiceAfterVat,
+      totalVat: this.salesReturnFound.TotalInvoiceVatAmount,
+      totalDisc: this.salesReturnFound.TotalDisc,
+      docDate: new Date(this.salesReturnFound.DocDate),
+      cash: this.salesReturnFound.Cash,
+      debt: this.salesReturnFound.Debt,
+      saleInvoiceId: this.salesReturnFound.Id,
+      isPendingPayment: this.salesReturnFound.IsPendingPayment,
+      treasuryId: this.salesReturnFound.TreasuryId,
+      exchangePrice: this.salesReturnFound.ExchangePrice,
+      clientType: this.salesReturnFound.ClientType,
+      docType: this.salesReturnFound.DocType,
+      storeId: this.salesReturnFound.storeId,
+      //  saleInvoiceNo; not found from invoice come
     });
     this.selectClients = [
       {
@@ -245,6 +276,7 @@ export class AddNewSalesReturnComponent implements OnInit {
         clientName: this.salesReturnFound.ClientName,
       },
     ];
+
     if (this.linesArray.value?.length > 0) {
       this.linesArray.clear();
     }
@@ -252,6 +284,14 @@ export class AddNewSalesReturnComponent implements OnInit {
       this.addNewLine(line);
       this.items[i] = [
         { ItemId: line.ItemID, NameAr: line.NameAr, NameEn: line.NameEn },
+      ];
+      this.barcodeItems[i] = [
+        {
+          Barcode: line.productBarcode,
+        },
+      ];
+      this.units[i] = [
+        { unitId: line.UniteId, NameAr: 'sjdnsj', NameEn: 'nsajamlk' },
       ];
     });
   }
