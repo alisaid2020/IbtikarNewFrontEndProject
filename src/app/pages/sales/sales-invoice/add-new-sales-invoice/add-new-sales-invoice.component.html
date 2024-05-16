@@ -147,6 +147,16 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
+                      *ngIf="freeItemsInfo[i]"
+                      [items]="barcodeItems[i]"
+                      [placeholder]="'barcode'"
+                      [bindValue]="'Barcode'"
+                      [bindLabel]="'Barcode'"
+                      [clearable]="false"
+                      [control]="linesArray.controls[i].get('productBarcode')!"
+                    ></app-ebtikar-select>
+                    <app-ebtikar-select
+                      *ngIf="!freeItemsInfo[i]"
                       [apiUrl]="itemsByBarcodeApi"
                       [customData]="barcodeItems[i]"
                       [placeholder]="'barcode'"
@@ -170,7 +180,6 @@
                       [bindValue]="'ItemId'"
                       [clearable]="false"
                       [control]="linesArray.controls[i].get('itemID')!"
-                      (emitChanged)="selectedItemByName($event, i)"
                     ></app-ebtikar-select>
                     <app-ebtikar-select
                       *ngIf="!freeItemsInfo[i]"
@@ -190,7 +199,6 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
-                      [hasStaticValues]="true"
                       [placeholder]="'selectUnit'"
                       [items]="units[i]"
                       [bindValue]="'unitId'"

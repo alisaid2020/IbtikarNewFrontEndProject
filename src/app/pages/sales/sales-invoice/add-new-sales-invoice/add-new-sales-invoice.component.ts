@@ -382,7 +382,13 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let form = this.linesArray.controls[i];
     let quantity = form.get('quantity')?.value;
 
-    if (this.itemPriceList[i]?.offers.ItemDiscount > 0) {
+    console.log(this.itemPriceList[i]);
+
+    let offers = this.itemPriceList[i]?.offers;
+    let freeItems = this.itemPriceList[i]?.offers?.freeitems;
+    let itemUnites = this.itemPriceList[i]?.offers?.ItemUnites;
+
+    if (offers.ItemDiscount > 0) {
       if (quantity == this.itemPriceList[i]?.offers.ItemQty) {
         let discountValue = this.helpers.convertDiscountToValue(
           form,
@@ -395,53 +401,53 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (
-      this.itemPriceList[i]?.offers.freeitems?.length > 0 &&
-      this.itemPriceList[i]?.offers.ItemUnites?.length > 0
-    ) {
-      if (quantity >= this.itemPriceList[i]?.offers.ItemQty) {
-        this.itemPriceList[i]?.offers.freeitems.forEach((item: any) => {
-          let freeItems = this.itemPriceList[i]?.offers.ItemUnites.filter(
-            (ele: any) => (ele.Id = item.FreeItemId)
+    if (freeItems?.length && itemUnites?.length && quantity >= offers.ItemQty) {
+      let freeItemsCount = Math.floor(quantity / offers.ItemQty);
+      freeItems.forEach((item: any) => {
+        let filterFreeItems = itemUnites.filter(
+          (el: any) => (el.Id = item.FreeItemId)
+        );
+        filterFreeItems.forEach((freeItem: any, ind: any) => {
+          let freeItemIndex = this.freeItemsInfo.findIndex(
+            (el) => freeItem.Id === el?.freeItemId
           );
-          let freeItemsCount = Math.floor(
-            quantity / this.itemPriceList[i]?.offers.ItemQty
-          );
-          for (let ind = 0; ind < freeItemsCount; ind++) {
-            freeItems.forEach((freeItem: any) => {
-              let newLine = {
-                ProductBarcode: freeItem.Barcode,
-                ItemID: freeItem.Id,
-                UniteId: freeItem.UnitId,
-                Vat: 0,
-                Price: 0,
-                TotalPriceAfterVat: 0,
-                Balance: 0,
-                VatAmount: 0,
-                Quantity: item.FreeItemQuantity,
-                Discount: 0,
-              };
-              this.freeItemsInfo[i + ind + 1] = { freeItemId: freeItem.Id };
-              this.barcodeItems[i + ind + 1] = [
-                {
-                  Barcode: freeItem.ProductBarcode,
-                },
-              ];
-              this.items[i + ind + 1] = [
-                {
-                  ItemId: freeItem?.Id,
-                  NameAr: freeItem?.NameAr,
-                  NameEn: freeItem?.NameEn,
-                },
-              ];
-              this.units[i + ind + 1] = [
-                { unitId: freeItem.UniteId, name: freeItem.UnitName },
-              ];
-              this.addNewLine(newLine, i + ind + 1);
+          if (freeItemIndex > -1) {
+            this.linesArray.controls[freeItemIndex].patchValue({
+              quantity: item.FreeItemQuantity * freeItemsCount,
             });
+          } else {
+            let newLine = {
+              ProductBarcode: freeItem.Barcode,
+              ItemID: freeItem.Id,
+              UniteId: freeItem.UnitId,
+              Vat: 0,
+              Price: 0,
+              TotalPriceAfterVat: 0,
+              Balance: 0,
+              VatAmount: 0,
+              Quantity: item.FreeItemQuantity * freeItemsCount,
+              Discount: 0,
+            };
+            this.freeItemsInfo[i + ind + 1] = { freeItemId: freeItem.Id };
+            this.barcodeItems[i + ind + 1] = [
+              {
+                Barcode: freeItem.Barcode,
+              },
+            ];
+            this.items[i + ind + 1] = [
+              {
+                ItemId: freeItem?.Id,
+                NameAr: freeItem?.NameAr,
+                NameEn: freeItem?.NameEn,
+              },
+            ];
+            this.units[i + ind + 1] = [
+              { unitId: freeItem.UniteId, name: freeItem.UnitName },
+            ];
+            this.addNewLine(newLine, i + ind + 1);
           }
         });
-      }
+      });
     }
     this.runCalculations(i);
   }
@@ -513,7 +519,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   changeInVisa(ev: any): void {
-    if (ev.value) {
+    if (ev.value >= 0) {
       let val = ev.value;
       let paymentType = this.salesInvoiceForm.get('paymentType')!.value;
       let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
@@ -539,12 +545,14 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   changeInCash(ev: any): void {
-    let val = ev.value;
-    let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
-    let visa = this.salesInvoiceForm.get('visa')!.value;
-    this.salesInvoiceForm.patchValue({
-      debt: totalNet - visa - val,
-    });
+    if (ev.value >= 0) {
+      let val = ev.value;
+      let totalNet = this.salesInvoiceForm.get('totalNet')!.value;
+      let visa = this.salesInvoiceForm.get('visa')!.value;
+      this.salesInvoiceForm.patchValue({
+        debt: totalNet - visa - val,
+      });
+    }
   }
 
   checkIfUserShiftOpened(): void {
@@ -598,20 +606,20 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     ) {
       delete formValue.docDate;
     }
-    // firstValueFrom(
-    //   this.dataService
-    //     .post(
-    //       `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForMobile`,
-    //       formValue
-    //     )
-    //     .pipe(
-    //       tap((_) => {
-    //         this.spinner.hide();
-    //         this.toast.show(Toast.added, { classname: Toast.success });
-    //         this.router.navigateByUrl('/sales-invoice');
-    //       })
-    //     )
-    // );
+    firstValueFrom(
+      this.dataService
+        .post(
+          `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForMobile`,
+          formValue
+        )
+        .pipe(
+          tap((_) => {
+            this.spinner.hide();
+            this.toast.show(Toast.added, { classname: Toast.success });
+            this.router.navigateByUrl('/sales-invoice');
+          })
+        )
+    );
   }
 
   ngOnDestroy(): void {
