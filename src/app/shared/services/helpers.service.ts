@@ -78,6 +78,29 @@ export class HelpersService {
       .map((formGroup) => formGroup.value);
   }
 
+  //conver discount percentage to discount value
+  convertDiscountToValue(
+    form: any,
+    isRoundToTwoNumbers: any,
+    itemPriceObj: any
+  ): any {
+    let quantity = form.get('quantity')?.value;
+    let price = form.get('price')?.value;
+    let discountValue: any;
+
+    if (isRoundToTwoNumbers) {
+      let p1 = Math.round(price * quantity);
+      let p2 = Math.round(itemPriceObj.offers.ItemDiscount / 100);
+      discountValue = Math.round(p1 * p2);
+    } else {
+      let part1 = Math.round(quantity * price * 1000) / 1000;
+      let part2 =
+        Math.round((itemPriceObj.offers.ItemDiscount / 100) * 1000) / 1000;
+      discountValue = Math.round(part1 * part2 * 1000) / 1000;
+    }
+    return discountValue;
+  }
+
   hasPermission(myPermission: any) {
     const permissions = this.permissionsService.getPermissions();
     const hasPermission = Object.keys(permissions).some(

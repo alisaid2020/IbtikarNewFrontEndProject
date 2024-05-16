@@ -23,7 +23,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   items: any = [];
   isRoundToTwoNumbers: any;
   invoiceInitObj: any;
-  itemPriceObj: any;
+  itemPriceList: any[] = [];
   changedColumns: any;
   units: any = [];
   userRole = E_USER_ROLE;
@@ -149,9 +149,10 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     return this.salesInvoiceForm.get('saleInvoiceDetails') as FormArray;
   }
 
-  addNewLine(value?: any): void {
+  addNewLine(value?: any, i?: any): void {
     if (value) {
-      this.linesArray.push(this.newLine(value));
+      this.linesArray.controls.splice(i, 0, this.newLine(value));
+      this.linesArray.updateValueAndValidity();
       return;
     }
     this.linesArray.push(this.newLine());
@@ -275,7 +276,6 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       quantity: 1,
     });
     this.getBalance(ev, i);
-    this.getPrice(ev, i);
   }
 
   selectedItemByName(ev: any, i: number): void {
@@ -311,7 +311,6 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         productBarcode: ev?.Barcode,
       });
       this.getBalance(ev, i);
-      this.getPrice(ev, i);
     }
   }
 
@@ -328,6 +327,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         .pipe(
           tap((res) => {
             this.linesArray.controls[i].patchValue({ balance: res.Obj });
+            this.getPrice(ev, i);
           })
         )
     );
@@ -336,7 +336,6 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   getPrice(ev: any, i: number): void {
     let quantity = this.linesArray.controls[i].get('quantity')?.value;
     let balance = this.linesArray.controls[i].get('balance')?.value;
-
     firstValueFrom(
       this.dataService
         .get(`${apiUrl}/XtraAndPos_GeneralLookups/ItemPriceList`, {
@@ -344,7 +343,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.itemPriceObj = res.Obj;
+            this.itemPriceList[i] = res.Obj;
             if (balance < quantity && !this.invoiceInitObj.saleByMinus) {
               this.toast.show('Item Balance Not Allowed', {
                 classname: Toast.error,
@@ -364,15 +363,30 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     );
   }
 
-  checkForOffers(i: number) {
+  changeQuantity(ev: any, i: any): void {
+    let balance = this.linesArray.controls[i].get('balance')?.value;
+    if (ev.value) {
+      if (balance < ev.value && !this.invoiceInitObj.saleByMinus) {
+        this.toast.show('Item Balance Not Allowed', {
+          classname: Toast.error,
+        });
+        return;
+      }
+      this.checkForOffers(i);
+    }
+  }
+
+  checkForOffers(i: number): void {
     let form = this.linesArray.controls[i];
     let quantity = form.get('quantity')?.value;
-    let price = form.get('price')?.value;
 
-    if (this.itemPriceObj.offers.ItemDiscount > 0) {
-      if (quantity == this.itemPriceObj.offers.ItemQty) {
-        let discountValue =
-          quantity * price * (this.itemPriceObj.offers.ItemDiscount / 100);
+    if (this.itemPriceList[i]?.offers.ItemDiscount > 0) {
+      if (quantity == this.itemPriceList[i]?.offers.ItemQty) {
+        let discountValue = this.helpers.convertDiscountToValue(
+          form,
+          this.isRoundToTwoNumbers,
+          this.itemPriceList[i]
+        );
         form.patchValue({ discount: discountValue });
       } else {
         form.patchValue({ discount: 0 });
@@ -380,36 +394,42 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     }
 
     if (
-      this.itemPriceObj.offers.freeitems?.length > 0 &&
-      this.itemPriceObj.offers.ItemUnites?.length > 0
+      this.itemPriceList[i]?.offers.freeitems?.length > 0 &&
+      this.itemPriceList[i]?.offers.ItemUnites?.length > 0
     ) {
-      if (quantity == this.itemPriceObj.offers.ItemQty) {
-        this.itemPriceObj.offers.freeitems.forEach((item: any) => {
-          let freeItems = this.itemPriceObj.offers.ItemUnites.filter(
+      if (quantity >= this.itemPriceList[i]?.offers.ItemQty) {
+        this.itemPriceList[i]?.offers.freeitems.forEach((item: any) => {
+          let freeItems = this.itemPriceList[i]?.offers.ItemUnites.filter(
             (ele: any) => (ele.Id = item.FreeItemId)
           );
-          freeItems.forEach((freeItem: any) => {
-            let newLine = {
-              ProductBarcode: freeItem.Barcode,
-              ItemID: freeItem.ItemId,
-              UniteId: freeItem.UnitId,
-              Vat: 0,
-              Price: 0,
-              TotalPriceAfterVat: 0,
-              Balance: 0,
-              VatAmount: 0,
-              Quantity: item.FreeItemQuantity,
-              Discount: 0,
-            };
-            this.addNewLine(newLine);
-          });
+          let freeItemsCount = Math.floor(
+            quantity / this.itemPriceList[i]?.offers.ItemQty
+          );
+          for (let ind = 0; ind < freeItemsCount; ind++) {
+            let newLine;
+            freeItems.forEach((freeItem: any) => {
+              newLine = {
+                ProductBarcode: freeItem.Barcode,
+                ItemID: freeItem.ItemId,
+                UniteId: freeItem.UnitId,
+                Vat: 0,
+                Price: 0,
+                TotalPriceAfterVat: 0,
+                Balance: 0,
+                VatAmount: 0,
+                Quantity: item.FreeItemQuantity,
+                Discount: 0,
+              };
+            });
+            this.addNewLine(newLine, i + ind + 1);
+          }
         });
       }
     }
     this.runCalculations(i);
   }
 
-  runCalculations(i: number) {
+  runCalculations(i: number): void {
     let form = this.linesArray.controls[i];
     let price: any = form.get('price')?.value;
     let quantity: any = form.get('quantity')?.value;
