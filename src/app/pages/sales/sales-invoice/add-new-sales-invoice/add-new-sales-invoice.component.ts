@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   shiftData: any;
   items: any = [];
+  freeItemsInfo: any[] = [];
   isRoundToTwoNumbers: any;
   invoiceInitObj: any;
   itemPriceList: any[] = [];
@@ -186,6 +187,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       discount = value.Discount;
       totalPriceAfterVat = value.TotalPriceAfterVat;
     }
+
     return this.fb.group({
       productBarcode: [productBarcode],
       itemID: [itemID],
@@ -406,11 +408,10 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
             quantity / this.itemPriceList[i]?.offers.ItemQty
           );
           for (let ind = 0; ind < freeItemsCount; ind++) {
-            let newLine;
             freeItems.forEach((freeItem: any) => {
-              newLine = {
+              let newLine = {
                 ProductBarcode: freeItem.Barcode,
-                ItemID: freeItem.ItemId,
+                ItemID: freeItem.Id,
                 UniteId: freeItem.UnitId,
                 Vat: 0,
                 Price: 0,
@@ -420,8 +421,24 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
                 Quantity: item.FreeItemQuantity,
                 Discount: 0,
               };
+              this.freeItemsInfo[i + ind + 1] = { freeItemId: freeItem.Id };
+              this.barcodeItems[i + ind + 1] = [
+                {
+                  Barcode: freeItem.ProductBarcode,
+                },
+              ];
+              this.items[i + ind + 1] = [
+                {
+                  ItemId: freeItem?.Id,
+                  NameAr: freeItem?.NameAr,
+                  NameEn: freeItem?.NameEn,
+                },
+              ];
+              this.units[i + ind + 1] = [
+                { unitId: freeItem.UniteId, name: freeItem.UnitName },
+              ];
+              this.addNewLine(newLine, i + ind + 1);
             });
-            this.addNewLine(newLine, i + ind + 1);
           }
         });
       }
@@ -581,20 +598,20 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     ) {
       delete formValue.docDate;
     }
-    firstValueFrom(
-      this.dataService
-        .post(
-          `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForMobile`,
-          formValue
-        )
-        .pipe(
-          tap((_) => {
-            this.spinner.hide();
-            this.toast.show(Toast.added, { classname: Toast.success });
-            this.router.navigateByUrl('/sales-invoice');
-          })
-        )
-    );
+    // firstValueFrom(
+    //   this.dataService
+    //     .post(
+    //       `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForMobile`,
+    //       formValue
+    //     )
+    //     .pipe(
+    //       tap((_) => {
+    //         this.spinner.hide();
+    //         this.toast.show(Toast.added, { classname: Toast.success });
+    //         this.router.navigateByUrl('/sales-invoice');
+    //       })
+    //     )
+    // );
   }
 
   ngOnDestroy(): void {

@@ -137,6 +137,7 @@
                 [style.background-color]="
                   i % 2 !== 0 ? '#add8e633' : 'rgb(250 250 250)'
                 "
+                [class.disabled-form]="freeItemsInfo[i]"
               >
                 @for (col of columns; track $index) {
                 <ng-container [ngSwitch]="col.header">
@@ -162,12 +163,23 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
-                      [apiUrl]="itemsByTermApi"
-                      [customData]="items[i]"
+                      *ngIf="freeItemsInfo[i]"
+                      [hasMultipleLabels]="true"
+                      [items]="items[i]"
                       [placeholder]="'item'"
                       [bindValue]="'ItemId'"
-                      [bindLabel]="'NameAr'"
+                      [clearable]="false"
+                      [control]="linesArray.controls[i].get('itemID')!"
+                      (emitChanged)="selectedItemByName($event, i)"
+                    ></app-ebtikar-select>
+                    <app-ebtikar-select
+                      *ngIf="!freeItemsInfo[i]"
+                      [apiUrl]="itemsByTermApi"
+                      [customData]="items[i]"
                       [searchByTerm]="true"
+                      [bindLabel]="'NameAr'"
+                      [placeholder]="'item'"
+                      [bindValue]="'ItemId'"
                       [control]="linesArray.controls[i].get('itemID')!"
                       (emitChanged)="selectedItemByName($event, i)"
                     ></app-ebtikar-select>
