@@ -42,7 +42,6 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
   @Input() bindLabel!: string;
   @Input() bindValue!: string;
   @Input() IsMultiple!: boolean;
-  @Input() disabled!: boolean;
   @Input() clearable = true;
   @Input() searchable = true;
   @Input() control!: AbstractControl;

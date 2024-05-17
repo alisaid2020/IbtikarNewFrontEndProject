@@ -24,14 +24,18 @@
   <div class="card mb-5 mb-xxl-8">
     <div class="card-body pb-0">
       <div class="row g-5">
-        <div class="col-md-6" appAppArrowFocus>
+        <div
+          class="col-md-6"
+          [class.disabled-form]="priceListData?.Id ? true : false"
+          appAppArrowFocus
+        >
           <app-ebtikar-select
             [items]="pricingPolicesObj?.group"
             [hasMultipleLabels]="true"
             [placeholder]="'PricePolicy'"
             [label]="'PricePolicy'"
             [bindValue]="'Id'"
-            [disabled]="priceListData?.Id ? true : false"
+            [clearable]="priceListData?.Id ? false : true"
             [control]="pricingPolicyListForm.get('PricePolicyId')!"
           ></app-ebtikar-select>
         </div>
