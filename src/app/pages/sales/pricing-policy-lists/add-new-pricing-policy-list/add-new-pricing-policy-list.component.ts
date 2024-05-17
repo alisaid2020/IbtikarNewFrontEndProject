@@ -48,22 +48,22 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   tableStorage = 'pricingPolicyLists-table';
   itemsApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemUnitByTrim`;
   defaultSelected: any[] = [
-    { field: 'Barcode', header: 'Barcode' },
-    { field: 'ItemID', header: 'ItemID' },
+    { field: 'ParCode', header: 'ParCode' },
+    { field: 'ItemUniteId', header: 'ItemUniteId' },
     { field: 'Price', header: 'Price' },
     { field: 'PriceMax', header: 'PriceMax' },
     { field: 'PriceMin', header: 'PriceMin' },
-    { field: 'commissionPercentage', header: 'CommissionPercentage' },
-    { field: 'commissionValue', header: 'CommissionValue' },
+    { field: 'CommissionPercentage', header: 'CommissionPercentage' },
+    { field: 'CommissionValue', header: 'CommissionValue' },
   ];
   invoiceLineKeys = [
+    'ParCode',
+    'ItemUniteId',
     'Price',
-    'Barcode',
-    'Item',
     'PriceMax',
     'PriceMin',
-    'commissionPercentage',
-    'commissionValue',
+    'CommissionPercentage',
+    'CommissionValue',
   ];
   set selectedColumns(val: any[]) {
     this._selectedColumns = this.defaultSelected.filter((col: any) =>

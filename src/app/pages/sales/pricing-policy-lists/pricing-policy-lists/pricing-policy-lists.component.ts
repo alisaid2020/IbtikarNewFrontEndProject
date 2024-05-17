@@ -22,15 +22,14 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
   subs: Subscription[] = [];
   allColumns: any[] = [];
   pagination: IPagination;
-  defaultStorage = 'pricing-policy-default-selected';
-  tableStorage = 'pricing-policy-table';
+  defaultStorage = 'pricing-policy-lists-default-selected';
+  tableStorage = 'pricing-policy-lists-table';
   changedColumns: any;
   pricingPolicyLists: any;
   defaultSelected: any[] = [
-    { field: 'Id', header: 'Id' },
     { field: 'BranchName', header: 'BranchName' },
     { field: 'CreatedDate', header: 'CreatedDate' },
-    { field: 'PricePolicyName', header: 'PricePolicy' },
+    { field: 'PricePolicyName', header: 'PricePolicyName' },
   ];
   set selectedColumns(val: any[]) {
     this._selectedColumns = this.defaultSelected.filter((col: any) =>

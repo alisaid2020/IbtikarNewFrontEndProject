@@ -153,7 +153,6 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   addNewLine(value?: any, i?: any): void {
     if (value) {
       this.linesArray.controls.splice(i, 0, this.newLine(value));
-      this.linesArray.updateValueAndValidity();
       return;
     }
     this.linesArray.push(this.newLine());
@@ -381,12 +380,11 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   checkForOffers(i: number): void {
     let form = this.linesArray.controls[i];
     let quantity = form.get('quantity')?.value;
-
-    console.log(this.itemPriceList[i]);
-
     let offers = this.itemPriceList[i]?.offers;
     let freeItems = this.itemPriceList[i]?.offers?.freeitems;
     let itemUnites = this.itemPriceList[i]?.offers?.ItemUnites;
+
+    console.log(this.itemPriceList[i]);
 
     if (offers.ItemDiscount > 0) {
       if (quantity == this.itemPriceList[i]?.offers.ItemQty) {
@@ -401,53 +399,55 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (freeItems?.length && itemUnites?.length && quantity >= offers.ItemQty) {
-      let freeItemsCount = Math.floor(quantity / offers.ItemQty);
-      freeItems.forEach((item: any) => {
-        let filterFreeItems = itemUnites.filter(
-          (el: any) => (el.Id = item.FreeItemId)
-        );
-        filterFreeItems.forEach((freeItem: any, ind: any) => {
-          let freeItemIndex = this.freeItemsInfo.findIndex(
-            (el) => freeItem.Id === el?.freeItemId
+    if (freeItems?.length && itemUnites?.length) {
+      if (quantity >= offers.ItemQty) {
+        let freeItemsCount = Math.floor(quantity / offers.ItemQty);
+        freeItems.forEach((item: any) => {
+          let filterFreeItems = itemUnites.filter(
+            (el: any) => (el.Id = item.FreeItemId)
           );
-          if (freeItemIndex > -1) {
-            this.linesArray.controls[freeItemIndex].patchValue({
-              quantity: item.FreeItemQuantity * freeItemsCount,
-            });
-          } else {
-            let newLine = {
-              ProductBarcode: freeItem.Barcode,
-              ItemID: freeItem.Id,
-              UniteId: freeItem.UnitId,
-              Vat: 0,
-              Price: 0,
-              TotalPriceAfterVat: 0,
-              Balance: 0,
-              VatAmount: 0,
-              Quantity: item.FreeItemQuantity * freeItemsCount,
-              Discount: 0,
-            };
-            this.freeItemsInfo[i + ind + 1] = { freeItemId: freeItem.Id };
-            this.barcodeItems[i + ind + 1] = [
-              {
-                Barcode: freeItem.Barcode,
-              },
-            ];
-            this.items[i + ind + 1] = [
-              {
-                ItemId: freeItem?.Id,
-                NameAr: freeItem?.NameAr,
-                NameEn: freeItem?.NameEn,
-              },
-            ];
-            this.units[i + ind + 1] = [
-              { unitId: freeItem.UniteId, name: freeItem.UnitName },
-            ];
-            this.addNewLine(newLine, i + ind + 1);
-          }
+          filterFreeItems.forEach((freeItem: any, ind: any) => {
+            let freeItemIndex = this.freeItemsInfo.findIndex(
+              (el) => freeItem.Id === el?.freeItemId
+            );
+            if (freeItemIndex > -1) {
+              this.linesArray.controls[freeItemIndex].patchValue({
+                quantity: item.FreeItemQuantity * freeItemsCount,
+              });
+            } else {
+              let newLine = {
+                ProductBarcode: freeItem.Barcode,
+                ItemID: freeItem.Id,
+                UniteId: freeItem.UnitId,
+                Vat: 0,
+                Price: 0,
+                TotalPriceAfterVat: 0,
+                Balance: 0,
+                VatAmount: 0,
+                Quantity: item.FreeItemQuantity * freeItemsCount,
+                Discount: 0,
+              };
+              this.freeItemsInfo[i + ind + 1] = { freeItemId: freeItem.Id };
+              this.barcodeItems[i + ind + 1] = [
+                {
+                  Barcode: freeItem.Barcode,
+                },
+              ];
+              this.items[i + ind + 1] = [
+                {
+                  ItemId: freeItem?.Id,
+                  NameAr: freeItem?.NameAr,
+                  NameEn: freeItem?.NameEn,
+                },
+              ];
+              this.units[i + ind + 1] = [
+                { unitId: freeItem.UniteId, name: freeItem.UnitName },
+              ];
+              this.addNewLine(newLine, i + ind + 1);
+            }
+          });
         });
-      });
+      }
     }
     this.runCalculations(i);
   }

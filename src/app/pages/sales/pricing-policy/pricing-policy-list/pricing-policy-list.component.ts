@@ -26,7 +26,6 @@ export class PricingPolicyListComponent implements OnInit, OnDestroy {
   changedColumns: any;
   pricingPolicyList: any;
   defaultSelected: any[] = [
-    { field: 'Id', header: 'Id' },
     { field: 'CreatedDate', header: 'CreatedDate' },
     { field: 'NameAr', header: 'NameAr' },
     { field: 'Notes', header: 'Notes' },

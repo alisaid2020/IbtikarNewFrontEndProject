@@ -125,7 +125,9 @@
                 {{ column.header | translate }}
               </th>
               }
-              <th class="bg-primary fw-bolder text-white fs-5">Actions</th>
+              <th class="bg-primary fw-bolder text-white fs-5">
+                {{ "actions" | translate }}
+              </th>
             </tr>
           </ng-template>
           <ng-template
@@ -144,7 +146,7 @@
                 @for (col of columns; track $index) {
                 <ng-container [ngSwitch]="col.header">
                   <td
-                    *ngSwitchCase="'Barcode'"
+                    *ngSwitchCase="'ParCode'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
@@ -160,7 +162,7 @@
                     ></app-ebtikar-select>
                   </td>
                   <td
-                    *ngSwitchCase="'ItemID'"
+                    *ngSwitchCase="'ItemUniteId'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
