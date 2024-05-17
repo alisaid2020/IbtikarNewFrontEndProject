@@ -57,7 +57,7 @@
   "price": "Price",
   "vat": "VAT",
   "discount": "Discount",
-  "net": "Net",
+  "net": "Total Net",
   "visa": "Visa",
   "balance": "Balance",
   "actions": "Actions",
@@ -97,5 +97,6 @@
   "CommissionValue": "Commission Value",
   "Notes": "Notes",
   "NameAr": "Arabic Name",
-  "ModifyByName": "Modify By"
+  "ModifyByName": "Modify By",
+  "invoiceNumber": "Invoice Number"
 }

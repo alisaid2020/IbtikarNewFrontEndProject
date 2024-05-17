@@ -14,12 +14,11 @@ export class SidebarMenuComponent implements OnInit {
     {
       name: 'dashboard',
       route: '/dashboard',
-      icon: 'fa-users-viewfinder',
+      icon: 'socicon-coderwall',
     },
-    // for menu of links
     {
       name: 'sales',
-      icon: 'fa-bar-chart',
+      icon: 'fa-chart-bar',
       children: [
         {
           title: 'salesInvoice',
@@ -46,10 +45,6 @@ export class SidebarMenuComponent implements OnInit {
           route: '/sales-settings',
           permission: 'SaleInvoice-GetAll',
         },
-        // {
-        //   title: 'customerAccountStatement',
-        //   route: '/customer-account-statement',
-        // },
       ],
     },
   ];

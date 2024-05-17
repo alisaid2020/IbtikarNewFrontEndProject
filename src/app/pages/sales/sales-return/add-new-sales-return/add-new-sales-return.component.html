@@ -22,12 +22,12 @@
     <div class="card-body">
       <div class="row g-5">
         <div class="col-md-6" appAppArrowFocus>
-          <label class="form-label">{{ "InvoiceNumber" | translate }}</label>
+          <label class="form-label">{{ "invoiceNumber" | translate }}</label>
           <div class="search-field-button disabled-form__enabled">
             <input
               type="text"
               class="form-control"
-              placeholder="invoiceNumber"
+              [placeholder]="'invoiceNumber' | translate"
               [formControl]="invoiceNumber"
             />
             <button
@@ -297,8 +297,8 @@
             [type]="'number'"
             class="disabled-form"
             [readonly]="true"
-            [placeholder]="'totalNet'"
-            [label]="'totalNet'"
+            [placeholder]="'net'"
+            [label]="'net'"
             [control]="salesInvoiceForm.get('totalNet')!"
           ></app-ebtikar-input>
         </div>

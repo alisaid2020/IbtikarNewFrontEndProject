@@ -59,7 +59,7 @@
   "discount": "الخصم",
   "balance": "الرصيد",
   "actions": "اجراءات",
-  "net": "الصافي",
+  "net": "إجمالي الصافي",
   "totalDiscount": "إجمالي الخصم",
   "totalVat": "إجمالي الضريبة",
   "visa": "فيزا",
@@ -97,5 +97,6 @@
   "CommissionValue": "قيمة العمولة",
   "Notes": "ملاحظات",
   "NameAr": "الأسم باللغة العربية",
-  "ModifyByName": "تم التعديل من قبل"
+  "ModifyByName": "تم التعديل من قبل",
+  "invoiceNumber": "رقم الفاتورة"
 }

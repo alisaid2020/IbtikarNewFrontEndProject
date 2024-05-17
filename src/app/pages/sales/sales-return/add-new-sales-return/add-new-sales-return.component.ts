@@ -45,7 +45,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     'Balance',
     'Vat',
     'Discount',
-    'Total',
+    'totalPriceAfterVat',
   ];
   defaultSelected: any[] = [
     { field: 'Barcode', header: 'Barcode' },
