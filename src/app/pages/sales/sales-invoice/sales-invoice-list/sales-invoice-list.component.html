@@ -6,7 +6,7 @@
   </div>
   @if (isUserShiftOpened) {
   <div
-    *ngxPermissionsOnly="['SaleInvoice-Create']"
+    *ngxPermissionsOnly="'SaleInvoice-Create'"
     class="ms-auto"
     routerLink="/sales-invoice/add"
   >
@@ -52,7 +52,7 @@
   </div>
 </form>
 
-<div class="card mb-5 mb-xxl-8 mt-7">
+<div class="card mb-5 mb-xxl-8 mt-7" *ngxPermissionsOnly="'SaleInvoice-GetAll'">
   <div class="card-body p-0">
     <p-table
       [value]="invoices"
@@ -94,7 +94,7 @@
           </th>
           }
           <th class="bg-primary fw-bolder text-white fs-5 min-w-150px">
-            Actions
+            {{ "actions" | translate }}
           </th>
         </tr>
       </ng-template>
@@ -105,12 +105,14 @@
           }
           <td>
             <button
+              *ngxPermissionsOnly="'SaleInvoice-Print'"
               class="btn btn-icon btn-info"
               (click)="downloadPdf(rowData.Id)"
             >
               <i class="fa fa-solid fa-file-invoice fs-2"></i>
             </button>
             <button
+              *ngxPermissionsOnly="'SaleInvoice-Delete'"
               class="btn btn-icon btn-danger ms-3"
               (click)="delete(rowData)"
             >

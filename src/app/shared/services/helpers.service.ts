@@ -101,11 +101,10 @@ export class HelpersService {
     return discountValue;
   }
 
-  hasPermission(myPermission: any) {
-    const permissions = this.permissionsService.getPermissions();
-    const hasPermission = Object.keys(permissions).some(
-      (permission) => permission === myPermission
+  hasPermission(pageName: string): boolean {
+    const permissions: any = this.permissionsService.getPermissions();
+    return Object.keys(permissions).some((key: any) =>
+      key.startsWith(pageName)
     );
-    return hasPermission;
   }
 }

@@ -47,7 +47,7 @@
         >
           <div class="menu-item" *ngFor="let link of item?.children">
             <a
-              *ngxPermissionsOnly="[link?.permission]"
+              *ngIf="helpers.hasPermission(link?.permission)"
               class="menu-link without-sub"
               [routerLink]="link.route"
               routerLinkActive="active"

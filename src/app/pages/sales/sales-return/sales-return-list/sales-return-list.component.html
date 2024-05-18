@@ -4,7 +4,7 @@
       {{ "salesReturn" | translate }}
     </h1>
   </div>
-  <div class="ms-auto">
+  <div class="ms-auto" *ngxPermissionsOnly="'SaleInvoice_Return-Create'">
     <a class="btn btn-primary" routerLink="/sales-return/add">{{
       "addNew" | translate
     }}</a>
@@ -42,7 +42,10 @@
     </button>
   </div>
 </form>
-<div class="card mb-5 mb-xxl-8 mt-7">
+<div
+  class="card mb-5 mb-xxl-8 mt-7"
+  *ngxPermissionsOnly="'SaleInvoice_Return-GetAll'"
+>
   <div class="card-body p-0">
     <p-table
       [value]="salesReturnList"
@@ -95,12 +98,14 @@
           }
           <td>
             <button
+              *ngxPermissionsOnly="'SaleInvoice_Return-Print'"
               class="btn btn-icon btn-info"
               (click)="downloadPdf(rowData.Id)"
             >
               <i class="fa fa-solid fa-file-invoice fs-2"></i>
             </button>
             <button
+              *ngxPermissionsOnly="'SaleInvoice_Return-Delete'"
               class="btn btn-icon btn-danger ms-3"
               (click)="delete(rowData)"
             >

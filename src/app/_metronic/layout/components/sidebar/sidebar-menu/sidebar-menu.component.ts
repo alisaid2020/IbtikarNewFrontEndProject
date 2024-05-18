@@ -23,27 +23,27 @@ export class SidebarMenuComponent implements OnInit {
         {
           title: 'salesInvoice',
           route: '/sales-invoice',
-          permission: 'SaleInvoice-GetAll',
+          permission: 'SaleInvoice',
         },
         {
           title: 'salesReturn',
           route: '/sales-return',
-          permission: 'SaleInvoice-GetAll',
+          permission: 'SaleInvoice_Return',
         },
         {
           title: 'pricingPolicy',
           route: '/pricing-policy',
-          permission: 'SaleInvoice-GetAll',
+          permission: 'pricelistDefintion',
         },
         {
           title: 'pricingPolicyLists',
           route: '/pricing-policy-lists',
-          permission: 'SaleInvoice-GetAll',
+          permission: 'pricelist',
         },
         {
           title: 'salesSettings',
           route: '/sales-settings',
-          permission: 'SaleInvoice-GetAll',
+          permission: 'SaleInvoice',
         },
       ],
     },
