@@ -163,7 +163,7 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
     });
     this.filters = {
       toDate: this.filterForm.value.toDate.toISOString(),
-      fromDate: this.filterForm.value.toDate.toISOString(),
+      fromDate: this.filterForm.value.fromDate.toISOString(),
     };
     this.getInvoices();
   }
