@@ -107,11 +107,11 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let bankId;
     let isPendingPayment;
     let treasuryId;
-    let exchangePrice;
+    let exchangePrice = 1;
     let clientType;
     let docType;
     let storeId;
-    let isMobile;
+    let isMobile = false;
     let visaTrxType;
     let visaTrxNo;
     let totalDisc = 0;
@@ -178,6 +178,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       productBarcode = value.ProductBarcode;
       itemID = value.ItemID;
       uniteId = value.UniteId;
+      productId = value.ProductId;
       vat = value.Vat;
       vatAmount = value.VatAmount;
       quantity = value.Quantity;
@@ -220,6 +221,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
           tap((res) => {
             this.invoiceInitObj = res.Obj;
             this.salesInvoiceForm.patchValue({
+              treasuryId: this.invoiceInitObj.empTreasury,
               storeId:
                 this.invoiceInitObj?.empStore > 0
                   ? this.invoiceInitObj.empStore
@@ -431,6 +433,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
             VatAmount: 0,
             Quantity: item.FreeItemQuantity * freeItemsCount,
             Discount: 0,
+            ProductId: filterFreeItemUnit.Id,
           };
           this.freeItemsInfo[i + ind + 1] = {
             mainItemIndex: i,
@@ -611,11 +614,14 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       saleInvoiceDetails: this.helpers.removeEmptyLines(this.linesArray),
     };
     if (
-      this.helpers.getItemFromLocalStorage(this.userRole) !== 'Admin' ||
-      !this.invoiceInitObj?.isSalesPerson
+      this.helpers.getItemFromLocalStorage(this.userRole) === 'Admin' ||
+      this.invoiceInitObj?.isSalesPerson
     ) {
+      formValue.docDate = formValue.docDate.toISOString();
+    } else {
       delete formValue.docDate;
     }
+
     firstValueFrom(
       this.dataService
         .post(
@@ -623,12 +629,10 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
           formValue
         )
         .pipe(
-          tap((res) => {
-            console.log(res);
-
-            // this.spinner.hide();
-            // this.toast.show(Toast.added, { classname: Toast.success });
-            // this.router.navigateByUrl('/sales-invoice');
+          tap((_) => {
+            this.spinner.hide();
+            this.toast.show(Toast.added, { classname: Toast.success });
+            this.router.navigateByUrl('/sales-invoice');
           })
         )
     );
