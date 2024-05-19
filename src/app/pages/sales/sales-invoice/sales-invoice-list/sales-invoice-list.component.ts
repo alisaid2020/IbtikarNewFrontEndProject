@@ -35,7 +35,7 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
   tableStorage = 'sales-invoice-list-table';
   defaultStorage = 'sales-invoice-list-default-selected';
   defaultSelected: any[] = [
-    { field: 'Id', header: 'Id' },
+    { field: 'DocNo', header: 'DocNo' },
     { field: 'BranchName', header: 'BranchName' },
     { field: 'CreatedDate', header: 'CreatedDate' },
     { field: 'TotalInvoice', header: 'TotalInvoice' },

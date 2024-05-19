@@ -7,7 +7,7 @@ import { E_USER_ROLE } from '@constants/general.constant';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { HelpersService } from '@services/helpers.service';
 import { Subscription, firstValueFrom, map, tap } from 'rxjs';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ShiftDetailsDrawerComponent } from '../shift-details-drawer/shift-details-drawer.component';
 import { ToastService } from '@services/toast-service';
 import { Toast } from '@enums/toast.enum';
@@ -122,7 +122,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let debt = 0;
 
     this.salesInvoiceForm = this.fb.group({
-      clientId: [clientId],
+      clientId: [clientId, [Validators.required]],
       paymentType: [paymentType],
       docDate: [docDate],
       notes: [notes],

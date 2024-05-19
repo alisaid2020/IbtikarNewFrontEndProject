@@ -98,5 +98,6 @@
   "Notes": "ملاحظات",
   "NameAr": "الأسم باللغة العربية",
   "ModifyByName": "تم التعديل من قبل",
-  "invoiceNumber": "رقم الفاتورة"
+  "invoiceNumber": "رقم الفاتورة",
+  "DocNo": "رقم الفاتورة"
 }

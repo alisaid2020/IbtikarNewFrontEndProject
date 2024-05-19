@@ -98,5 +98,6 @@
   "Notes": "Notes",
   "NameAr": "Arabic Name",
   "ModifyByName": "Modify By",
-  "invoiceNumber": "Invoice Number"
+  "invoiceNumber": "Invoice Number",
+  "DocNo": "Invoice Number"
 }
