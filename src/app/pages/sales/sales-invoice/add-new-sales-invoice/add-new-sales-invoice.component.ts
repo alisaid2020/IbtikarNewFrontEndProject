@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
 })
 export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   shiftData: any;
-  items: any = [];
+  items: any[] = [];
   freeItemsInfo: any[] = [];
   isRoundToTwoNumbers: any;
   invoiceInitObj: any;
@@ -352,7 +352,6 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.itemPriceList[i] = res.Obj;
             if (balance < quantity && !this.invoiceInitObj.saleByMinus) {
               this.toast.show('Item Balance Not Allowed', {
                 classname: Toast.error,
@@ -364,6 +363,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
               this.addNewLine();
               return;
             }
+            this.itemPriceList[i] = res.Obj;
             this.linesArray.controls[i].patchValue({ price: res.Obj.price });
             this.checkForOffers(i);
             this.addNewLine();
@@ -391,7 +391,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let offers = this.itemPriceList[i]?.offers;
     let freeItems = this.itemPriceList[i]?.offers?.freeitems;
     let itemUnites = this.itemPriceList[i]?.offers?.ItemUnites;
-    let freeItemsCount = Math.floor(quantity / offers.ItemQty);
+    let freeItemsCount = Math.floor(quantity / offers?.ItemQty);
 
     if (offers.ItemDiscount > 0) {
       if (quantity >= this.itemPriceList[i]?.offers.ItemQty) {
@@ -406,61 +406,65 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (freeItems?.length && itemUnites?.length && quantity >= offers.ItemQty) {
-      freeItems.forEach((item: any, ind: any) => {
+    if (freeItems?.length && itemUnites?.length) {
+      let freeItemUnits: any = [];
+      freeItems.forEach((item: any) => {
         let filterFreeItemUnit = itemUnites.find(
           (el: any) => el.ItemId == item.ItemId && el.UnitId === item.UniteId
         );
-        let freeItemIndex = this.freeItemsInfo.findIndex(
-          (el) =>
-            el?.ItemId == item?.ItemId &&
-            el?.UnitId === item?.UniteId &&
-            el?.mainItemIndex === i
-        );
-        if (freeItemIndex > -1) {
-          this.linesArray.controls[freeItemIndex].patchValue({
-            quantity: item.FreeItemQuantity * freeItemsCount,
-          });
-        } else {
-          let newLine = {
-            ProductBarcode: filterFreeItemUnit.Barcode,
-            ItemID: filterFreeItemUnit.Id,
-            UniteId: filterFreeItemUnit.UnitId,
-            Vat: 0,
-            Price: 0,
-            TotalPriceAfterVat: 0,
-            Balance: 0,
-            VatAmount: 0,
-            Quantity: item.FreeItemQuantity * freeItemsCount,
-            Discount: 0,
-            ProductId: filterFreeItemUnit.Id,
-          };
-          this.freeItemsInfo[i + ind + 1] = {
-            mainItemIndex: i,
-            ItemId: item.ItemId,
-            UnitId: item.UniteId,
-          };
-          this.barcodeItems[i + ind + 1] = [
-            {
-              Barcode: filterFreeItemUnit.Barcode,
-            },
-          ];
-          this.items[i + ind + 1] = [
-            {
-              ItemId: filterFreeItemUnit?.Id,
-              NameAr: filterFreeItemUnit?.NameAr,
-              NameEn: filterFreeItemUnit?.NameEn,
-            },
-          ];
-          this.units[i + ind + 1] = [
-            {
-              unitId: filterFreeItemUnit.UnitId,
-              name: filterFreeItemUnit.UnitName,
-            },
-          ];
-          this.addNewLine(newLine, i + ind + 1);
-        }
+        freeItemUnits.push({
+          ...filterFreeItemUnit,
+          freeItemQuantity: item.FreeItemQuantity,
+        });
       });
+      if (quantity >= offers.ItemQty) {
+        freeItemUnits.forEach((itemUnit: any, index: any) => {
+          if (this.freeItemsInfo[i + index + 1]) {
+            this.linesArray.controls[i + index + 1].patchValue({
+              quantity: itemUnit.freeItemQuantity * freeItemsCount,
+            });
+          } else {
+            let newLine = {
+              ProductBarcode: itemUnit.Barcode,
+              ItemID: itemUnit.Id,
+              UniteId: itemUnit.UnitId,
+              Vat: 0,
+              Price: 0,
+              TotalPriceAfterVat: 0,
+              Balance: 0,
+              VatAmount: 0,
+              Quantity: itemUnit.freeItemQuantity * freeItemsCount,
+              Discount: 0,
+              ProductId: itemUnit.Id,
+            };
+            this.freeItemsInfo[i + index + 1] = i + index + 1;
+            this.items[i + index + 1] = [
+              {
+                ItemId: itemUnit.Id,
+                NameAr: itemUnit.NameAr,
+                NameEn: itemUnit.NameEn,
+              },
+            ];
+            this.units[i + index + 1] = [
+              {
+                unitId: itemUnit.UnitId,
+                name: itemUnit.UnitName,
+              },
+            ];
+            this.addNewLine(newLine, i + index + 1);
+          }
+        });
+      }
+      if (quantity < offers.ItemQty) {
+        for (let index = 1; index <= freeItemUnits?.length; index++) {
+          this.remove(i + 1);
+          this.itemPriceList.splice(i + 1, 1);
+          this.items.splice(i + 1, 1);
+          this.units.splice(i + 1, 1);
+          this.barcodeItems.splice(i + 1, 1);
+          this.freeItemsInfo.splice(i + 1, 1);
+        }
+      }
     }
     this.runCalculations(i);
   }
