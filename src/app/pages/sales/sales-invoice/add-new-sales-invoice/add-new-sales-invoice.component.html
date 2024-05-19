@@ -52,6 +52,16 @@
             (emitChanged)="changePaymentType($event)"
           ></app-ebtikar-select>
         </div>
+        <div class="col-md-6" appAppArrowFocus>
+          <app-ebtikar-select
+            [items]="invoiceInitObj?.stores"
+            [hasMultipleLabels]="true"
+            [placeholder]="'storeName'"
+            [label]="'stores'"
+            [bindValue]="'Id'"
+            [control]="salesInvoiceForm.get('storeId')!"
+          ></app-ebtikar-select>
+        </div>
         <div
           *ngIf="
             helpers.getItemFromLocalStorage(userRole) === 'Admin' ||
@@ -68,7 +78,7 @@
           ></app-ebtikar-input>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6" appAppArrowFocus>
           <app-ebtikar-input
             [type]="'textArea'"
             [placeholder]="'notes'"
@@ -203,6 +213,7 @@
                       [items]="units[i]"
                       [bindValue]="'unitId'"
                       [bindLabel]="'name'"
+                      [clearable]="freeItemsInfo[i] ? false : true"
                       [control]="linesArray.controls[i].get('uniteId')!"
                       (emitChanged)="selectedUnit($event, i)"
                     ></app-ebtikar-select>
@@ -228,7 +239,7 @@
                       [type]="'number'"
                       [placeholder]="'price'"
                       [control]="linesArray.controls[i].get('price')!"
-                      (emitChanged)="runCalculations(i)"
+                      (emitChanged)="checkForOffers(i)"
                     ></app-ebtikar-input>
                   </td>
                   <td

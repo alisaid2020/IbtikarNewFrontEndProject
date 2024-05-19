@@ -87,10 +87,10 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.isRoundToTwoNumbers = this.helpers.salesSettings()?.RoundToTwoNumbers;
+    this.initForm();
     this.salesInvoiceInit();
     this.checkIfUserShiftOpened();
     this.getShiftInfo();
-    this.initForm();
     await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
@@ -219,6 +219,12 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         .pipe(
           tap((res) => {
             this.invoiceInitObj = res.Obj;
+            this.salesInvoiceForm.patchValue({
+              storeId:
+                this.invoiceInitObj?.empStore > 0
+                  ? this.invoiceInitObj.empStore
+                  : null,
+            });
             if (this.invoiceInitObj.isSalesPerson) {
               this.salesInvoiceForm.get('paymentType')?.setValue(2);
             }
@@ -318,7 +324,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   getBalance(ev: any, i: number): void {
     let params = {
       itemUnitId: ev.Id,
-      storeId: this.invoiceInitObj.empStore || 1,
+      storeId: this.salesInvoiceForm.get('storeId')!.value,
     };
     firstValueFrom(
       this.dataService
@@ -389,7 +395,6 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       if (quantity >= this.itemPriceList[i]?.offers.ItemQty) {
         let discountValue = this.helpers.convertDiscountToValue(
           form,
-          freeItemsCount,
           this.isRoundToTwoNumbers,
           this.itemPriceList[i]
         );
@@ -446,7 +451,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
           ];
           this.units[i + ind + 1] = [
             {
-              unitId: filterFreeItemUnit.UniteId,
+              unitId: filterFreeItemUnit.UnitId,
               name: filterFreeItemUnit.UnitName,
             },
           ];
@@ -618,10 +623,12 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
           formValue
         )
         .pipe(
-          tap((_) => {
-            this.spinner.hide();
-            this.toast.show(Toast.added, { classname: Toast.success });
-            this.router.navigateByUrl('/sales-invoice');
+          tap((res) => {
+            console.log(res);
+
+            // this.spinner.hide();
+            // this.toast.show(Toast.added, { classname: Toast.success });
+            // this.router.navigateByUrl('/sales-invoice');
           })
         )
     );
