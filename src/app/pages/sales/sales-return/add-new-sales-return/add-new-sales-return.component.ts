@@ -53,9 +53,9 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     { field: 'ReturnedQty', header: 'ReturnedQty' },
     { field: 'Quantity', header: 'Quantity' },
     { field: 'Price', header: 'Price' },
-    { field: 'Vat', header: 'Vat' },
+    { field: 'Vat', header: 'vat' },
     { field: 'Discount', header: 'Discount' },
-    { field: 'TotalPriceAfterVat', header: 'TotalPriceAfterVat' },
+    { field: 'TotalPriceAfterVat', header: 'totalPriceAfterVat' },
   ];
   paymentTypes = [
     { name: 'cash', value: 1 },
@@ -170,8 +170,6 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
             this.spinner.hide();
             if (res?.Obj) {
               this.salesReturnFound = res.Obj.invoice;
-              console.log(this.salesReturnFound);
-
               this.extractInvoiceLines();
             } else {
               this.toast.show('NoInvoiceMatchThatNumber', {
@@ -247,7 +245,12 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
   }
 
   remove(i: number) {
-    if (this.linesArray.length > 1) {
+    let freeCounts = this.getFreeItemsCount(i);
+    if (freeCounts) {
+      this.linesArray.controls.splice(i, freeCounts + 1);
+      this.barcodeItems.splice(i, freeCounts + 1);
+      this.items.splice(i, freeCounts + 1);
+    } else {
       this.linesArray.removeAt(i);
     }
   }
@@ -299,6 +302,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     let form = this.linesArray.controls[i];
     let returnedQty = form.get('returnedQty')!.value;
     let soldQuantity = form.get('correctQty')!.value;
+    let freeItemsCount = this.getFreeItemsCount(i);
     if (ev.value) {
       if (ev.value > soldQuantity - returnedQty) {
         this.toast.show('qtyGreaterTanSold', {
@@ -307,7 +311,6 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
         return;
       }
       this.runCalculations(i);
-      let freeItemsCount = this.getFreeItemsCount(i);
       if (freeItemsCount) {
         for (let index = i + 1; index <= freeItemsCount; index++) {
           let tokenQuantity = soldQuantity - returnedQty - ev.value;
@@ -341,16 +344,19 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     let quantity: any = form.get('quantity')?.value;
     let discount: any = form.get('discount')?.value;
     let vat: any = form.get('vat')?.value;
+    let allQuantity = form.get('correctQty')?.value;
     let totalPriceAfterVat: any = form.get('totalPriceAfterVat')?.value;
     let vatAmount: any;
 
     if (this.isRoundToTwoNumbers) {
+      discount = Math.round(discount / allQuantity);
       let p1 = Math.round(price * quantity);
       let p2 = Math.round(p1 - discount);
       let p3 = Math.round(p2 * vat);
       vatAmount = Math.round(p3 / 100);
       totalPriceAfterVat = p2 + vatAmount;
     } else {
+      discount = Math.round((discount / allQuantity) * 1000) / 1000;
       let part1 = Math.round(price * quantity * 1000) / 1000;
       let part2 = Math.round((part1 - discount) * 1000) / 1000;
       let part3 = Math.round(part2 * vat * 1000) / 1000;
@@ -432,28 +438,27 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
       saleInvoiceDetails: this.helpers.removeEmptyLines(this.linesArray),
     };
     if (
-      this.helpers.getItemFromLocalStorage(this.userRole) !== 'Admin' ||
-      !this.invoiceInitObj?.isSalesPerson
+      this.helpers.getItemFromLocalStorage(this.userRole) === 'Admin' ||
+      this.invoiceInitObj?.isSalesPerson
     ) {
+      formValue.docDate = formValue.docDate.toISOString();
+    } else {
       delete formValue.docDate;
     }
-
-    console.log(formValue);
-
-    // firstValueFrom(
-    //   this.dataService
-    //     .post(
-    //       `${apiUrl}/XtraAndPos_StoreInvoiceReturn/CreateInvoiceReturnForMobile`,
-    //       formValue
-    //     )
-    //     .pipe(
-    //       tap((_) => {
-    //         this.spinner.hide();
-    //         this.toast.show(Toast.added, { classname: Toast.success });
-    //         this.router.navigateByUrl('/sales-invoice');
-    //       })
-    //     )
-    // );
+    firstValueFrom(
+      this.dataService
+        .post(
+          `${apiUrl}/XtraAndPos_StoreInvoiceReturn/CreateInvoiceReturnForMobile`,
+          formValue
+        )
+        .pipe(
+          tap((_) => {
+            this.spinner.hide();
+            this.toast.show(Toast.added, { classname: Toast.success });
+            this.router.navigateByUrl('/sales-return');
+          })
+        )
+    );
   }
 
   ngOnDestroy(): void {

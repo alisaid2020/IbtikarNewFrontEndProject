@@ -489,8 +489,6 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     this.runCalculations(i);
   }
 
-  removeFreeItems() {}
-
   runCalculations(i: number): void {
     let form = this.linesArray.controls[i];
     let price: any = form.get('price')?.value;

@@ -249,6 +249,7 @@
                 }
                 <td>
                   <button
+                    [disabled]="linesArray.value?.length === 1"
                     type="button"
                     class="btn btn-icon btn-danger ms-3"
                     (click)="remove(i)"
