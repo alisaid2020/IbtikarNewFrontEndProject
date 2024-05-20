@@ -48,14 +48,14 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
   ];
   defaultSelected: any[] = [
     { field: 'Barcode', header: 'Barcode' },
-    { field: 'itemID', header: 'itemID' },
-    { field: 'correctQty', header: 'correctQty' },
-    { field: 'returnedQty', header: 'returnedQty' },
-    { field: 'quantity', header: 'quantity' },
-    { field: 'price', header: 'price' },
-    { field: 'vat', header: 'vat' },
-    { field: 'discount', header: 'discount' },
-    { field: 'totalPriceAfterVat', header: 'totalPriceAfterVat' },
+    { field: 'ItemID', header: 'ItemID' },
+    { field: 'CorrectQty', header: 'CorrectQty' },
+    { field: 'ReturnedQty', header: 'ReturnedQty' },
+    { field: 'Quantity', header: 'Quantity' },
+    { field: 'Price', header: 'Price' },
+    { field: 'Vat', header: 'Vat' },
+    { field: 'Discount', header: 'Discount' },
+    { field: 'TotalPriceAfterVat', header: 'TotalPriceAfterVat' },
   ];
   paymentTypes = [
     { name: 'cash', value: 1 },
@@ -170,7 +170,6 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
             this.spinner.hide();
             if (res?.Obj) {
               this.salesReturnFound = res.Obj.invoice;
-
               console.log(this.salesReturnFound);
 
               this.extractInvoiceLines();
@@ -253,7 +252,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     }
   }
 
-  extractInvoiceLines() {
+  extractInvoiceLines(): void {
     this.salesInvoiceForm.patchValue({
       clientId: this.salesReturnFound.ClientId,
       paymentType: this.salesReturnFound.PaymentType,
@@ -298,14 +297,42 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
 
   changeInQuantity(ev: any, i: any) {
     let form = this.linesArray.controls[i];
-    let balance = form.get('correctQty')!.value;
-    if (ev.value > balance) {
-      this.toast.show('quantity greater than balance', {
-        classname: Toast.error,
-      });
-      return;
+    let returnedQty = form.get('returnedQty')!.value;
+    let soldQuantity = form.get('correctQty')!.value;
+    if (ev.value) {
+      if (ev.value > soldQuantity - returnedQty) {
+        this.toast.show('qtyGreaterTanSold', {
+          classname: Toast.error,
+        });
+        return;
+      }
+      this.runCalculations(i);
+      let freeItemsCount = this.getFreeItemsCount(i);
+      if (freeItemsCount) {
+        for (let index = i + 1; index <= freeItemsCount; index++) {
+          let tokenQuantity = soldQuantity - returnedQty - ev.value;
+          let freeItemNumber =
+            this.linesArray.controls[index].get('correctQty')!.value;
+          let returnFreeItem = Math.floor(tokenQuantity / freeItemNumber);
+          this.linesArray.controls[index].patchValue({
+            quantity:
+              this.linesArray.controls[index].get('correctQty')!.value -
+              returnFreeItem,
+          });
+        }
+      }
     }
-    this.runCalculations(i);
+  }
+
+  getFreeItemsCount(i: any): number {
+    let count = 0;
+    for (let index = i + 1; index < this.linesArray.controls.length; index++) {
+      if (!this.linesArray.controls[index].get('isProductFree')!.value) {
+        break;
+      }
+      count++;
+    }
+    return count;
   }
 
   runCalculations(i: number) {

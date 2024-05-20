@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { apiUrl } from '@constants/api.constant';
 import { PAGE_SIZE } from '@constants/general.constant';
@@ -74,8 +74,8 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
     let fromDate;
     let toDate;
     this.filterForm = this.fb.group({
-      fromDate: [fromDate],
-      toDate: [toDate],
+      fromDate: [fromDate, [Validators.required]],
+      toDate: [toDate, [Validators.required]],
     });
   }
 
@@ -208,7 +208,10 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
       }
       this.showClearFilters = true;
     });
-    this.filters = this.filterForm.value;
+    this.filters = {
+      toDate: this.filterForm.value.toDate.toISOString(),
+      fromDate: this.filterForm.value.fromDate.toISOString(),
+    };
     this.getSalesReturnList();
   }
 
@@ -216,6 +219,7 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
     this.filterForm.reset();
     this.filters = {};
     this.showClearFilters = false;
+    this.getSalesReturnList();
   }
 
   ngOnDestroy(): void {

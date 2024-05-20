@@ -54,6 +54,7 @@
   "unit": "الوحدة",
   "selectUnit": "اختر الوحده",
   "quantity": "الكمية",
+  "Quantity": "الكمية",
   "price": "السعر",
   "vat": "الضريبة",
   "discount": "الخصم",
@@ -99,5 +100,13 @@
   "NameAr": "الأسم باللغة العربية",
   "ModifyByName": "تم التعديل من قبل",
   "invoiceNumber": "رقم الفاتورة",
-  "DocNo": "رقم الفاتورة"
+  "DocNo": "رقم الفاتورة",
+  "TotalPriceAfterVat": "الصافى",
+  "ReturnedQty": "الكمية المسترجعه",
+  "CorrectQty": "الكمية المباعة",
+  "ItemID": "الصنف",
+  "Barcode": "الباركود",
+  "itemBalanceNotAllowed": "رصيد الصنف لا يسمح",
+  "NoInvoiceMatchThatNumber": "لا توجد فاتورة بهذا الرقم",
+  "qtyGreaterTanSold": "الكمية المدخلة أكبر من الكمية المباعة"
 }

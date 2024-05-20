@@ -369,7 +369,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         .pipe(
           tap((res) => {
             if (balance < quantity && !this.invoiceInitObj.saleByMinus) {
-              this.toast.show('Item Balance Not Allowed', {
+              this.toast.show('itemBalanceNotAllowed', {
                 classname: Toast.error,
               });
               this.remove(i);
@@ -392,7 +392,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let balance = this.linesArray.controls[i].get('balance')?.value;
     if (ev.value) {
       if (balance < ev.value && !this.invoiceInitObj.saleByMinus) {
-        this.toast.show('Item Balance Not Allowed', {
+        this.toast.show('itemBalanceNotAllowed', {
           classname: Toast.error,
         });
         return;

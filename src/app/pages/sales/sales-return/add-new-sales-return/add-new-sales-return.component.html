@@ -130,7 +130,9 @@
                 {{ column.header | translate }}
               </th>
               }
-              <th class="bg-primary fw-bolder text-white fs-5">Actions</th>
+              <th class="bg-primary fw-bolder text-white fs-5">
+                {{ "actions" | translate }}
+              </th>
             </tr>
           </ng-template>
           <ng-template
@@ -163,7 +165,7 @@
                     ></app-ebtikar-select>
                   </td>
                   <td
-                    *ngSwitchCase="'itemID'"
+                    *ngSwitchCase="'ItemID'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
@@ -177,7 +179,7 @@
                     ></app-ebtikar-select>
                   </td>
                   <td
-                    *ngSwitchCase="'correctQty'"
+                    *ngSwitchCase="'CorrectQty'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
@@ -188,7 +190,7 @@
                     ></app-ebtikar-input>
                   </td>
                   <td
-                    *ngSwitchCase="'returnedQty'"
+                    *ngSwitchCase="'ReturnedQty'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
@@ -199,7 +201,7 @@
                     ></app-ebtikar-input>
                   </td>
                   <td
-                    *ngSwitchCase="'quantity'"
+                    *ngSwitchCase="'Quantity'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
@@ -214,7 +216,7 @@
                     ></app-ebtikar-input>
                   </td>
                   <td
-                    *ngSwitchCase="'price'"
+                    *ngSwitchCase="'Price'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
@@ -225,7 +227,7 @@
                     ></app-ebtikar-input>
                   </td>
                   <td
-                    *ngSwitchCase="'discount'"
+                    *ngSwitchCase="'Discount'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >

@@ -67,7 +67,7 @@ export class EbtikarInputComponent implements OnInit, OnChanges {
 
   getChangedItem(ev: any): void {
     firstValueFrom(
-      interval(200).pipe(
+      interval(250).pipe(
         tap((_) => {
           this.emitChanged.emit(ev);
         })

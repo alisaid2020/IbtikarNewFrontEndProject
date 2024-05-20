@@ -53,6 +53,7 @@
   "item": "Item",
   "unit": "Unit",
   "selectUnit": "Select Unit",
+  "quantity": "Quantity",
   "Quantity": "Quantity",
   "price": "Price",
   "vat": "VAT",
@@ -99,5 +100,13 @@
   "NameAr": "Arabic Name",
   "ModifyByName": "Modify By",
   "invoiceNumber": "Invoice Number",
-  "DocNo": "Invoice Number"
+  "DocNo": "Invoice Number",
+  "TotalPriceAfterVat": "Net Total",
+  "ReturnedQty": "Returned Qty",
+  "CorrectQty": "Sold Qty",
+  "ItemID": "Item",
+  "Barcode": "Barcode",
+  "itemBalanceNotAllowed": "Item balance does not allow",
+  "NoInvoiceMatchThatNumber": "There is no invoice with this number",
+  "qtyGreaterTanSold": "Entered Quantity Greater Than Sold Quantity"
 }

@@ -30,7 +30,12 @@
     </div>
   </div>
   <div class="mt-5">
-    <button type="button" class="btn btn-primary me-5" (click)="applyFilter()">
+    <button
+      [disabled]="filterForm.invalid"
+      type="button"
+      class="btn btn-primary me-5"
+      (click)="applyFilter()"
+    >
       {{ "apply" | translate }}
     </button>
     <button
