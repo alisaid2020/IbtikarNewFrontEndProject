@@ -148,7 +148,7 @@
                   i % 2 !== 0 ? '#add8e633' : 'rgb(250 250 250)'
                 "
                 [class.disabled-form]="
-                  linesArray.controls[i].get('isFreeItem')!.value
+                  linesArray.controls[i].get('isProductFree')!.value
                 "
               >
                 @for (col of columns; track $index) {
@@ -159,7 +159,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
-                      *ngIf="linesArray.controls[i].get('isFreeItem')!.value"
+                      *ngIf="linesArray.controls[i].get('isProductFree')!.value"
                       [items]="barcodeItems[i]"
                       [placeholder]="'barcode'"
                       [bindValue]="'Barcode'"
@@ -168,7 +168,9 @@
                       [control]="linesArray.controls[i].get('productBarcode')!"
                     ></app-ebtikar-select>
                     <app-ebtikar-select
-                      *ngIf="!linesArray.controls[i].get('isFreeItem')!.value"
+                      *ngIf="
+                        !linesArray.controls[i].get('isProductFree')!.value
+                      "
                       [apiUrl]="itemsByBarcodeApi"
                       [customData]="barcodeItems[i]"
                       [placeholder]="'barcode'"
@@ -185,7 +187,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
-                      *ngIf="linesArray.controls[i].get('isFreeItem')!.value"
+                      *ngIf="linesArray.controls[i].get('isProductFree')!.value"
                       [hasMultipleLabels]="true"
                       [items]="items[i]"
                       [placeholder]="'item'"
@@ -194,7 +196,9 @@
                       [control]="linesArray.controls[i].get('itemID')!"
                     ></app-ebtikar-select>
                     <app-ebtikar-select
-                      *ngIf="!linesArray.controls[i].get('isFreeItem')!.value"
+                      *ngIf="
+                        !linesArray.controls[i].get('isProductFree')!.value
+                      "
                       [apiUrl]="itemsByTermApi"
                       [customData]="items[i]"
                       [searchByTerm]="true"
@@ -216,7 +220,7 @@
                       [bindValue]="'unitId'"
                       [bindLabel]="'name'"
                       [clearable]="
-                        linesArray.controls[i].get('isFreeItem')!.value
+                        linesArray.controls[i].get('isProductFree')!.value
                           ? false
                           : true
                       "

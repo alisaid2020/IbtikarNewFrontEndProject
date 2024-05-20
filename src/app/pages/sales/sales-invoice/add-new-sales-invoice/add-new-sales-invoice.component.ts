@@ -160,7 +160,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   remove(i: number) {
     if (
       this.itemPriceList[i] &&
-      this.linesArray.controls[i + 1]?.get('isFreeItem')?.value
+      this.linesArray.controls[i + 1]?.get('isProductFree')?.value
     ) {
       let itemUnites = this.itemPriceList[i]?.offers?.ItemUnites;
       for (let index = 1; index <= itemUnites?.length + 1; index++) {
@@ -187,7 +187,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let price = 0;
     let discount = 0;
     let totalPriceAfterVat = 0;
-    let isFreeItem = false;
+    let isProductFree = false;
     if (value) {
       productBarcode = value.ProductBarcode;
       itemID = value.ItemID;
@@ -200,7 +200,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       price = value.Price;
       discount = value.Discount;
       totalPriceAfterVat = value.TotalPriceAfterVat;
-      isFreeItem = value.IsFreeItem;
+      isProductFree = value.IsProductFree;
     }
 
     return this.fb.group({
@@ -215,7 +215,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       price: [price],
       discount: [discount],
       totalPriceAfterVat: [totalPriceAfterVat],
-      isFreeItem: [isFreeItem],
+      isProductFree: [isProductFree],
     });
   }
 
@@ -436,7 +436,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       if (quantity >= offers.ItemQty) {
         freeItemUnits.forEach((itemUnit: any, index: any) => {
           if (
-            this.linesArray.controls[i + index + 1]?.get('isFreeItem')?.value
+            this.linesArray.controls[i + index + 1]?.get('isProductFree')?.value
           ) {
             this.linesArray.controls[i + index + 1].patchValue({
               quantity: itemUnit.freeItemQuantity * freeItemsCount,
@@ -454,7 +454,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
               Quantity: itemUnit.freeItemQuantity * freeItemsCount,
               Discount: 0,
               ProductId: itemUnit.Id,
-              IsFreeItem: true,
+              IsProductFree: true,
             };
             this.itemPriceList.splice(i + 1, 0, undefined);
             this.items.splice(i + index + 1, 0, [
@@ -476,7 +476,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       }
       if (quantity < offers.ItemQty) {
         for (let index = 0; index < itemUnites?.length; index++) {
-          if (this.linesArray.controls[i + 1]?.get('isFreeItem')?.value) {
+          if (this.linesArray.controls[i + 1]?.get('isProductFree')?.value) {
             this.linesArray.removeAt(i + 1);
             this.itemPriceList?.splice(i + 1, 1);
             this.items?.splice(i + 1, 1);

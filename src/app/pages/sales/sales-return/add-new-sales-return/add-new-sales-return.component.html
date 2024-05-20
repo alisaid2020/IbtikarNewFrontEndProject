@@ -202,9 +202,11 @@
                     *ngSwitchCase="'quantity'"
                     style="min-width: 200px"
                     appAppArrowFocus
-                    class="disabled-form__enabled"
                   >
                     <app-ebtikar-input
+                      [class.disabled-form__enabled]="
+                        !linesArray.controls[i].get('isProductFree')!.value
+                      "
                       [type]="'number'"
                       [placeholder]="'quantity'"
                       [control]="linesArray.controls[i].get('quantity')!"

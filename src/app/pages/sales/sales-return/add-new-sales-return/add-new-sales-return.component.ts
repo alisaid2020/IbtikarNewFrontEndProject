@@ -20,7 +20,6 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
   isRoundToTwoNumbers: any;
   invoiceInitObj: any;
   items: any[] = [];
-  units: any[] = [];
   changedColumns: any;
   salesReturnFound: any;
   allColumns: any[] = [];
@@ -171,6 +170,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
             this.spinner.hide();
             if (res?.Obj) {
               this.salesReturnFound = res.Obj.invoice;
+
               console.log(this.salesReturnFound);
 
               this.extractInvoiceLines();
@@ -199,6 +199,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     let uniteId;
     let docDate;
     let quantity = 0;
+    let isProductFree = false;
 
     if (value) {
       itemID = value.ItemID;
@@ -213,6 +214,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
       totalPriceAfterVat = value.TotalPriceAfterVat;
       vatAmount = value.VatAmount;
       uniteId = value.UniteId;
+      isProductFree = value.IsProductFree;
     }
     return this.fb.group({
       itemID: [itemID],
@@ -229,6 +231,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
       docDate: [docDate],
       productBarcode: [productBarcode],
       vatAmount: [vatAmount],
+      isProductFree: [isProductFree],
     });
   }
 

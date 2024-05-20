@@ -226,6 +226,7 @@ ng-select.ng-select-single .ng-select-container .ng-value-container .ng-value {
   &__enabled {
     .form-control,
     .ng-select-container,
+    .p-inputnumber-input,
     textarea {
       opacity: 1;
       pointer-events: initial;
