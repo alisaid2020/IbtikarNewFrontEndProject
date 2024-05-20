@@ -177,20 +177,6 @@
                     ></app-ebtikar-select>
                   </td>
                   <td
-                    *ngSwitchCase="'uniteId'"
-                    style="min-width: 200px"
-                    appAppArrowFocus
-                  >
-                    <app-ebtikar-select
-                      [hasMultipleLabels]="true"
-                      [placeholder]="'selectUnit'"
-                      [items]="units[i]"
-                      [bindValue]="'unitId'"
-                      [clearable]="false"
-                      [control]="linesArray.controls[i].get('uniteId')!"
-                    ></app-ebtikar-select>
-                  </td>
-                  <td
                     *ngSwitchCase="'correctQty'"
                     style="min-width: 200px"
                     appAppArrowFocus

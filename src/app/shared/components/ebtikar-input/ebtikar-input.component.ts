@@ -20,6 +20,7 @@ import {
 } from 'ngx-intl-tel-input';
 
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import { firstValueFrom, interval, tap } from 'rxjs';
 
 @Component({
   selector: 'app-ebtikar-input',
@@ -65,6 +66,12 @@ export class EbtikarInputComponent implements OnInit, OnChanges {
   }
 
   getChangedItem(ev: any): void {
-    this.emitChanged.emit(ev);
+    firstValueFrom(
+      interval(200).pipe(
+        tap((_) => {
+          this.emitChanged.emit(ev);
+        })
+      )
+    );
   }
 }

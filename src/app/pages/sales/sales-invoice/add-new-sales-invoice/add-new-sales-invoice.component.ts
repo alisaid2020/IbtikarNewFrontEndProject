@@ -21,7 +21,6 @@ import { Router } from '@angular/router';
 export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   shiftData: any;
   items: any[] = [];
-  freeItemsInfo: any[] = [];
   isRoundToTwoNumbers: any;
   invoiceInitObj: any;
   itemPriceList: any[] = [];
@@ -159,7 +158,21 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   remove(i: number) {
-    this.linesArray.removeAt(i);
+    if (
+      this.itemPriceList[i] &&
+      this.linesArray.controls[i + 1]?.get('isFreeItem')?.value
+    ) {
+      let itemUnites = this.itemPriceList[i]?.offers?.ItemUnites;
+      for (let index = 1; index <= itemUnites?.length + 1; index++) {
+        this.linesArray.removeAt(i);
+        this.itemPriceList.splice(i, 1);
+        this.items.splice(i, 1);
+        this.units.splice(i, 1);
+        this.barcodeItems.splice(i, 1);
+      }
+    } else {
+      this.linesArray.removeAt(i);
+    }
   }
 
   newLine(value?: any): FormGroup {
@@ -174,6 +187,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let price = 0;
     let discount = 0;
     let totalPriceAfterVat = 0;
+    let isFreeItem = false;
     if (value) {
       productBarcode = value.ProductBarcode;
       itemID = value.ItemID;
@@ -186,6 +200,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       price = value.Price;
       discount = value.Discount;
       totalPriceAfterVat = value.TotalPriceAfterVat;
+      isFreeItem = value.IsFreeItem;
     }
 
     return this.fb.group({
@@ -200,6 +215,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       price: [price],
       discount: [discount],
       totalPriceAfterVat: [totalPriceAfterVat],
+      isFreeItem: [isFreeItem],
     });
   }
 
@@ -419,7 +435,9 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       });
       if (quantity >= offers.ItemQty) {
         freeItemUnits.forEach((itemUnit: any, index: any) => {
-          if (this.freeItemsInfo[i + index + 1]) {
+          if (
+            this.linesArray.controls[i + index + 1]?.get('isFreeItem')?.value
+          ) {
             this.linesArray.controls[i + index + 1].patchValue({
               quantity: itemUnit.freeItemQuantity * freeItemsCount,
             });
@@ -436,38 +454,42 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
               Quantity: itemUnit.freeItemQuantity * freeItemsCount,
               Discount: 0,
               ProductId: itemUnit.Id,
+              IsFreeItem: true,
             };
-            this.freeItemsInfo[i + index + 1] = i + index + 1;
-            this.items[i + index + 1] = [
+            this.itemPriceList.splice(i + 1, 0, undefined);
+            this.items.splice(i + index + 1, 0, [
               {
                 ItemId: itemUnit.Id,
                 NameAr: itemUnit.NameAr,
                 NameEn: itemUnit.NameEn,
               },
-            ];
-            this.units[i + index + 1] = [
+            ]);
+            this.units.splice(i + index + 1, 0, [
               {
                 unitId: itemUnit.UnitId,
                 name: itemUnit.UnitName,
               },
-            ];
+            ]);
             this.addNewLine(newLine, i + index + 1);
           }
         });
       }
       if (quantity < offers.ItemQty) {
-        for (let index = 1; index <= freeItemUnits?.length; index++) {
-          this.remove(i + 1);
-          this.itemPriceList.splice(i + 1, 1);
-          this.items.splice(i + 1, 1);
-          this.units.splice(i + 1, 1);
-          this.barcodeItems.splice(i + 1, 1);
-          this.freeItemsInfo.splice(i + 1, 1);
+        for (let index = 0; index < itemUnites?.length; index++) {
+          if (this.linesArray.controls[i + 1]?.get('isFreeItem')?.value) {
+            this.linesArray.removeAt(i + 1);
+            this.itemPriceList?.splice(i + 1, 1);
+            this.items?.splice(i + 1, 1);
+            this.units?.splice(i + 1, 1);
+            this.barcodeItems?.splice(i + 1, 1);
+          }
         }
       }
     }
     this.runCalculations(i);
   }
+
+  removeFreeItems() {}
 
   runCalculations(i: number): void {
     let form = this.linesArray.controls[i];

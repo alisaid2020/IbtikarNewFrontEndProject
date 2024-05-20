@@ -147,7 +147,9 @@
                 [style.background-color]="
                   i % 2 !== 0 ? '#add8e633' : 'rgb(250 250 250)'
                 "
-                [class.disabled-form]="freeItemsInfo[i]"
+                [class.disabled-form]="
+                  linesArray.controls[i].get('isFreeItem')!.value
+                "
               >
                 @for (col of columns; track $index) {
                 <ng-container [ngSwitch]="col.header">
@@ -157,7 +159,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
-                      *ngIf="freeItemsInfo[i]"
+                      *ngIf="linesArray.controls[i].get('isFreeItem')!.value"
                       [items]="barcodeItems[i]"
                       [placeholder]="'barcode'"
                       [bindValue]="'Barcode'"
@@ -166,7 +168,7 @@
                       [control]="linesArray.controls[i].get('productBarcode')!"
                     ></app-ebtikar-select>
                     <app-ebtikar-select
-                      *ngIf="!freeItemsInfo[i]"
+                      *ngIf="!linesArray.controls[i].get('isFreeItem')!.value"
                       [apiUrl]="itemsByBarcodeApi"
                       [customData]="barcodeItems[i]"
                       [placeholder]="'barcode'"
@@ -183,7 +185,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
-                      *ngIf="freeItemsInfo[i]"
+                      *ngIf="linesArray.controls[i].get('isFreeItem')!.value"
                       [hasMultipleLabels]="true"
                       [items]="items[i]"
                       [placeholder]="'item'"
@@ -192,7 +194,7 @@
                       [control]="linesArray.controls[i].get('itemID')!"
                     ></app-ebtikar-select>
                     <app-ebtikar-select
-                      *ngIf="!freeItemsInfo[i]"
+                      *ngIf="!linesArray.controls[i].get('isFreeItem')!.value"
                       [apiUrl]="itemsByTermApi"
                       [customData]="items[i]"
                       [searchByTerm]="true"
@@ -213,7 +215,11 @@
                       [items]="units[i]"
                       [bindValue]="'unitId'"
                       [bindLabel]="'name'"
-                      [clearable]="freeItemsInfo[i] ? false : true"
+                      [clearable]="
+                        linesArray.controls[i].get('isFreeItem')!.value
+                          ? false
+                          : true
+                      "
                       [control]="linesArray.controls[i].get('uniteId')!"
                       (emitChanged)="selectedUnit($event, i)"
                     ></app-ebtikar-select>

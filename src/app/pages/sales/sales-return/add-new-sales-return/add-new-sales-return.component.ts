@@ -50,7 +50,6 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
   defaultSelected: any[] = [
     { field: 'Barcode', header: 'Barcode' },
     { field: 'itemID', header: 'itemID' },
-    { field: 'uniteId', header: 'uniteId' },
     { field: 'correctQty', header: 'correctQty' },
     { field: 'returnedQty', header: 'returnedQty' },
     { field: 'quantity', header: 'quantity' },
@@ -290,9 +289,6 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
         {
           Barcode: line.productBarcode,
         },
-      ];
-      this.units[i] = [
-        { unitId: line.UniteId, NameAr: 'sjdnsj', NameEn: 'nsajamlk' },
       ];
     });
   }
