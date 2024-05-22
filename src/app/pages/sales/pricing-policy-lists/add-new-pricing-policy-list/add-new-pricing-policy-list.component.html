@@ -7,7 +7,7 @@
     >
       <span
         [inlineSVG]="'./assets/media/icons/duotune/arrows/arr063.svg'"
-        class="svg-icon svg-icon-3 text-gray-800 fw-bolder"
+        class="svg-icon svg-icon-3 text-gray-800 fw-bolder rotate-ar"
       ></span>
     </a>
   </div>
@@ -23,9 +23,9 @@
 <form [formGroup]="pricingPolicyListForm">
   <div class="card mb-5 mb-xxl-8">
     <div class="card-body pb-0">
-      <div class="row g-5">
+      <div class="row g-5 mb-5">
         <div
-          class="col-md-6"
+          class="col-md-6 mb-5"
           [class.disabled-form]="priceListData?.Id ? true : false"
           appAppArrowFocus
         >
@@ -63,7 +63,6 @@
           ></app-ebtikar-select>
         </div> -->
       </div>
-      <hr class="mt-10 mb-10" />
       <div class="row">
         <p-table
           [columns]="_selectedColumns"
@@ -71,6 +70,7 @@
           styleClass="p-datatable-gridlines p-datatable-striped"
           [stateKey]="tableStorage"
           columnResizeMode="expand"
+          class="mt-5"
         >
           <ng-template pTemplate="caption">
             <div class="d-block d-md-flex flex-wrap w-100 align-items-center">
@@ -99,6 +99,13 @@
                     [placeholder]="'search' | translate"
                   />
                 </div>
+                <button
+                  type="button"
+                  class="btn btn-icon btn-warning ms-3"
+                  (click)="addNewLine()"
+                >
+                  <i class="fas fa-plus"></i>
+                </button>
                 <span class="p-input-icon-left ms-3">
                   <p-button (click)="tableService.openMultiselect(ms1)">{{
                     "hideShowColumns" | translate
@@ -155,7 +162,6 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
-                      [customData]="barcodeItems[i]"
                       [apiUrl]="itemsApi"
                       [searchByTerm]="true"
                       [placeholder]="'Barcode'"
@@ -259,6 +265,7 @@
                 }
                 <td>
                   <button
+                    [disabled]="linesArray.value?.length === 1"
                     type="button"
                     class="btn btn-icon btn-danger ms-3"
                     (click)="remove(i)"

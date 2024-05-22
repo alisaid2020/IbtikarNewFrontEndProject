@@ -108,5 +108,9 @@
   "Barcode": "Barcode",
   "itemBalanceNotAllowed": "Item balance does not allow",
   "NoInvoiceMatchThatNumber": "There is no invoice with this number",
-  "qtyGreaterTanSold": "Entered Quantity Greater Than Sold Quantity"
+  "qtyGreaterTanSold": "Entered Quantity Greater Than Sold Quantity",
+  "fieldIsRequired": "This field is required",
+  "addedSuccessfully": "Added Successfully",
+  "updatedSuccessfully": "Updated Successfully",
+  "deletedSuccessfully": "Deleted Successfully"
 }

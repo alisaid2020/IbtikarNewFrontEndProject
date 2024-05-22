@@ -104,6 +104,7 @@ export class PricingPolicyListComponent implements OnInit, OnDestroy {
         position: this.translate.currentLang == 'ar' ? 'start' : 'end',
         scroll: true,
         panelClass: 'w-100 w-md-50',
+        // backdropDismiss: true,
       }
     );
     offCanvasRef.componentInstance.pricingPolicy = pricingPolicy;
@@ -131,6 +132,7 @@ export class PricingPolicyListComponent implements OnInit, OnDestroy {
             })
             .pipe(
               tap((_) => {
+                this.spinner.hide();
                 this.toast.show(Toast.deleted, {
                   classname: Toast.success,
                 });

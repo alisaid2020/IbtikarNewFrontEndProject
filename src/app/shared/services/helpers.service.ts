@@ -63,10 +63,10 @@ export class HelpersService {
 
   getTranslatedName(item: any): string {
     const currLang = this.translate.currentLang;
-    if (item.NameEn) {
-      return currLang === 'ar' ? item.NameAr : item.NameEn;
+    if (item?.NameEn) {
+      return currLang === 'ar' ? item?.NameAr : item?.NameEn;
     }
-    return item?.NameAr ? item.NameAr : null;
+    return item?.NameAr ? item?.NameAr : null;
   }
 
   // remove empty lines from form array

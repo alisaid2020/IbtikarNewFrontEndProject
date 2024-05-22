@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { pricingPolicyApi } from '@constants/api.constant';
 import { NgbActiveOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { DataService } from '@services/data.service';
@@ -33,12 +33,14 @@ export class AddNewPricingPolicyComponent implements OnInit {
     let nameEn;
     let notes;
     if (this.pricingPolicy) {
+      console.log(this.pricingPolicy);
+
       nameAr = this.pricingPolicy.NameAr;
       nameEn = this.pricingPolicy.NameEn;
       notes = this.pricingPolicy.Notes;
     }
     this.pricingPolicyForm = this.fb.group({
-      nameAr: [nameAr],
+      nameAr: [nameAr, [Validators.required]],
       nameEn: [nameEn],
       notes: [notes],
     });

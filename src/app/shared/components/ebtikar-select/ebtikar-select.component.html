@@ -24,7 +24,7 @@
   [virtualScroll]="isPaginated"
   (change)="getChangedItem($event)"
   [searchFn]="searchByLabelInDynamic"
-  (scrollToEnd)="getPaginatedData()"
+  (scrollToEnd)="getDataOnScroll()"
   #select
 >
   <ng-template

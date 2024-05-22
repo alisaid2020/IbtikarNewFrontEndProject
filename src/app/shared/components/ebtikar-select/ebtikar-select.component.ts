@@ -168,6 +168,12 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  getDataOnScroll(): void {
+    if (this.isPaginated) {
+      this.getPaginatedData();
+    }
+  }
+
   getPaginatedData(PageNumber: number = 1) {
     this.loading = true;
     let params: any = {

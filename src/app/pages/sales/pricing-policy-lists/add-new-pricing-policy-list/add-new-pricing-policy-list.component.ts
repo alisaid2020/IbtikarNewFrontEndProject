@@ -232,11 +232,11 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     let PriceListId;
     let ParCode;
     let ItemUniteId;
-    let Price;
-    let PriceMin;
-    let PriceMax;
-    let CommissionValue;
-    let CommissionPercentage;
+    let Price = 0;
+    let PriceMin = 0;
+    let PriceMax = 0;
+    let CommissionValue = 0;
+    let CommissionPercentage = 0;
     if (value) {
       ParCode = value?.ParCode;
       ItemUniteId = value?.ItemUniteId;
@@ -248,7 +248,6 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     }
     if (this.priceListData) {
       Id = value?.Id;
-      PriceListId = null;
     }
     return this.fb.group({
       Id: [Id],
@@ -270,19 +269,35 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   }
 
   selectedItemByBarcode(ev: any, i: any) {
-    this.linesArray.controls[i].patchValue({
+    let form = this.linesArray.controls[i];
+    if (!ev) {
+      this.items[i] = [];
+      this.barcodeItems[i] = [];
+      form.reset();
+      return;
+    }
+    form.patchValue({
       ItemUniteId: ev.Id,
+      Price: ev?.Price,
     });
     this.items[i] = [ev];
     this.addNewLine();
-    this.getPrice(ev, i);
+    // this.getPrice(ev, i);
   }
 
   selectedItemByName(ev: any, i: any) {
-    this.linesArray.controls[i].patchValue({
+    let form = this.linesArray.controls[i];
+    if (!ev) {
+      this.items[i] = [];
+      this.barcodeItems[i] = [];
+      form.reset();
+      return;
+    }
+    form.patchValue({
       ParCode: ev.Barcode,
+      Price: ev?.Price,
     });
-    this.barcodeItems[i] = [ev];
+    this.addNewLine();
   }
 
   getPrice(ev: any, i: number): void {
@@ -370,13 +385,13 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
 
   submit(): void {
     this.spinner.show();
-    if (!this.priceListData) {
-      this.changedFieldsOnly.forEach((field) => {
-        field.PriceListId = this.pricingPolicyListForm.value.PricePolicyId;
-      });
-    }
-
-    console.log(this.changedFieldsOnly);
+    let formValue = {
+      ...this.pricingPolicyListForm.value,
+      PriceListDetail: this.helpers.removeEmptyLines(this.linesArray),
+    };
+    formValue.PriceListDetail.forEach((field: any) => {
+      field.PriceListId = this.pricingPolicyListForm.value.PricePolicyId;
+    });
 
     // let branchesLength = formValue?.branches?.filter(Number).length;
     // if (branchesLength) {
@@ -385,38 +400,38 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     //   });
     // }
 
-    // if (this.pricingPolicyList) {
-    //   firstValueFrom(
-    //     this.dataService
-    //       .post(
-    //         `${apiUrl}/XtraAndPos_PricePolicyList/UpdatePriceListDetail`,
-    //         this.changedFieldsOnly
-    //       )
-    //       .pipe(
-    //         tap((res) => {
-    //           this.spinner.hide();
-    //           this.router.navigateByUrl('/pricing-policy-lists');
-    //           this.toast.show(Toast.updated, {
-    //             classname: Toast.success,
-    //           });
-    //         })
-    //       )
-    //   );
-    //   return;
-    // }
-    // firstValueFrom(
-    //   this.dataService
-    //     .post(`${apiUrl}/XtraAndPos_PricePolicyList/UpdatePriceListDetail`, this.changedFieldsOnly)
-    //     .pipe(
-    //       tap((res) => {
-    //         this.spinner.hide();
-    //         this.router.navigateByUrl('/pricing-policy-lists');
-    //         this.toast.show(Toast.added, {
-    //           classname: Toast.success,
-    //         });
-    //       })
-    //     )
-    // );
+    if (this.priceListData) {
+      firstValueFrom(
+        this.dataService
+          .post(
+            `${apiUrl}/XtraAndPos_PricePolicyList/UpdatePriceListDetail`,
+            this.changedFieldsOnly
+          )
+          .pipe(
+            tap((res) => {
+              this.spinner.hide();
+              this.router.navigateByUrl('/pricing-policy-lists');
+              this.toast.show(Toast.updated, {
+                classname: Toast.success,
+              });
+            })
+          )
+      );
+      return;
+    }
+    firstValueFrom(
+      this.dataService
+        .post(`${apiUrl}/XtraAndPos_PricePolicyList/Create`, formValue)
+        .pipe(
+          tap((res) => {
+            this.spinner.hide();
+            this.router.navigateByUrl('/pricing-policy-lists');
+            this.toast.show(Toast.added, {
+              classname: Toast.success,
+            });
+          })
+        )
+    );
   }
 
   ngOnDestroy(): void {
