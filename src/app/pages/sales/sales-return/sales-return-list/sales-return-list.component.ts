@@ -33,7 +33,7 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
   tableStorage = 'sales-return-table';
   defaultStorage = 'sales-return-default-selected';
   defaultSelected: any[] = [
-    { field: 'Id', header: 'Id' },
+    { field: 'DocNo', header: 'DocNo' },
     { field: 'BranchName', header: 'BranchName' },
     { field: 'CreatedDate', header: 'CreatedDate' },
     { field: 'TotalInvoice', header: 'TotalInvoice' },
