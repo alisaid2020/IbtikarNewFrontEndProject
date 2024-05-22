@@ -272,7 +272,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
       exchangePrice: this.salesReturnFound.ExchangePrice,
       clientType: this.salesReturnFound.ClientType,
       docType: this.salesReturnFound.DocType,
-      storeId: this.salesReturnFound.storeId,
+      storeId: this.salesReturnFound.StoreId,
       //  saleInvoiceNo; not found from invoice come
     });
     this.selectClients = [
