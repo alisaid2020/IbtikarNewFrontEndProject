@@ -124,25 +124,21 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   }
 
   initForm(): void {
-    let PricePolicyId = this.priceListData?.Id;
+    let pricePolicyId;
     let groupId;
     let branches;
 
-    if (this.priceListData) {
-      PricePolicyId = this.priceListData?.Id;
-    }
-
     this.pricingPolicyListForm = this.fb.group({
-      PricePolicyId: [PricePolicyId, [Validators.required]],
-      groupId: [groupId],
-      branches: [branches],
-      PriceListDetail: this.fb.array([this.newLine()]),
+      pricePolicyId: [pricePolicyId, [Validators.required]],
+      groupId: [groupId, [Validators.required]],
+      branches: [branches, [Validators.required]],
+      priceListDetail: this.fb.array([this.newLine()]),
     });
-    // if (this.pricingListData) {
-    //   this.pricingListData.Branches = this.pricingListData?.Branches.map(
-    //     (el: any) => (el = el.BranchId)
-    //   );
-    // }
+    if (this.priceListData) {
+      this.priceListData.Branches = this.priceListData?.Branches.map(
+        (el: any) => (el = el.BranchId)
+      );
+    }
     if (this.pricingPolicyLines?.length) {
       this.addItemsToArray();
     }
@@ -192,7 +188,11 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     this.pricingPolicyLines.forEach((line: any, i: any) => {
       let newLine: any = {
         ...line,
-        ItemUniteId: { Id: line?.ItemUniteId },
+        ItemUniteId: {
+          Id: line?.ItemUniteId,
+          NameAr: line?.NameAr,
+          NameEn: line?.NameEn,
+        },
         ParCode: { Barcode: line?.ParCode },
       };
       this.items[i] = [
@@ -211,7 +211,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
             NameAr: this.changedFieldsOnly[index]?.NameAr,
             NameEn: this.changedFieldsOnly[index]?.NameEn,
           },
-          ParCode: { Barcode: this.changedFieldsOnly[index]?.ParCode },
+          ParCode: { Barcode: this.changedFieldsOnly[index]?.parCode },
         };
       }
       this.addNewLine(newLine);
@@ -219,7 +219,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   }
 
   get linesArray(): FormArray {
-    return this.pricingPolicyListForm.get('PriceListDetail')! as FormArray;
+    return this.pricingPolicyListForm.get('priceListDetail')! as FormArray;
   }
 
   addNewLine(value?: any): void {
@@ -231,37 +231,37 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   }
 
   newLine(value?: any): FormGroup {
-    let Id = 0;
-    let PriceListId;
-    let ParCode;
-    let ItemUniteId;
-    let Price = 0;
-    let PriceMin = 0;
-    let PriceMax = 0;
-    let CommissionValue = 0;
-    let CommissionPercentage = 0;
+    let id = 0;
+    let priceListId;
+    let parCode;
+    let itemUniteId;
+    let price = 0;
+    let priceMin = 0;
+    let priceMax = 0;
+    let commissionValue = 0;
+    let commissionPercentage = 0;
     if (value) {
-      ParCode = value?.ParCode;
-      ItemUniteId = value?.ItemUniteId;
-      Price = value?.Price;
-      PriceMin = value?.PriceMin;
-      PriceMax = value?.PriceMax;
-      CommissionValue = value?.CommissionValue;
-      CommissionPercentage = value?.CommissionPercentage;
+      parCode = value?.ParCode;
+      itemUniteId = value?.ItemUniteId;
+      price = value?.Price;
+      priceMin = value?.PriceMin;
+      priceMax = value?.PriceMax;
+      commissionValue = value?.CommissionValue;
+      commissionPercentage = value?.CommissionPercentage;
     }
     if (this.priceListData) {
-      Id = value?.Id;
+      id = value?.Id;
     }
     return this.fb.group({
-      Id: [Id],
-      PriceListId: [PriceListId],
-      ItemUniteId: [ItemUniteId],
-      ParCode: [ParCode],
-      Price: [Price],
-      PriceMin: [PriceMin],
-      PriceMax: [PriceMax],
-      CommissionValue: [CommissionValue],
-      CommissionPercentage: [CommissionPercentage],
+      id: [id],
+      priceListId: [priceListId],
+      itemUniteId: [itemUniteId],
+      parCode: [parCode],
+      price: [price],
+      priceMin: [priceMin],
+      priceMax: [priceMax],
+      commissionValue: [commissionValue],
+      commissionPercentage: [commissionPercentage],
     });
   }
 
@@ -280,8 +280,8 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       return;
     }
     form.patchValue({
-      ItemUniteId: ev.Id,
-      Price: ev?.Price,
+      itemUniteId: ev.Id,
+      price: ev?.Price,
     });
     this.items[i] = [ev];
     this.addNewLine();
@@ -297,8 +297,8 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       return;
     }
     form.patchValue({
-      ParCode: ev.Barcode,
-      Price: ev?.Price,
+      parCode: ev.Barcode,
+      price: ev?.Price,
     });
     this.addNewLine();
   }
@@ -311,7 +311,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.linesArray.controls[i].patchValue({ Price: res?.Obj?.price });
+            this.linesArray.controls[i].patchValue({ price: res?.Obj?.price });
           })
         )
     );
@@ -377,7 +377,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
 
   updatedFieldsList(ev: any, row: any) {
     let index = this.changedFieldsOnly.findIndex(
-      (el) => el.ParCode == row.value.ParCode
+      (el) => el.parCode == row.value.parCode
     );
     if (!this.changedFieldsOnly?.length || index < 0) {
       this.changedFieldsOnly.push(row.value);
@@ -390,18 +390,17 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     this.spinner.show();
     let formValue = {
       ...this.pricingPolicyListForm.value,
-      PriceListDetail: this.helpers.removeEmptyLines(this.linesArray),
+      priceListDetail: this.helpers.removeEmptyLines(this.linesArray),
     };
-    formValue.PriceListDetail.forEach((field: any) => {
-      field.PriceListId = this.pricingPolicyListForm.value.PricePolicyId;
+    formValue.priceListDetail.forEach((field: any) => {
+      field.priceListId = this.pricingPolicyListForm.value.pricePolicyId;
     });
-
-    // let branchesLength = formValue?.branches?.filter(Number).length;
-    // if (branchesLength) {
-    //   formValue.branches = formValue.branches.filter(Number).map((id: any) => {
-    //     return { branchId: id };
-    //   });
-    // }
+    let branchesLength = formValue?.branches?.filter(Number).length;
+    if (branchesLength) {
+      formValue.branches = formValue.branches.filter(Number).map((id: any) => {
+        return { branchId: id };
+      });
+    }
 
     if (this.priceListData) {
       firstValueFrom(

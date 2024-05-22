@@ -26,39 +26,50 @@
       <div class="row g-5 mb-5">
         <div
           class="col-md-6 mb-5"
-          [class.disabled-form]="priceListData?.Id ? true : false"
+          [class.disabled-form]="priceListData ? true : false"
           appAppArrowFocus
         >
           <app-ebtikar-select
+            [uid]="priceListData?.Id"
             [items]="pricingPolicesObj?.group"
             [hasMultipleLabels]="true"
             [placeholder]="'PricePolicy'"
             [label]="'PricePolicy'"
             [bindValue]="'Id'"
-            [clearable]="priceListData?.Id ? false : true"
-            [control]="pricingPolicyListForm.get('PricePolicyId')!"
+            [clearable]="!priceListData ? true : false"
+            [control]="pricingPolicyListForm.get('pricePolicyId')!"
           ></app-ebtikar-select>
         </div>
-        <div class="col-md-6" appAppArrowFocus>
-          <!-- [uid]="pricingListData?.GroupId" -->
+        <div
+          class="col-md-6"
+          [class.disabled-form]="priceListData ? true : false"
+          appAppArrowFocus
+        >
           <app-ebtikar-select
+            [uid]="priceListData?.GroupId"
             [items]="pricingPolicesObj?.itemgroup"
             [hasMultipleLabels]="true"
             [placeholder]="'ItemGroup'"
             [label]="'ItemGroup'"
             [bindValue]="'Id'"
+            [clearable]="!priceListData ? true : false"
             [control]="pricingPolicyListForm.get('groupId')!"
           ></app-ebtikar-select>
         </div>
-        <div class="col-md-6" appAppArrowFocus>
-          <!-- [uid]="pricingListData?.Branches" -->
+        <div
+          class="col-md-6"
+          [class.disabled-form]="priceListData ? true : false"
+          appAppArrowFocus
+        >
           <app-ebtikar-select
             [items]="pricingPolicesObj?.Branches"
+            [uid]="priceListData?.Branches"
             [IsMultiple]="true"
             [hasMultipleLabels]="true"
             [placeholder]="'branches'"
             [label]="'branches'"
             [bindValue]="'Id'"
+            [clearable]="!priceListData ? true : false"
             [control]="pricingPolicyListForm.get('branches')!"
           ></app-ebtikar-select>
         </div>
@@ -81,10 +92,7 @@
               <div
                 class="d-flex align-items-center ms-auto justify-content-end"
               >
-                <div
-                  class="position-relative"
-                  *ngIf="pricingPolicyLines?.length"
-                >
+                <div class="position-relative" *ngIf="priceListData">
                   <span
                     [inlineSVG]="
                       './assets/media/icons/duotune/general/gen021.svg'
@@ -106,7 +114,7 @@
                 >
                   <i class="fas fa-plus"></i>
                 </button>
-                <span class="p-input-icon-left ms-3">
+                <!-- <span class="p-input-icon-left ms-3">
                   <p-button (click)="tableService.openMultiselect(ms1)">{{
                     "hideShowColumns" | translate
                   }}</p-button>
@@ -125,7 +133,7 @@
                       {{ option.translatedName }}
                     </ng-template>
                   </p-multiSelect>
-                </span>
+                </span> -->
               </div>
             </div>
           </ng-template>
@@ -147,7 +155,7 @@
             let-columns="columns"
             let-i="rowIndex"
           >
-            <ng-container formArrayName="PriceListDetail">
+            <ng-container formArrayName="priceListDetail">
               <tr
                 [formGroupName]="i"
                 [style.background-color]="
@@ -167,7 +175,7 @@
                       [placeholder]="'Barcode'"
                       [bindValue]="'Barcode'"
                       [bindLabel]="'Barcode'"
-                      [control]="linesArray.controls[i].get('ParCode')!"
+                      [control]="linesArray.controls[i].get('parCode')!"
                       (emitChanged)="selectedItemByBarcode($event, i)"
                     ></app-ebtikar-select>
                   </td>
@@ -183,7 +191,7 @@
                       [hasMultipleLabels]="true"
                       [placeholder]="'productName'"
                       [bindValue]="'Id'"
-                      [control]="linesArray.controls[i].get('ItemUniteId')!"
+                      [control]="linesArray.controls[i].get('itemUniteId')!"
                       (emitChanged)="selectedItemByName($event, i)"
                     ></app-ebtikar-select>
                   </td>
@@ -194,7 +202,7 @@
                   >
                     <app-ebtikar-input
                       [placeholder]="'price'"
-                      [control]="linesArray.controls[i].get('Price')!"
+                      [control]="linesArray.controls[i].get('price')!"
                       (emitChanged)="
                         updatedFieldsList($event, linesArray.controls[i])
                       "
@@ -207,7 +215,7 @@
                   >
                     <app-ebtikar-input
                       [placeholder]="'PriceMax'"
-                      [control]="linesArray.controls[i].get('PriceMax')!"
+                      [control]="linesArray.controls[i].get('priceMax')!"
                       (emitChanged)="
                         updatedFieldsList($event, linesArray.controls[i])
                       "
@@ -220,7 +228,7 @@
                   >
                     <app-ebtikar-input
                       [placeholder]="'PriceMin'"
-                      [control]="linesArray.controls[i].get('PriceMin')!"
+                      [control]="linesArray.controls[i].get('priceMin')!"
                       (emitChanged)="
                         updatedFieldsList($event, linesArray.controls[i])
                       "
@@ -234,7 +242,7 @@
                     <app-ebtikar-input
                       [placeholder]="'CommissionPercentage'"
                       [control]="
-                        linesArray.controls[i].get('CommissionPercentage')!
+                        linesArray.controls[i].get('commissionPercentage')!
                       "
                       (emitChanged)="
                         updatedFieldsList($event, linesArray.controls[i])
@@ -248,7 +256,7 @@
                   >
                     <app-ebtikar-input
                       [placeholder]="'commissionValue'"
-                      [control]="linesArray.controls[i].get('CommissionValue')!"
+                      [control]="linesArray.controls[i].get('commissionValue')!"
                       (emitChanged)="
                         updatedFieldsList($event, linesArray.controls[i])
                       "
