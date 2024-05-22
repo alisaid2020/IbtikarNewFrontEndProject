@@ -4,14 +4,17 @@
       {{ "pricingPolicyLists" | translate }}
     </h1>
   </div>
-  <div class="ms-auto">
+  <div *ngxPermissionsOnly="'pricelist-Create'" class="ms-auto">
     <a class="btn btn-primary" routerLink="/pricing-policy-lists/add">{{
       "addNew" | translate
     }}</a>
   </div>
 </div>
 
-<div class="card mb-5 mb-xxl-8 mt-7">
+<div
+  class="card mb-5 mb-xxl-8 mt-7"
+  *ngxPermissionsOnly="'pricelist-ManagementInfo'"
+>
   <div class="card-body p-0">
     <p-table
       [value]="pricingPolicyLists"
@@ -64,6 +67,7 @@
           }
           <td>
             <a
+              *ngxPermissionsOnly="'pricelist-Update'"
               class="btn btn-icon btn-secondary"
               [routerLink]="['/pricing-policy-lists', rowData.Id]"
             >

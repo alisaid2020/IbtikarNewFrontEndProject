@@ -14,11 +14,11 @@ export class SidebarMenuComponent implements OnInit {
     {
       name: 'dashboard',
       route: '/dashboard',
-      icon: 'socicon-coderwall',
+      icon: 'fa-chart-line',
     },
     {
       name: 'sales',
-      icon: 'fa-chart-bar',
+      icon: 'fa-receipt',
       children: [
         {
           title: 'salesInvoice',
