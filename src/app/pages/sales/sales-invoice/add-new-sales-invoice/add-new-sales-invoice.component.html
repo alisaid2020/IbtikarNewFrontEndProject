@@ -161,7 +161,7 @@
                     <app-ebtikar-select
                       *ngIf="linesArray.controls[i].get('isProductFree')!.value"
                       [items]="barcodeItems[i]"
-                      [placeholder]="'barcode'"
+                      [placeholder]="'Barcode'"
                       [bindValue]="'Barcode'"
                       [bindLabel]="'Barcode'"
                       [clearable]="false"
@@ -173,7 +173,7 @@
                       "
                       [apiUrl]="itemsByBarcodeApi"
                       [customData]="barcodeItems[i]"
-                      [placeholder]="'barcode'"
+                      [placeholder]="'Barcode'"
                       [bindValue]="'Barcode'"
                       [bindLabel]="'Barcode'"
                       [searchByBarcode]="true"
@@ -293,8 +293,8 @@
             class="disabled-form"
             [type]="'number'"
             [readonly]="true"
-            [placeholder]="'totalDiscount'"
-            [label]="'totalDiscount'"
+            [placeholder]="'TotalDisc'"
+            [label]="'TotalDisc'"
             [control]="salesInvoiceForm.get('totalDisc')!"
           ></app-ebtikar-input>
         </div>

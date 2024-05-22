@@ -44,7 +44,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     'Balance',
     'Vat',
     'Discount',
-    'totalPriceAfterVat',
+    'TotalPriceAfterVat',
   ];
   defaultSelected: any[] = [
     { field: 'Barcode', header: 'Barcode' },
@@ -55,7 +55,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     { field: 'Price', header: 'Price' },
     { field: 'Vat', header: 'vat' },
     { field: 'Discount', header: 'Discount' },
-    { field: 'TotalPriceAfterVat', header: 'totalPriceAfterVat' },
+    { field: 'TotalPriceAfterVat', header: 'TotalPriceAfterVat' },
   ];
   paymentTypes = [
     { name: 'cash', value: 1 },

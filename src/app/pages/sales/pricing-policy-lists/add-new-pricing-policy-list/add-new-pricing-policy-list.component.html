@@ -39,10 +39,10 @@
             [control]="pricingPolicyListForm.get('PricePolicyId')!"
           ></app-ebtikar-select>
         </div>
-        <!-- <div class="col-md-6" appAppArrowFocus>
+        <div class="col-md-6" appAppArrowFocus>
+          <!-- [uid]="pricingListData?.GroupId" -->
           <app-ebtikar-select
             [items]="pricingPolicesObj?.itemgroup"
-            [uid]="pricingListData?.GroupId"
             [hasMultipleLabels]="true"
             [placeholder]="'ItemGroup'"
             [label]="'ItemGroup'"
@@ -51,9 +51,9 @@
           ></app-ebtikar-select>
         </div>
         <div class="col-md-6" appAppArrowFocus>
+          <!-- [uid]="pricingListData?.Branches" -->
           <app-ebtikar-select
             [items]="pricingPolicesObj?.Branches"
-            [uid]="pricingListData?.Branches"
             [IsMultiple]="true"
             [hasMultipleLabels]="true"
             [placeholder]="'branches'"
@@ -61,7 +61,7 @@
             [bindValue]="'Id'"
             [control]="pricingPolicyListForm.get('branches')!"
           ></app-ebtikar-select>
-        </div> -->
+        </div>
       </div>
       <div class="row">
         <p-table

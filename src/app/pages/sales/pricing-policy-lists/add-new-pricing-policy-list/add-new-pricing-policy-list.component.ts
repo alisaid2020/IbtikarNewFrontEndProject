@@ -125,8 +125,8 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
 
   initForm(): void {
     let PricePolicyId = this.priceListData?.Id;
-    // let groupId;
-    // let branches;
+    let groupId;
+    let branches;
 
     if (this.priceListData) {
       PricePolicyId = this.priceListData?.Id;
@@ -134,8 +134,8 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
 
     this.pricingPolicyListForm = this.fb.group({
       PricePolicyId: [PricePolicyId, [Validators.required]],
-      // groupId: [groupId],
-      // branches: [branches],
+      groupId: [groupId],
+      branches: [branches],
       PriceListDetail: this.fb.array([this.newLine()]),
     });
     // if (this.pricingListData) {
@@ -189,16 +189,19 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
 
   addItemsToArray(): void {
     this.linesArray.clear();
-    this.pricingPolicyLines.forEach((line: any) => {
+    this.pricingPolicyLines.forEach((line: any, i: any) => {
       let newLine: any = {
         ...line,
-        ItemUniteId: {
+        ItemUniteId: { Id: line?.ItemUniteId },
+        ParCode: { Barcode: line?.ParCode },
+      };
+      this.items[i] = [
+        {
           Id: line?.ItemUniteId,
           NameAr: line?.NameAr,
           NameEn: line?.NameEn,
         },
-        ParCode: { Barcode: line?.ParCode },
-      };
+      ];
       let index = this.changedFieldsOnly.findIndex((el) => el.Id == newLine.Id);
       if (index >= 0) {
         newLine = {

@@ -47,7 +47,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     { field: 'price', header: 'price' },
     { field: 'vat', header: 'vat' },
     { field: 'discount', header: 'discount' },
-    { field: 'totalPriceAfterVat', header: 'totalPriceAfterVat' },
+    { field: 'totalPriceAfterVat', header: 'TotalPriceAfterVat' },
   ];
   paymentTypes = [
     { name: 'cash', value: 1 },
@@ -66,7 +66,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     'balance',
     'vat',
     'discount',
-    'total',
+    'TotalPriceAfterVat',
   ];
   set selectedColumns(val: any[]) {
     this._selectedColumns = this.defaultSelected.filter((col: any) =>
