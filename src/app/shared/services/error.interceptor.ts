@@ -39,7 +39,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             classname: Toast.error,
             delay: 5000,
           });
-          return throwError(() => new Error(res));
+          return;
         }
       }),
       catchError((err) => {

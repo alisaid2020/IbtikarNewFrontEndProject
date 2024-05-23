@@ -348,7 +348,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     let totalPriceAfterVat: any = form.get('totalPriceAfterVat')?.value;
     let vatAmount: any;
 
-    if (this.isRoundToTwoNumbers) {
+    if (!this.isRoundToTwoNumbers) {
       discount = Math.round(discount / allQuantity);
       let p1 = Math.round(price * quantity);
       let p2 = Math.round(p1 - discount);
@@ -356,12 +356,12 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
       vatAmount = Math.round(p3 / 100);
       totalPriceAfterVat = p2 + vatAmount;
     } else {
-      discount = Math.round((discount / allQuantity) * 1000) / 1000;
-      let part1 = Math.round(price * quantity * 1000) / 1000;
-      let part2 = Math.round((part1 - discount) * 1000) / 1000;
-      let part3 = Math.round(part2 * vat * 1000) / 1000;
-      vatAmount = Math.round((part3 / 100) * 1000) / 1000;
-      totalPriceAfterVat = Math.round((part2 + vatAmount) * 1000) / 1000;
+      discount = Math.round((discount / allQuantity) * 100) / 100;
+      let part1 = Math.round(price * quantity * 100) / 100;
+      let part2 = Math.round((part1 - discount) * 100) / 100;
+      let part3 = Math.round(part2 * vat * 100) / 100;
+      vatAmount = Math.round((part3 / 100) * 100) / 100;
+      totalPriceAfterVat = Math.round((part2 + vatAmount) * 100) / 100;
     }
     form.patchValue({
       totalPriceAfterVat: totalPriceAfterVat,
@@ -383,11 +383,19 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
       .map((line: any) => +line.value?.discount)
       .reduce((acc, curr) => acc + curr, 0);
 
-    this.salesInvoiceForm.patchValue({
-      totalNet: Math.round(totalNet * 1000) / 1000,
-      totalVat: Math.round(totalVat * 1000) / 1000,
-      totalDisc: Math.round(totalDisc * 1000) / 1000,
-    });
+    if (!this.isRoundToTwoNumbers) {
+      this.salesInvoiceForm.patchValue({
+        totalNet: Math.round(totalNet),
+        totalVat: Math.round(totalVat),
+        totalDisc: Math.round(totalDisc),
+      });
+    } else {
+      this.salesInvoiceForm.patchValue({
+        totalNet: Math.round(totalNet * 100) / 100,
+        totalVat: Math.round(totalVat * 100) / 100,
+        totalDisc: Math.round(totalDisc * 100) / 100,
+      });
+    }
     this.fillPaymentMethodWithTotal();
   }
 

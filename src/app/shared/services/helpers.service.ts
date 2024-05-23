@@ -87,15 +87,15 @@ export class HelpersService {
     let price = form.get('price')?.value;
     let discountValue: any;
 
-    if (isRoundToTwoNumbers) {
+    if (!isRoundToTwoNumbers) {
       let p1 = Math.round(price * quantity);
       let p2 = Math.round(itemPriceObj.offers.ItemDiscount / 100);
       discountValue = Math.round(p1 * p2);
     } else {
-      let part1 = Math.round(quantity * price * 1000) / 1000;
+      let part1 = Math.round(quantity * price * 100) / 100;
       let part2 =
-        Math.round((itemPriceObj.offers.ItemDiscount / 100) * 1000) / 1000;
-      discountValue = Math.round(part1 * part2 * 1000) / 1000;
+        Math.round((itemPriceObj.offers.ItemDiscount / 100) * 100) / 100;
+      discountValue = Math.round(part1 * part2 * 100) / 100;
     }
     return discountValue;
   }

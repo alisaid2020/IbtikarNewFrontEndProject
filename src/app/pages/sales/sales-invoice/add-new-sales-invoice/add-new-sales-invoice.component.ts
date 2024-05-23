@@ -235,7 +235,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         .get(`${apiUrl}/XtraAndPos_GeneralLookups/SalesInvoiceInit`)
         .pipe(
           tap((res) => {
-            if (res?.Obj) {
+            if (res?.IsSuccess) {
               this.invoiceInitObj = res.Obj;
               this.salesInvoiceForm.patchValue({
                 treasuryId: this.invoiceInitObj.empTreasury,
@@ -353,7 +353,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            if (res?.Obj) {
+            if (res?.IsSuccess) {
               this.linesArray.controls[i].patchValue({ balance: res.Obj });
               this.getPrice(ev, i);
             }
@@ -372,7 +372,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            if (res?.Obj) {
+            if (res?.IsSuccess) {
               if (balance < quantity && !this.invoiceInitObj.saleByMinus) {
                 this.toast.show('itemBalanceNotAllowed', {
                   classname: Toast.error,
@@ -504,18 +504,18 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let totalPriceAfterVat: any = form.get('totalPriceAfterVat')?.value;
     let vatAmount: any;
 
-    if (this.isRoundToTwoNumbers) {
+    if (!this.isRoundToTwoNumbers) {
       let p1 = Math.round(price * quantity);
       let p2 = Math.round(p1 - discount);
       let p3 = Math.round(p2 * vat);
       vatAmount = Math.round(p3 / 100);
       totalPriceAfterVat = p2 + vatAmount;
     } else {
-      let part1 = Math.round(price * quantity * 1000) / 1000;
-      let part2 = Math.round((part1 - discount) * 1000) / 1000;
-      let part3 = Math.round(part2 * vat * 1000) / 1000;
-      vatAmount = Math.round((part3 / 100) * 1000) / 1000;
-      totalPriceAfterVat = Math.round((part2 + vatAmount) * 1000) / 1000;
+      let part1 = Math.round(price * quantity * 100) / 100;
+      let part2 = Math.round((part1 - discount) * 100) / 100;
+      let part3 = Math.round(part2 * vat * 100) / 100;
+      vatAmount = Math.round((part3 / 100) * 100) / 100;
+      totalPriceAfterVat = Math.round((part2 + vatAmount) * 100) / 100;
     }
     form.patchValue({
       totalPriceAfterVat: totalPriceAfterVat,
@@ -537,11 +537,20 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       .map((line: any) => +line.value?.discount)
       .reduce((acc, curr) => acc + curr, 0);
 
-    this.salesInvoiceForm.patchValue({
-      totalNet: Math.round(totalNet * 1000) / 1000,
-      totalVat: Math.round(totalVat * 1000) / 1000,
-      totalDisc: Math.round(totalDisc * 1000) / 1000,
-    });
+    if (!this.isRoundToTwoNumbers) {
+      this.salesInvoiceForm.patchValue({
+        totalNet: Math.round(totalNet),
+        totalVat: Math.round(totalVat),
+        totalDisc: Math.round(totalDisc),
+      });
+    } else {
+      this.salesInvoiceForm.patchValue({
+        totalNet: Math.round(totalNet * 100) / 100,
+        totalVat: Math.round(totalVat * 100) / 100,
+        totalDisc: Math.round(totalDisc * 100) / 100,
+      });
+    }
+
     this.fillPaymentMethodWithTotal();
   }
 
@@ -620,7 +629,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     firstValueFrom(
       this.dataService.get(`${apiUrl}/ExtraAndPOS_Shift/GetShiftInfo`).pipe(
         tap((res) => {
-          if (res?.Obj) {
+          if (res?.IsSuccess) {
             this.shiftData = res.Obj;
           }
         })
@@ -663,7 +672,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         )
         .pipe(
           tap((res) => {
-            if (res?.Obj) {
+            if (res?.IsSuccess) {
               this.spinner.hide();
               this.toast.show(Toast.added, { classname: Toast.success });
               this.router.navigateByUrl('/sales-invoice');
