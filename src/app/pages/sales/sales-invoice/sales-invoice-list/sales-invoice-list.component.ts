@@ -63,7 +63,7 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
       this.route.data.pipe(
         map((res) => res.invoiceList),
         tap((res) => {
-          if (res?.Obj) {
+          if (res?.IsSuccess) {
             this.setData(res);
           }
         })
@@ -218,7 +218,7 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            if (res?.Obj) {
+            if (res?.IsSuccess) {
               this.helpers.getPdfFromBase64(
                 res.Obj.LayoutData,
                 res.Obj.DisplayName

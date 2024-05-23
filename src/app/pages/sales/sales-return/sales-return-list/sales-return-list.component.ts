@@ -61,8 +61,10 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
       this.route.data.pipe(
         map((res) => res.salesReturn),
         tap((res) => {
-          // this.setData(res.Obj.trx);
-          this.salesReturnList = res.Obj.trx;
+          if (res?.IsSuccess) {
+            // this.setData(res.Obj.trx);
+            this.salesReturnList = res.Obj.trx;
+          }
         })
       )
     );
@@ -137,11 +139,13 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
               }
             )
             .pipe(
-              tap((_) => {
-                this.toast.show(Toast.deleted, {
-                  classname: Toast.success,
-                });
-                this.getSalesReturnList();
+              tap((res) => {
+                if (res?.IsSuccess) {
+                  this.toast.show(Toast.deleted, {
+                    classname: Toast.success,
+                  });
+                  this.getSalesReturnList();
+                }
               })
             )
         );
@@ -157,10 +161,12 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.helpers.getPdfFromBase64(
-              res.Obj.LayoutData,
-              res.Obj.DisplayName
-            );
+            if (res?.IsSuccess) {
+              this.helpers.getPdfFromBase64(
+                res.Obj.LayoutData,
+                res.Obj.DisplayName
+              );
+            }
           })
         )
     );
@@ -178,9 +184,11 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.salesReturnList = res.Obj.trx;
-            this.spinner.hide();
-            // this.setData(res?.Obj);
+            if (res?.IsSuccess) {
+              this.salesReturnList = res.Obj.trx;
+              this.spinner.hide();
+              // this.setData(res?.Obj);
+            }
           })
         )
     );

@@ -167,14 +167,10 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
         .get(`${apiUrl}/ExtraAndPOS_ReturnSaleInvoice/GetByNo`, { params })
         .pipe(
           tap((res) => {
-            this.spinner.hide();
-            if (res?.Obj) {
+            if (res?.IsSuccess) {
+              this.spinner.hide();
               this.salesReturnFound = res.Obj.invoice;
               this.extractInvoiceLines();
-            } else {
-              this.toast.show('NoInvoiceMatchThatNumber', {
-                classname: Toast.error,
-              });
             }
           })
         )
@@ -427,12 +423,14 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
         .get(`${apiUrl}/XtraAndPos_GeneralLookups/SalesInvoiceInit`)
         .pipe(
           tap((res) => {
-            this.invoiceInitObj = res.Obj;
-            if (this.invoiceInitObj.isSalesPerson) {
-              this.salesInvoiceForm.get('paymentType')?.setValue(2);
-            }
-            if (!this.invoiceInitObj.isSalesPerson) {
-              this.salesInvoiceForm.get('paymentType')?.setValue(1);
+            if (res?.IsSuccess) {
+              this.invoiceInitObj = res.Obj;
+              if (this.invoiceInitObj.isSalesPerson) {
+                this.salesInvoiceForm.get('paymentType')?.setValue(2);
+              }
+              if (!this.invoiceInitObj.isSalesPerson) {
+                this.salesInvoiceForm.get('paymentType')?.setValue(1);
+              }
             }
           })
         )
