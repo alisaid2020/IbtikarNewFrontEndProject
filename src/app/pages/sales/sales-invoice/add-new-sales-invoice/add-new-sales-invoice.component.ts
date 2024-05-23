@@ -235,19 +235,21 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         .get(`${apiUrl}/XtraAndPos_GeneralLookups/SalesInvoiceInit`)
         .pipe(
           tap((res) => {
-            this.invoiceInitObj = res.Obj;
-            this.salesInvoiceForm.patchValue({
-              treasuryId: this.invoiceInitObj.empTreasury,
-              storeId:
-                this.invoiceInitObj?.empStore > 0
-                  ? this.invoiceInitObj.empStore
-                  : null,
-            });
-            if (this.invoiceInitObj.isSalesPerson) {
-              this.salesInvoiceForm.get('paymentType')?.setValue(2);
-            }
-            if (!this.invoiceInitObj.isSalesPerson) {
-              this.salesInvoiceForm.get('paymentType')?.setValue(1);
+            if (res?.Obj) {
+              this.invoiceInitObj = res.Obj;
+              this.salesInvoiceForm.patchValue({
+                treasuryId: this.invoiceInitObj.empTreasury,
+                storeId:
+                  this.invoiceInitObj?.empStore > 0
+                    ? this.invoiceInitObj.empStore
+                    : null,
+              });
+              if (this.invoiceInitObj.isSalesPerson) {
+                this.salesInvoiceForm.get('paymentType')?.setValue(2);
+              }
+              if (!this.invoiceInitObj.isSalesPerson) {
+                this.salesInvoiceForm.get('paymentType')?.setValue(1);
+              }
             }
           })
         )
@@ -351,8 +353,10 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.linesArray.controls[i].patchValue({ balance: res.Obj });
-            this.getPrice(ev, i);
+            if (res?.Obj) {
+              this.linesArray.controls[i].patchValue({ balance: res.Obj });
+              this.getPrice(ev, i);
+            }
           })
         )
     );
@@ -368,21 +372,23 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            if (balance < quantity && !this.invoiceInitObj.saleByMinus) {
-              this.toast.show('itemBalanceNotAllowed', {
-                classname: Toast.error,
-              });
-              this.remove(i);
-              this.items[i] = [];
-              this.barcodeItems[i] = [];
-              this.units[i] = [];
+            if (res?.Obj) {
+              if (balance < quantity && !this.invoiceInitObj.saleByMinus) {
+                this.toast.show('itemBalanceNotAllowed', {
+                  classname: Toast.error,
+                });
+                this.remove(i);
+                this.items[i] = [];
+                this.barcodeItems[i] = [];
+                this.units[i] = [];
+                this.addNewLine();
+                return;
+              }
+              this.itemPriceList[i] = res.Obj;
+              this.linesArray.controls[i].patchValue({ price: res.Obj.price });
+              this.checkForOffers(i);
               this.addNewLine();
-              return;
             }
-            this.itemPriceList[i] = res.Obj;
-            this.linesArray.controls[i].patchValue({ price: res.Obj.price });
-            this.checkForOffers(i);
-            this.addNewLine();
           })
         )
     );
@@ -599,8 +605,9 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         .pipe(
           tap((res) => {
             if (
-              res.Obj.IsUserShiftOpened &&
-              (res.Obj.IsMustOpenShift || res.Obj?.IsMustOpenShift == undefined)
+              res?.Obj?.IsUserShiftOpened &&
+              (res?.Obj?.IsMustOpenShift ||
+                res?.Obj?.IsMustOpenShift == undefined)
             ) {
               this.IsMustOpenShift = true;
             }
@@ -613,7 +620,9 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     firstValueFrom(
       this.dataService.get(`${apiUrl}/ExtraAndPOS_Shift/GetShiftInfo`).pipe(
         tap((res) => {
-          this.shiftData = res.Obj;
+          if (res?.Obj) {
+            this.shiftData = res.Obj;
+          }
         })
       )
     );
@@ -653,10 +662,12 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
           formValue
         )
         .pipe(
-          tap((_) => {
-            this.spinner.hide();
-            this.toast.show(Toast.added, { classname: Toast.success });
-            this.router.navigateByUrl('/sales-invoice');
+          tap((res) => {
+            if (res?.Obj) {
+              this.spinner.hide();
+              this.toast.show(Toast.added, { classname: Toast.success });
+              this.router.navigateByUrl('/sales-invoice');
+            }
           })
         )
     );

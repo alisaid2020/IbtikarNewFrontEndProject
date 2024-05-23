@@ -10,8 +10,10 @@ export class ToastService {
   constructor(private translate: TranslateService) {}
 
   async show(title: string, options: any = {}) {
-    const titleTrans = await firstValueFrom(this.translate.get(title));
-    this.toasts.push({ title: titleTrans, ...options });
+    if (title) {
+      const titleTrans = await firstValueFrom(this.translate.get(title));
+      this.toasts.push({ title: titleTrans, ...options });
+    }
   }
 
   remove(toast: any): void {

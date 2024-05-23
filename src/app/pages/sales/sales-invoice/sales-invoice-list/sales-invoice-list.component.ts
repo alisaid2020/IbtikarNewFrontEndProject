@@ -63,7 +63,9 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
       this.route.data.pipe(
         map((res) => res.invoiceList),
         tap((res) => {
-          this.setData(res);
+          if (res?.Obj) {
+            this.setData(res);
+          }
         })
       )
     );
@@ -139,8 +141,10 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.setData(res);
-            this.spinner.hide();
+            if (res?.Obj) {
+              this.setData(res);
+              this.spinner.hide();
+            }
           })
         )
     );
@@ -192,11 +196,13 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
               params: { id: item.Id },
             })
             .pipe(
-              tap((_) => {
-                this.toast.show(Toast.deleted, {
-                  classname: Toast.success,
-                });
-                this.getInvoices();
+              tap((res) => {
+                if (res?.Obj) {
+                  this.toast.show(Toast.deleted, {
+                    classname: Toast.success,
+                  });
+                  this.getInvoices();
+                }
               })
             )
         );
@@ -212,10 +218,12 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.helpers.getPdfFromBase64(
-              res.Obj.LayoutData,
-              res.Obj.DisplayName
-            );
+            if (res?.Obj) {
+              this.helpers.getPdfFromBase64(
+                res.Obj.LayoutData,
+                res.Obj.DisplayName
+              );
+            }
           })
         )
     );
@@ -227,7 +235,7 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
         .get(`${apiUrl}/ExtraAndPOS_Shift/IsUserShiftOpened`)
         .pipe(
           tap((res) => {
-            if (res.Obj.IsUserShiftOpened) {
+            if (res?.Obj?.IsUserShiftOpened) {
               this.isUserShiftOpened = res.Obj.IsUserShiftOpened;
             }
           })

@@ -4,15 +4,17 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
+  HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastService } from './toast-service';
 import { Toast } from '../enums/toast.enum';
 import { ACCESS_TOKEN } from '../constants/general.constant';
 import { HelpersService } from './helpers.service';
+import { LoadingService } from './loading.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -20,7 +22,8 @@ export class ErrorInterceptor implements HttpInterceptor {
     private router: Router,
     private spinner: NgxSpinnerService,
     private helpers: HelpersService,
-    private toast: ToastService
+    private toast: ToastService,
+    private loadingService: LoadingService
   ) {}
 
   intercept(
@@ -28,6 +31,17 @@ export class ErrorInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
+      tap((res: any) => {
+        if (!res?.body?.IsSuccess) {
+          this.spinner.hide();
+          this.loadingService.isLoading$.next(false);
+          this.toast.show(res?.body?.Message, {
+            classname: Toast.error,
+            delay: 5000,
+          });
+          return throwError(() => new Error(res));
+        }
+      }),
       catchError((err) => {
         this.spinner.hide();
         const error = err.error.Message;

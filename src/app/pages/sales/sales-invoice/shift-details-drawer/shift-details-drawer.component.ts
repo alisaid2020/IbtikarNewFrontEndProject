@@ -37,7 +37,9 @@ export class ShiftDetailsDrawerComponent implements OnInit {
     firstValueFrom(
       this.dataService.get(`${apiUrl}/Treasury/GetAllForDropDown`).pipe(
         tap((res) => {
-          this.Treasuries = res;
+          if (res?.Obj) {
+            this.Treasuries = res;
+          }
         })
       )
     );
@@ -120,12 +122,14 @@ export class ShiftDetailsDrawerComponent implements OnInit {
       this.dataService
         .post(`${apiUrl}/ExtraAndPOS_Shift/CloseShift`, formData)
         .pipe(
-          tap((_) => {
-            this.spinner.hide();
-            this.toast.show('تم غلق الورديه بنجاح', {
-              classname: Toast.success,
-            });
-            this.activeDrawer.close();
+          tap((res) => {
+            if (res?.Obj) {
+              this.spinner.hide();
+              this.toast.show('تم غلق الورديه بنجاح', {
+                classname: Toast.success,
+              });
+              this.activeDrawer.close();
+            }
           })
         )
     );

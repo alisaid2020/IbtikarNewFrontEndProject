@@ -52,7 +52,6 @@ export class HelpersService {
     const blobUrl = URL.createObjectURL(blob);
     const a = this.document.createElement('a');
     a.href = blobUrl;
-    a.download = fileName;
     a.target = '_blank';
     a.style.display = 'none';
     this.document.body.appendChild(a);
