@@ -51,7 +51,9 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
       this.route.data.pipe(
         map((res) => res.pricingPolicyLists.Obj),
         tap((res) => {
-          this.setData(res);
+          if (res?.IsSuccess) {
+            this.setData(res);
+          }
         })
       )
     );
@@ -115,12 +117,14 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
               params: { id: item.Id },
             })
             .pipe(
-              tap((_) => {
-                this.spinner.hide();
-                this.toast.show(Toast.deleted, {
-                  classname: Toast.success,
-                });
-                this.getPricingPolicyLists();
+              tap((res) => {
+                if (res?.IsSuccess) {
+                  this.spinner.hide();
+                  this.toast.show(Toast.deleted, {
+                    classname: Toast.success,
+                  });
+                  this.getPricingPolicyLists();
+                }
               })
             )
         );
@@ -140,7 +144,9 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.setData(res?.Obj);
+            if (res?.IsSuccess) {
+              this.setData(res?.Obj);
+            }
           })
         )
     );

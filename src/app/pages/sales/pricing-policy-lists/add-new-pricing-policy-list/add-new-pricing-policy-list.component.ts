@@ -86,7 +86,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       this.route.data.pipe(
         map((res) => res?.pricingPolicyList),
         tap((res: any) => {
-          if (res) {
+          if (res?.IsSuccess) {
             this.priceListData = res.Obj.PriceList;
             this.setData(res.Obj);
           }
@@ -311,7 +311,11 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.linesArray.controls[i].patchValue({ price: res?.Obj?.price });
+            if (res?.IsSuccess) {
+              this.linesArray.controls[i].patchValue({
+                price: res?.Obj?.price,
+              });
+            }
           })
         )
     );
@@ -367,9 +371,11 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         })
         .pipe(
           tap((res) => {
-            this.spinner.hide();
-            this.setData(res.Obj);
-            this.addItemsToArray();
+            if (res?.IsSuccess) {
+              this.spinner.hide();
+              this.setData(res.Obj);
+              this.addItemsToArray();
+            }
           })
         )
     );
@@ -411,11 +417,13 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
           )
           .pipe(
             tap((res) => {
-              this.spinner.hide();
-              this.router.navigateByUrl('/pricing-policy-lists');
-              this.toast.show(Toast.updated, {
-                classname: Toast.success,
-              });
+              if (res?.IsSuccess) {
+                this.spinner.hide();
+                this.router.navigateByUrl('/pricing-policy-lists');
+                this.toast.show(Toast.updated, {
+                  classname: Toast.success,
+                });
+              }
             })
           )
       );
@@ -426,11 +434,13 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         .post(`${apiUrl}/XtraAndPos_PricePolicyList/Create`, formValue)
         .pipe(
           tap((res) => {
-            this.spinner.hide();
-            this.router.navigateByUrl('/pricing-policy-lists');
-            this.toast.show(Toast.added, {
-              classname: Toast.success,
-            });
+            if (res?.IsSuccess) {
+              this.spinner.hide();
+              this.router.navigateByUrl('/pricing-policy-lists');
+              this.toast.show(Toast.added, {
+                classname: Toast.success,
+              });
+            }
           })
         )
     );

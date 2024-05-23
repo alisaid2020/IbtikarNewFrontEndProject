@@ -54,7 +54,9 @@ export class AppComponent implements OnInit {
         .get(`${apiUrl}/XtraAndPos_SalesSettings/GetSalesSettings`)
         .pipe(
           tap((res) => {
-            this.helpers.salesSettings.set(res.Obj);
+            if (res?.IsSuccess) {
+              this.helpers.salesSettings.set(res.Obj);
+            }
           })
         )
     );

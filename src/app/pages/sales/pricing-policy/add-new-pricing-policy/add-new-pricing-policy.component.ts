@@ -57,12 +57,14 @@ export class AddNewPricingPolicyComponent implements OnInit {
             { params: { id: this.pricingPolicy.Id } }
           )
           .pipe(
-            tap((_) => {
-              this.spinner.hide();
-              this.activeDrawer.close(true);
-              this.toast.show(Toast.updated, {
-                classname: Toast.success,
-              });
+            tap((res) => {
+              if (res?.IsSuccess) {
+                this.spinner.hide();
+                this.activeDrawer.close(true);
+                this.toast.show(Toast.updated, {
+                  classname: Toast.success,
+                });
+              }
             })
           )
       );
@@ -75,12 +77,14 @@ export class AddNewPricingPolicyComponent implements OnInit {
           this.pricingPolicyForm.value
         )
         .pipe(
-          tap((_) => {
-            this.spinner.hide();
-            this.activeDrawer.close(true);
-            this.toast.show(Toast.added, {
-              classname: Toast.success,
-            });
+          tap((res) => {
+            if (res?.IsSuccess) {
+              this.spinner.hide();
+              this.activeDrawer.close(true);
+              this.toast.show(Toast.added, {
+                classname: Toast.success,
+              });
+            }
           })
         )
     );

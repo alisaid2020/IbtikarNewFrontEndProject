@@ -48,10 +48,12 @@ export class SalesSettingsComponent implements OnInit {
           this.salesSettingsForm.value
         )
         .pipe(
-          tap((_) => {
-            this.getSalesSettings();
-            this.spinner.hide();
-            this.toast.show(Toast.updated, { classname: Toast.success });
+          tap((res) => {
+            if (res?.IsSuccess) {
+              this.getSalesSettings();
+              this.spinner.hide();
+              this.toast.show(Toast.updated, { classname: Toast.success });
+            }
           })
         )
     );
@@ -62,7 +64,9 @@ export class SalesSettingsComponent implements OnInit {
         .get(`${apiUrl}/XtraAndPos_SalesSettings/GetSalesSettings`)
         .pipe(
           tap((res: any) => {
-            this.helpers.salesSettings.set(res.Obj);
+            if (res?.IsSuccess) {
+              this.helpers.salesSettings.set(res.Obj);
+            }
           })
         )
     );
