@@ -6,32 +6,56 @@ import { Directive, ElementRef, HostListener } from '@angular/core';
 export class AppArrowFocusDirective {
   constructor(private el: ElementRef) {}
 
-  @HostListener('keydown', ['$event'])
-  onKeyDown(event: KeyboardEvent) {
+  @HostListener('keydown', ['$event']) onKeyDown(event: KeyboardEvent) {
+    const td = this.el.nativeElement.closest('td');
+    const tr = td.parentElement;
+    const allCells: any = Array.from(tr.querySelectorAll('td'));
+    const index = allCells.indexOf(td);
+    const allRows = Array.from(tr.parentElement.querySelectorAll('tr'));
+    const rowIndex = allRows.indexOf(tr);
+
+    let nextIndex: number;
+
     switch (event.key) {
-      case 'ArrowDown':
+      case 'ArrowLeft':
+        nextIndex = index > 0 ? index - 1 : index;
+        break;
       case 'ArrowRight':
-        this.focusNext();
+        nextIndex = index < allCells.length - 1 ? index + 1 : index;
         break;
       case 'ArrowUp':
-      case 'ArrowLeft':
-        this.focusPrevious();
+        nextIndex = index;
+        if (rowIndex > 0) {
+          const prevRow: any = allRows[rowIndex - 1];
+          nextIndex = Math.min(nextIndex, prevRow.children.length - 1);
+          this.focusNextElement(prevRow.children[nextIndex]);
+        }
         break;
+      case 'ArrowDown':
+        nextIndex = index;
+        if (rowIndex < allRows.length - 1) {
+          const nextRow: any = allRows[rowIndex + 1];
+          nextIndex = Math.min(nextIndex, nextRow.children.length - 1);
+          this.focusNextElement(nextRow.children[nextIndex]);
+        }
+        break;
+      default:
+        return;
+    }
+
+    if (nextIndex !== undefined && nextIndex !== index) {
+      this.focusNextElement(allCells[nextIndex]);
     }
   }
 
-  focusNext() {
-    let nextElement: HTMLElement = this.el.nativeElement.nextElementSibling;
-    if (nextElement) {
-      nextElement?.querySelector('input')?.focus();
-    }
-  }
+  focusNextElement(cell: HTMLElement) {
+    const input = cell.querySelector('input, textarea');
+    const ngSelect = cell.querySelector('.ng-select');
 
-  focusPrevious() {
-    let previousElement: HTMLElement =
-      this.el.nativeElement.previousElementSibling;
-    if (previousElement) {
-      previousElement?.querySelector('input')?.focus();
+    if (input) {
+      (input as HTMLElement).focus();
+    } else if (ngSelect) {
+      (ngSelect as HTMLElement).focus();
     }
   }
 }

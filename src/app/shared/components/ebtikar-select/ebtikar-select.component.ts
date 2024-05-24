@@ -2,6 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  HostListener,
   Input,
   OnChanges,
   OnDestroy,
@@ -74,6 +75,13 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
     private cd: ChangeDetectorRef,
     public helpers: HelpersService
   ) {}
+
+  @HostListener('keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'ArrowDown') {
+      this.selectComponent.close();
+    }
+  }
 
   ngOnInit(): void {
     if (this.uid) {
