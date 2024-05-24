@@ -186,12 +186,10 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   addItemsToArray(): void {
     this.linesArray.clear();
     this.pricingPolicyLines.forEach((line: any, i: any) => {
-      let newLine: any = {
+      let newLine = {
         ...line,
         ItemUniteId: {
           Id: line?.ItemUniteId,
-          NameAr: line?.NameAr,
-          NameEn: line?.NameEn,
         },
         ParCode: { Barcode: line?.ParCode },
       };
@@ -202,16 +200,20 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
           NameEn: line?.NameEn,
         },
       ];
-      let index = this.changedFieldsOnly.findIndex((el) => el.Id == newLine.Id);
+      let index = this.changedFieldsOnly.findIndex((el) => el.id == line.Id);
       if (index >= 0) {
         newLine = {
-          ...this.changedFieldsOnly[index],
+          Id: this.changedFieldsOnly[index].id,
           ItemUniteId: {
-            Id: this.changedFieldsOnly[index]?.ItemUniteId,
-            NameAr: this.changedFieldsOnly[index]?.NameAr,
-            NameEn: this.changedFieldsOnly[index]?.NameEn,
+            Id: this.changedFieldsOnly[index]?.itemUniteId,
           },
           ParCode: { Barcode: this.changedFieldsOnly[index]?.parCode },
+          Price: this.changedFieldsOnly[index].price,
+          PriceMin: this.changedFieldsOnly[index].priceMin,
+          PriceMax: this.changedFieldsOnly[index].priceMax,
+          CommissionValue: this.changedFieldsOnly[index].commissionValue,
+          CommissionPercentage:
+            this.changedFieldsOnly[index].commissionPercentage,
         };
       }
       this.addNewLine(newLine);
@@ -333,8 +335,18 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       fileData = XLSX.utils.sheet_to_json(worksheet, {
         raw: true,
       });
-      fileData.forEach((row) => {
-        this.addNewLine(row);
+      fileData.forEach((row: any) => {
+        let newline: any = {
+          ParCode: row.parcode,
+          ItemUniteId: row.itemUnitId,
+          Price: row.price,
+          PriceMin: row.priceMin,
+          PriceMax: row.priceMax,
+          CommissionValue: row.commissionValue,
+          CommissionPercentage: row.commissionPercentage,
+        };
+
+        this.addNewLine(newline);
       });
     };
     reader.readAsArrayBuffer(file);
@@ -381,7 +393,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     );
   }
 
-  updatedFieldsList(ev: any, row: any) {
+  updatedFieldsList(row: any) {
     let index = this.changedFieldsOnly.findIndex(
       (el) => el.parCode == row.value.parCode
     );
@@ -409,41 +421,43 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     }
 
     if (this.priceListData) {
-      firstValueFrom(
-        this.dataService
-          .post(
-            `${apiUrl}/XtraAndPos_PricePolicyList/UpdatePriceListDetail`,
-            this.changedFieldsOnly
-          )
-          .pipe(
-            tap((res) => {
-              if (res?.IsSuccess) {
-                this.spinner.hide();
-                this.router.navigateByUrl('/pricing-policy-lists');
-                this.toast.show(Toast.updated, {
-                  classname: Toast.success,
-                });
-              }
-            })
-          )
-      );
-      return;
+      console.log(this.changedFieldsOnly);
+
+      // firstValueFrom(
+      //   this.dataService
+      //     .post(
+      //       `${apiUrl}/XtraAndPos_PricePolicyList/UpdatePriceListDetail`,
+      //       this.changedFieldsOnly
+      //     )
+      //     .pipe(
+      //       tap((res) => {
+      //         if (res?.IsSuccess) {
+      //           this.spinner.hide();
+      //           this.router.navigateByUrl('/pricing-policy-lists');
+      //           this.toast.show(Toast.updated, {
+      //             classname: Toast.success,
+      //           });
+      //         }
+      //       })
+      //     )
+      // );
+      // return;
     }
-    firstValueFrom(
-      this.dataService
-        .post(`${apiUrl}/XtraAndPos_PricePolicyList/Create`, formValue)
-        .pipe(
-          tap((res) => {
-            if (res?.IsSuccess) {
-              this.spinner.hide();
-              this.router.navigateByUrl('/pricing-policy-lists');
-              this.toast.show(Toast.added, {
-                classname: Toast.success,
-              });
-            }
-          })
-        )
-    );
+    // firstValueFrom(
+    //   this.dataService
+    //     .post(`${apiUrl}/XtraAndPos_PricePolicyList/Create`, formValue)
+    //     .pipe(
+    //       tap((res) => {
+    //         if (res?.IsSuccess) {
+    //           this.spinner.hide();
+    //           this.router.navigateByUrl('/pricing-policy-lists');
+    //           this.toast.show(Toast.added, {
+    //             classname: Toast.success,
+    //           });
+    //         }
+    //       })
+    //     )
+    // );
   }
 
   ngOnDestroy(): void {

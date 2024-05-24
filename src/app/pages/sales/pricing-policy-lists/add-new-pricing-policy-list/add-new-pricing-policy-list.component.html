@@ -27,7 +27,6 @@
         <div
           class="col-md-6 mb-5"
           [class.disabled-form]="priceListData ? true : false"
-          appAppArrowFocus
         >
           <app-ebtikar-select
             [uid]="priceListData?.Id"
@@ -43,14 +42,13 @@
         <div
           class="col-md-6"
           [class.disabled-form]="priceListData ? true : false"
-          appAppArrowFocus
         >
           <app-ebtikar-select
             [uid]="priceListData?.GroupId"
             [items]="pricingPolicesObj?.itemgroup"
             [hasMultipleLabels]="true"
-            [placeholder]="'ItemGroup'"
-            [label]="'ItemGroup'"
+            [placeholder]="'itemsGroup'"
+            [label]="'itemsGroup'"
             [bindValue]="'Id'"
             [clearable]="!priceListData ? true : false"
             [control]="pricingPolicyListForm.get('groupId')!"
@@ -59,7 +57,6 @@
         <div
           class="col-md-6"
           [class.disabled-form]="priceListData ? true : false"
-          appAppArrowFocus
         >
           <app-ebtikar-select
             [items]="pricingPolicesObj?.Branches"
@@ -201,11 +198,10 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
+                      type="'number'"
                       [placeholder]="'price'"
                       [control]="linesArray.controls[i].get('price')!"
-                      (emitChanged)="
-                        updatedFieldsList($event, linesArray.controls[i])
-                      "
+                      (emitChanged)="updatedFieldsList(linesArray.controls[i])"
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -214,11 +210,10 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
+                      type="'number'"
                       [placeholder]="'PriceMax'"
                       [control]="linesArray.controls[i].get('priceMax')!"
-                      (emitChanged)="
-                        updatedFieldsList($event, linesArray.controls[i])
-                      "
+                      (emitChanged)="updatedFieldsList(linesArray.controls[i])"
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -227,11 +222,10 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
+                      type="'number'"
                       [placeholder]="'PriceMin'"
                       [control]="linesArray.controls[i].get('priceMin')!"
-                      (emitChanged)="
-                        updatedFieldsList($event, linesArray.controls[i])
-                      "
+                      (emitChanged)="updatedFieldsList(linesArray.controls[i])"
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -240,13 +234,12 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
+                      type="'number'"
                       [placeholder]="'CommissionPercentage'"
                       [control]="
                         linesArray.controls[i].get('commissionPercentage')!
                       "
-                      (emitChanged)="
-                        updatedFieldsList($event, linesArray.controls[i])
-                      "
+                      (emitChanged)="updatedFieldsList(linesArray.controls[i])"
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -255,11 +248,10 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
+                      type="'number'"
                       [placeholder]="'commissionValue'"
                       [control]="linesArray.controls[i].get('commissionValue')!"
-                      (emitChanged)="
-                        updatedFieldsList($event, linesArray.controls[i])
-                      "
+                      (emitChanged)="updatedFieldsList(linesArray.controls[i])"
                     ></app-ebtikar-input>
                   </td>
                   <td *ngSwitchDefault style="min-width: 115px">

@@ -143,5 +143,7 @@
   "IsStoreRow": "هو صف المتجر",
   "updateFlag": "تحديث العلم",
   "SaleInvoiceNo": "رقم فاتورة المبيعات",
-  "search": "ابحث"
+  "search": "ابحث",
+  "branches": "الفروع",
+  "itemsGroup": "مجموعة الأصناف"
 }

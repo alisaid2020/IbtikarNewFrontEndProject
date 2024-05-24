@@ -143,5 +143,7 @@
   "IsStoreRow": "Is Store Row",
   "updateFlag": "Update Flag",
   "SaleInvoiceNo": "Sale Invoice Number",
-  "search": "Search"
+  "search": "Search",
+  "branches": "Branches",
+  "itemsGroup": "Items Group"
 }
