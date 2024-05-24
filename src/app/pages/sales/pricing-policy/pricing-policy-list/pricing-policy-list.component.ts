@@ -49,10 +49,10 @@ export class PricingPolicyListComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     firstValueFrom(
       this.route.data.pipe(
-        map((res) => res.pricingPolicyData.Obj),
+        map((res) => res.pricingPolicyData),
         tap((res) => {
           if (res?.IsSuccess) {
-            this.pricingPolicyList = res.Obj.PricingManagement;
+            this.pricingPolicyList = res.Obj.Obj.PricingManagement;
           }
         })
       )
