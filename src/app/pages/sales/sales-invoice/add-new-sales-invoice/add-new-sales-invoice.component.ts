@@ -1,4 +1,11 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  inject,
+} from '@angular/core';
 import { apiUrl } from '@constants/api.constant';
 import { DataService } from '@services/data.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -77,6 +84,8 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   router = inject(Router);
   fb = inject(FormBuilder);
   toast = inject(ToastService);
+  renderer = inject(Renderer2);
+  elementRef = inject(ElementRef);
   helpers = inject(HelpersService);
   dataService = inject(DataService);
   tableService = inject(TableService);
@@ -388,10 +397,26 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
               this.linesArray.controls[i].patchValue({ price: res.Obj.price });
               this.checkForOffers(i);
               this.addNewLine();
+              setTimeout(() => {
+                this.focusOnNextRow(i);
+              });
             }
           })
         )
     );
+  }
+
+  focusOnNextRow(i: any): void {
+    const ngSelectElements = this.renderer
+      .selectRootElement(this.elementRef.nativeElement, true)
+      .querySelectorAll('#productBarcode');
+    const lastNgSelect = ngSelectElements[i + 1];
+    if (lastNgSelect) {
+      const inputElement = lastNgSelect.querySelector('input');
+      if (inputElement) {
+        inputElement.focus();
+      }
+    }
   }
 
   changeQuantity(ev: any, i: any): void {

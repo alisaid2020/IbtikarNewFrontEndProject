@@ -29,7 +29,7 @@
   <div class="card mb-5 mb-xxl-8">
     <div class="card-body">
       <div class="row g-5">
-        <div class="col-md-6" appAppArrowFocus>
+        <div class="col-md-6">
           <app-ebtikar-select
             [apiUrl]="clientsApi"
             [hasMultipleLabels]="true"
@@ -40,7 +40,7 @@
             [control]="salesInvoiceForm.get('clientId')!"
           ></app-ebtikar-select>
         </div>
-        <div class="col-md-6" appAppArrowFocus>
+        <div class="col-md-6">
           <app-ebtikar-select
             [hasStaticValues]="true"
             [items]="paymentTypes"
@@ -52,7 +52,7 @@
             (emitChanged)="changePaymentType($event)"
           ></app-ebtikar-select>
         </div>
-        <div class="col-md-6" appAppArrowFocus>
+        <div class="col-md-6">
           <app-ebtikar-select
             [items]="invoiceInitObj?.stores"
             [hasMultipleLabels]="true"
@@ -67,7 +67,6 @@
             helpers.getItemFromLocalStorage(userRole) === 'Admin' ||
             invoiceInitObj?.isSalesPerson
           "
-          appAppArrowFocu
           class="col-md-6"
         >
           <app-ebtikar-input
@@ -78,7 +77,7 @@
           ></app-ebtikar-input>
         </div>
 
-        <div class="col-md-6" appAppArrowFocus>
+        <div class="col-md-6">
           <app-ebtikar-input
             [type]="'textArea'"
             [placeholder]="'notes'"
@@ -168,6 +167,7 @@
                       [control]="linesArray.controls[i].get('productBarcode')!"
                     ></app-ebtikar-select>
                     <app-ebtikar-select
+                      id="productBarcode"
                       *ngIf="
                         !linesArray.controls[i].get('isProductFree')!.value
                       "
