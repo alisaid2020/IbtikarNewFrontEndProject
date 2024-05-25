@@ -13,7 +13,7 @@
   </div>
   <div class="page-title d-flex flex-column justify-content-center flex-wrap">
     <h1 class="page-heading d-flex text-dark fw-bold fs-2 my-0">
-      {{ "addNew" | translate }}
+      {{ priceListData ? ("edit" | translate) : ("addNew" | translate) }}
     </h1>
   </div>
   <div class="ms-auto" *ngIf="!pricingPolicyLines?.length">

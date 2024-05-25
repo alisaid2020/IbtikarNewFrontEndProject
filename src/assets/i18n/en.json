@@ -145,5 +145,7 @@
   "SaleInvoiceNo": "Sale Invoice Number",
   "search": "Search",
   "branches": "Branches",
-  "itemsGroup": "Items Group"
+  "itemsGroup": "Items Group",
+  "edit": "Edit",
+  "productName": "Item Name"
 }

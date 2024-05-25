@@ -145,5 +145,7 @@
   "SaleInvoiceNo": "رقم فاتورة المبيعات",
   "search": "ابحث",
   "branches": "الفروع",
-  "itemsGroup": "مجموعة الأصناف"
+  "itemsGroup": "مجموعة الأصناف",
+  "edit": "تعديل",
+  "productName": "إسم الصنف"
 }

@@ -196,14 +196,12 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         },
         ParCode: { Barcode: line?.ParCode },
       };
-
-      let itemIndex = this.updatedItems.findIndex((el) => el.id == line.Id);
-      if (itemIndex >= 0) {
+      if (this.updatedItems[line.Id]) {
         this.items[i] = [
           {
-            Id: this.updatedItems[itemIndex].item?.Id,
-            NameAr: this.updatedItems[itemIndex].item?.NameAr,
-            NameEn: this.updatedItems[itemIndex].item?.NameEn,
+            Id: this.updatedItems[line.Id]?.Id,
+            NameAr: this.updatedItems[line.Id]?.NameAr,
+            NameEn: this.updatedItems[line.Id]?.NameEn,
           },
         ];
       } else {
@@ -314,7 +312,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     });
     this.items[i] = [ev];
     if (this.priceListData) {
-      this.updatedItems[i] = { id: form.get('id')!.value, item: ev };
+      this.updatedItems[form.get('id')!.value] = ev;
       this.updatedFieldsList(form);
       return;
     }
@@ -343,7 +341,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       nameAr: ev?.NameAr,
     });
     if (this.priceListData) {
-      this.updatedItems[i] = { id: form.get('id')!.value, item: ev };
+      this.updatedItems[form.get('id')!.value] = ev;
       this.updatedFieldsList(form);
       return;
     }
