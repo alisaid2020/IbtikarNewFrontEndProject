@@ -21,7 +21,7 @@
   <div class="card mb-5 mb-xxl-8">
     <div class="card-body">
       <div class="row g-5">
-        <div class="col-md-6" appAppArrowFocus>
+        <div class="col-md-6">
           <label class="form-label">{{ "invoiceNumber" | translate }}</label>
           <div class="search-field-button disabled-form__enabled">
             <input
@@ -40,7 +40,7 @@
             </button>
           </div>
         </div>
-        <div class="col-md-6" appAppArrowFocus>
+        <div class="col-md-6">
           <app-ebtikar-select
             [items]="selectClients"
             [placeholder]="'clientName'"
@@ -51,7 +51,7 @@
             [control]="salesInvoiceForm.get('clientId')!"
           ></app-ebtikar-select>
         </div>
-        <div class="col-md-6 disabled-form__enabled" appAppArrowFocus>
+        <div class="col-md-6 disabled-form__enabled">
           <app-ebtikar-select
             [hasStaticValues]="true"
             [items]="paymentTypes"
@@ -69,7 +69,6 @@
             salesReturnFound?.isSalesPerson
           "
           class="col-md-6 disabled-form__enabled"
-          appAppArrowFocus
         >
           <app-ebtikar-input
             [type]="'datepicker'"
