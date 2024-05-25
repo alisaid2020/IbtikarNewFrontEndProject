@@ -62,8 +62,7 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
         map((res) => res.salesReturn),
         tap((res) => {
           if (res?.IsSuccess) {
-            // this.setData(res.Obj.trx);
-            this.salesReturnList = res.Obj.trx;
+            this.setData(res.Obj);
           }
         })
       )
@@ -173,21 +172,25 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
   }
 
   getSalesReturnList(): void {
+    this.spinner.show();
     let params = {
-      pageNumber: this.pagination.PageNumber,
+      pageNumber: this.pageNo,
       pageSize: this.pagination.PageSize,
+      ...this.filters,
     };
     firstValueFrom(
       this.dataService
-        .get(`${apiUrl}/XtraAndPos_MobileLookups/GetPagedSaleInvoicesReturn`, {
-          params,
-        })
+        .get(
+          `${apiUrl}/XtraAndPos_MobileLookups/GetPagedSaleInvoicesReturnByDate`,
+          {
+            params,
+          }
+        )
         .pipe(
           tap((res) => {
             if (res?.IsSuccess) {
-              this.salesReturnList = res.Obj.trx;
               this.spinner.hide();
-              // this.setData(res?.Obj);
+              this.setData(res?.Obj);
             }
           })
         )
@@ -195,16 +198,15 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
   }
 
   page(pageNo: any) {
-    this.pagination.PageNumber = pageNo;
+    this.pageNo = pageNo;
     this.getSalesReturnList();
   }
 
   setData(res: any): void {
-    this.salesReturnList = res.PagedResult;
+    this.salesReturnList = res.trx;
     this.pagination = {
-      PageSize: res.PageSize,
-      PageNumber: res.PageNumber,
-      TotalCount: res.TotalCount,
+      PageSize: PAGE_SIZE,
+      TotalCount: res.totalCount,
     };
   }
 

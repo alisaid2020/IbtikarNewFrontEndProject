@@ -9,7 +9,7 @@ export const salesReturnResolver: ResolveFn<boolean> = (route, state) => {
   let dataService = inject(DataService);
   return firstValueFrom(
     dataService.get(
-      `${apiUrl}/XtraAndPos_MobileLookups/GetPagedSaleInvoicesReturn`,
+      `${apiUrl}/XtraAndPos_MobileLookups/GetPagedSaleInvoicesReturnByDate`,
       {
         params: {
           pageNumber: 1,

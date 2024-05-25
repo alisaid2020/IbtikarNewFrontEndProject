@@ -197,7 +197,7 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
             })
             .pipe(
               tap((res) => {
-                if (res?.Obj) {
+                if (res?.IsSuccess) {
                   this.toast.show(Toast.deleted, {
                     classname: Toast.success,
                   });
