@@ -25,6 +25,7 @@
   (change)="getChangedItem($event)"
   [searchFn]="searchByLabelInDynamic"
   (scrollToEnd)="getDataOnScroll()"
+  [readonly]="isReadOnly"
   #select
 >
   <ng-template
@@ -69,6 +70,7 @@
   [addTag]="isAddTag"
   (change)="getChangedItem($event)"
   [searchFn]="searchByLabelInDynamic"
+  [readonly]="isReadOnly"
   #select
 >
   <ng-template
@@ -96,6 +98,7 @@
   [addTag]="isAddTag"
   (change)="getChangedItem($event)"
   [searchFn]="searchByLabelInStatic"
+  [readonly]="isReadOnly"
 >
   <ng-template ng-label-tmp ng-option-tmp let-item="item">
     {{ item.name | translate }}

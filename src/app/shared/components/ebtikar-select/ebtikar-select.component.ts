@@ -57,6 +57,7 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
   @Input() uid?: any;
   @Input() searchByTerm: boolean;
   @Input() searchByBarcode: boolean;
+  @Input() isReadOnly: boolean;
 
   @Output() emitChanged = new EventEmitter<any>();
   @ViewChild('select', { static: false }) selectComponent: NgSelectComponent;

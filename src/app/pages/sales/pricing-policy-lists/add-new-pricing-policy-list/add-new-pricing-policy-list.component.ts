@@ -1,4 +1,11 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  inject,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -74,6 +81,8 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   router = inject(Router);
   fb = inject(FormBuilder);
   toast = inject(ToastService);
+  renderer = inject(Renderer2);
+  elementRef = inject(ElementRef);
   route = inject(ActivatedRoute);
   helpers = inject(HelpersService);
   dataService = inject(DataService);
@@ -317,7 +326,23 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       return;
     }
     this.addNewLine();
+    setTimeout(() => {
+      this.focusOnNextRow(i);
+    });
     // this.getPrice(ev, i);
+  }
+
+  focusOnNextRow(i: any): void {
+    const ngSelectElements = this.renderer
+      .selectRootElement(this.elementRef.nativeElement, true)
+      .querySelectorAll('#parCode');
+    const lastNgSelect = ngSelectElements[i + 1];
+    if (lastNgSelect) {
+      const inputElement = lastNgSelect.querySelector('input');
+      if (inputElement) {
+        inputElement.focus();
+      }
+    }
   }
 
   selectedItemByName(ev: any, i: any) {
