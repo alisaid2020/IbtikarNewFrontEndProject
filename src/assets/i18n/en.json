@@ -147,5 +147,9 @@
   "branches": "Branches",
   "itemsGroup": "Items Group",
   "edit": "Edit",
-  "productName": "Item Name"
+  "productName": "Item Name",
+  "deleteSalesReturn": "Delete Sales Return",
+  "deletePricingPolicy": "Delete Pricing Policy",
+  "deletePricingPolicyList": "Delete Pricing Policy List",
+  "pricingPolicyList": "Pricing Policy List"
 }

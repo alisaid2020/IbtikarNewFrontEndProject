@@ -124,7 +124,7 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.modalInfo = {
       title: 'deleteSalesReturn',
       description: 'areYouSureToDelete',
-      name: this.translate.instant('salesReturn'),
+      name: `${this.translate.instant('salesReturn')} ${item.DocNo} `,
     };
     modalRef.result.then((res) => {
       if (res) {

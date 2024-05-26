@@ -184,8 +184,8 @@ export class SalesInvoiceListComponent implements OnInit, OnDestroy {
     const modalRef = this.modal.open(ConfirmModalComponent);
     modalRef.componentInstance.modalInfo = {
       title: 'deleteSalesInvoice',
-      description: 'areYouSureToDelete',
-      name: this.translate.instant('salesInvoice'),
+      description: `areYouSureToDelete`,
+      name: `${this.translate.instant('salesInvoice')} ${item.DocNo} `,
     };
     modalRef.result.then((res) => {
       if (res) {

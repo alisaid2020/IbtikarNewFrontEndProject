@@ -13,7 +13,7 @@
   <p>
     {{ modalInfo.description | translate }}
     <ng-container *ngIf="modalInfo?.name"> {{ modalInfo.name }}</ng-container
-    >?
+    >{{ helpers.getItemFromLocalStorage(EBTIKARLANG) === "en" ? "?" : "؟" }}
   </p>
 </div>
 <div class="modal-footer">

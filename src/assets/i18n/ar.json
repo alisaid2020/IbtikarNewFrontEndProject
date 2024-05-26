@@ -147,5 +147,9 @@
   "branches": "الفروع",
   "itemsGroup": "مجموعة الأصناف",
   "edit": "تعديل",
-  "productName": "إسم الصنف"
+  "productName": "إسم الصنف",
+  "deleteSalesReturn": "حذف مرتجع مبيعات",
+  "deletePricingPolicy": "حذف سياسة الاسعار",
+  "deletePricingPolicyList": "حذف قائمة التسعير",
+  "pricingPolicyList": "قائمة التسعير"
 }

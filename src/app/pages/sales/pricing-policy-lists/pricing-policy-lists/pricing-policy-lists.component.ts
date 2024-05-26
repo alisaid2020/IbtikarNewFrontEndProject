@@ -104,9 +104,9 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
   delete(item: any) {
     const modalRef = this.modal.open(ConfirmModalComponent);
     modalRef.componentInstance.modalInfo = {
-      title: 'deletePricingPolicyLists',
+      title: 'deletePricingPolicyList',
       description: 'areYouSureToDelete',
-      name: this.translate.instant('PricingPolicyList'),
+      name: this.translate.instant('pricingPolicyList'),
     };
     modalRef.result.then((res) => {
       if (res) {

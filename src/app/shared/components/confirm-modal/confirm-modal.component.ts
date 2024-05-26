@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { EBTIKARLANG } from '@constants/general.constant';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { HelpersService } from '@services/helpers.service';
 
@@ -8,6 +9,7 @@ import { HelpersService } from '@services/helpers.service';
 })
 export class ConfirmModalComponent {
   @Input() modalInfo: any;
+  EBTIKARLANG = EBTIKARLANG;
 
   constructor(public modal: NgbActiveModal, public helpers: HelpersService) {}
 }
