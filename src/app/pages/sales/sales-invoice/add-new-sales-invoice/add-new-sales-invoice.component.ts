@@ -46,14 +46,14 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   itemsByTermApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemsByTrim`;
   itemsByBarcodeApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemByBarcode`;
   defaultSelected: any[] = [
-    { field: 'productBarcode', header: 'barcode' },
+    { field: 'productBarcode', header: 'Barcode' },
     { field: 'itemID', header: 'item' },
     { field: 'uniteId', header: 'unit' },
     { field: 'quantity', header: 'quantity' },
-    { field: 'balance', header: 'balance' },
     { field: 'price', header: 'price' },
-    { field: 'vat', header: 'vat' },
     { field: 'discount', header: 'discount' },
+    { field: 'balance', header: 'balance' },
+    { field: 'vat', header: 'vat' },
     { field: 'totalPriceAfterVat', header: 'TotalPriceAfterVat' },
   ];
   paymentTypes = [

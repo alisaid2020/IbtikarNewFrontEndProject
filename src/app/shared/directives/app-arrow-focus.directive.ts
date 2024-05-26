@@ -1,10 +1,12 @@
 import { Directive, ElementRef, HostListener } from '@angular/core';
+import { EBTIKARLANG } from '@constants/general.constant';
+import { HelpersService } from '@services/helpers.service';
 
 @Directive({
   selector: '[appAppArrowFocus]',
 })
 export class AppArrowFocusDirective {
-  constructor(private el: ElementRef) {}
+  constructor(private el: ElementRef, private helpers: HelpersService) {}
 
   @HostListener('keydown', ['$event']) onKeyDown(event: KeyboardEvent) {
     const td = this.el.nativeElement.closest('td');
@@ -13,15 +15,22 @@ export class AppArrowFocusDirective {
     const index = allCells.indexOf(td);
     const allRows = Array.from(tr.parentElement.querySelectorAll('tr'));
     const rowIndex = allRows.indexOf(tr);
-
     let nextIndex: number;
 
     switch (event.key) {
       case 'ArrowLeft':
-        nextIndex = index > 0 ? index - 1 : index;
+        if (this.helpers.getItemFromLocalStorage(EBTIKARLANG) === 'en') {
+          nextIndex = index > 0 ? index - 1 : index;
+        } else {
+          nextIndex = index < allCells.length - 1 ? index + 1 : index;
+        }
         break;
       case 'ArrowRight':
-        nextIndex = index < allCells.length - 1 ? index + 1 : index;
+        if (this.helpers.getItemFromLocalStorage(EBTIKARLANG) === 'en') {
+          nextIndex = index < allCells.length - 1 ? index + 1 : index;
+        } else {
+          nextIndex = index > 0 ? index - 1 : index;
+        }
         break;
       case 'ArrowUp':
         nextIndex = index;
