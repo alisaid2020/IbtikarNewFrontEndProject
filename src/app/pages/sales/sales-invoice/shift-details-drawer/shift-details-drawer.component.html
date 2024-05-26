@@ -23,7 +23,7 @@
           <a
             ngbNavLink
             class="nav-link btn btn-sm btn-color-muted btn-active-primary fw-bold px-4 me-1"
-            >{{ "ShiftDetails" | translate }}</a
+            >{{ "shiftDetails" | translate }}</a
           >
           <ng-template ngbNavContent>
             <div class="row m-0 g-5 my-5">
@@ -32,8 +32,8 @@
                 <app-ebtikar-input
                   class="disabled-form"
                   [readonly]="true"
-                  [label]="'TotaltreasuryIn'"
-                  [placeholder]="'TotaltreasuryIn'"
+                  [label]="'totalTreasuryIn'"
+                  [placeholder]="'totalTreasuryIn'"
                   [control]="shiftDataForm.get('TotaltreasuryIn')!"
                 ></app-ebtikar-input>
               </div>
@@ -41,8 +41,8 @@
                 <app-ebtikar-input
                   class="disabled-form"
                   [readonly]="true"
-                  [label]="'TotaltreasuryOut'"
-                  [placeholder]="'TotaltreasuryOut'"
+                  [label]="'totalTreasuryOut'"
+                  [placeholder]="'totalTreasuryOut'"
                   [control]="shiftDataForm.get('TotaltreasuryOut')!"
                 ></app-ebtikar-input>
               </div>
@@ -77,8 +77,8 @@
                 <app-ebtikar-input
                   class="disabled-form"
                   [readonly]="true"
-                  [label]="'StartCash'"
-                  [placeholder]="'StartCash'"
+                  [label]="'startCash'"
+                  [placeholder]="'startCash'"
                   [control]="shiftDataForm.get('StartCash')!"
                 ></app-ebtikar-input>
               </div>
@@ -86,8 +86,8 @@
                 <app-ebtikar-input
                   class="disabled-form"
                   [readonly]="true"
-                  [label]="'DurationCash'"
-                  [placeholder]="'DurationCash'"
+                  [label]="'durationCash'"
+                  [placeholder]="'durationCash'"
                   [control]="shiftDataForm.get('DurationCash')!"
                 ></app-ebtikar-input>
               </div>
@@ -95,8 +95,8 @@
                 <app-ebtikar-input
                   class="disabled-form"
                   [readonly]="true"
-                  [label]="'TotalCash'"
-                  [placeholder]="'TotalCash'"
+                  [label]="'totalCash'"
+                  [placeholder]="'totalCash'"
                   [control]="shiftDataForm.get('TotalCash')!"
                 ></app-ebtikar-input>
               </div>
@@ -104,8 +104,8 @@
                 <app-ebtikar-input
                   class="disabled-form"
                   [readonly]="true"
-                  [label]="'VisaAmount'"
-                  [placeholder]="'VisaAmount'"
+                  [label]="'visaAmount'"
+                  [placeholder]="'visaAmount'"
                   [control]="shiftDataForm.get('VisaAmount')!"
                 ></app-ebtikar-input>
               </div>
@@ -113,8 +113,8 @@
                 <app-ebtikar-input
                   class="disabled-form"
                   [readonly]="true"
-                  [label]="'BankTransferAmount'"
-                  [placeholder]="'BankTransferAmount'"
+                  [label]="'bankTransferAmount'"
+                  [placeholder]="'bankTransferAmount'"
                   [control]="shiftDataForm.get('BankTransferAmount')!"
                 ></app-ebtikar-input>
               </div>
@@ -122,8 +122,8 @@
                 <app-ebtikar-input
                   class="disabled-form"
                   [readonly]="true"
-                  [label]="'TotalShift'"
-                  [placeholder]="'TotalShift'"
+                  [label]="'totalShift'"
+                  [placeholder]="'totalShift'"
                   [control]="shiftDataForm.get('TotalShift')!"
                 ></app-ebtikar-input>
               </div>
@@ -131,8 +131,8 @@
                 <app-ebtikar-input
                   class="disabled-form"
                   [readonly]="true"
-                  [label]="'DeficitAmount'"
-                  [placeholder]="'DeficitAmount'"
+                  [label]="'deficitAmount'"
+                  [placeholder]="'deficitAmount'"
                   [control]="shiftDataForm.get('DeficitAmount')!"
                 ></app-ebtikar-input>
               </div>
@@ -155,11 +155,11 @@
               </div>
               <div class="col-md-6" *ngIf="isTreasureChanged">
                 <app-ebtikar-select
-                  [items]="Treasuries"
                   [hasMultipleLabels]="true"
+                  [items]="treasuries"
                   [bindValue]="'Id'"
-                  [placeholder]="'changeTreasuryId'"
-                  [label]="'changeTreasuryId'"
+                  [placeholder]="'safe'"
+                  [label]="'safe'"
                   [control]="shiftDataForm.get('changeTreasuryId')!"
                 >
                 </app-ebtikar-select>
@@ -172,7 +172,7 @@
           <a
             ngbNavLink
             class="nav-link btn btn-sm btn-color-muted btn-active-primary fw-bold px-4 me-1"
-            >{{ "Expenses&collections" | translate }}</a
+            >{{ "expenses_collections" | translate }}</a
           >
           <ng-template ngbNavContent>
             <div class="row m-0 g-5 mt-5">
@@ -180,8 +180,8 @@
                 <app-ebtikar-input
                   class="disabled-form"
                   [readonly]="true"
-                  [label]="'treasuryIn'"
-                  [placeholder]="'TotalCash'"
+                  [label]="'totalTreasuryIn'"
+                  [placeholder]="'totalTreasuryIn'"
                   [control]="shiftDataForm.get('treasuryIn')!"
                 ></app-ebtikar-input>
               </div>
@@ -189,8 +189,8 @@
                 <app-ebtikar-input
                   class="disabled-form"
                   [readonly]="true"
-                  [label]="'treasuryOut'"
-                  [placeholder]="'treasuryOut'"
+                  [label]="'totalTreasuryOut'"
+                  [placeholder]="'totalTreasuryOut'"
                   [control]="shiftDataForm.get('treasuryOut')!"
                 ></app-ebtikar-input>
               </div>
@@ -205,10 +205,10 @@
 <div class="offcanvs-footer p-5 pt-0 text-center">
   <div class="d-flex justify-content-end gap-2 gap-lg-3">
     <button class="btn btn-light" (click)="activeDrawer.close()">
-      {{ "ReturnToInvoise" | translate }}
+      {{ "returnToInvoice" | translate }}
     </button>
     <app-submit-button
-      [buttonText]="'CloseSfhift'"
+      [buttonText]="'closeShift'"
       (btnClick)="closeShift()"
     ></app-submit-button>
   </div>

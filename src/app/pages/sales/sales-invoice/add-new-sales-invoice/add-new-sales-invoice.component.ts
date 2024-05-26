@@ -668,7 +668,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       {
         position: this.translate.currentLang == 'ar' ? 'start' : 'end',
         scroll: true,
-        panelClass: 'w-100 w-md-50',
+        panelClass: 'w-100 w-md-75 w-lg-50',
       }
     );
     offCanvasRef.componentInstance.shiftData = this.shiftData;

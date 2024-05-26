@@ -15,7 +15,7 @@ import { firstValueFrom, tap } from 'rxjs';
   templateUrl: './shift-details-drawer.component.html',
 })
 export class ShiftDetailsDrawerComponent implements OnInit {
-  Treasuries: any;
+  treasuries: any;
   userRole = E_USER_ROLE;
   @Input() shiftData!: any;
   shiftDataForm!: FormGroup;
@@ -37,9 +37,7 @@ export class ShiftDetailsDrawerComponent implements OnInit {
     firstValueFrom(
       this.dataService.get(`${apiUrl}/Treasury/GetAllForDropDown`).pipe(
         tap((res) => {
-          if (res?.Obj) {
-            this.Treasuries = res;
-          }
+          this.treasuries = res;
         })
       )
     );
@@ -123,9 +121,9 @@ export class ShiftDetailsDrawerComponent implements OnInit {
         .post(`${apiUrl}/ExtraAndPOS_Shift/CloseShift`, formData)
         .pipe(
           tap((res) => {
-            if (res?.Obj) {
+            if (res?.IsSuccess) {
               this.spinner.hide();
-              this.toast.show('تم غلق الورديه بنجاح', {
+              this.toast.show('shiftClosedSuccessfully', {
                 classname: Toast.success,
               });
               this.activeDrawer.close();
