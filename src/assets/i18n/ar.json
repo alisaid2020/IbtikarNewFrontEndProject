@@ -169,5 +169,7 @@
   "closeShift": "إغلاق الوردية",
   "returnToInvoice": "عودة للفاتورة",
   "stores": "المخازن",
-  "shiftClosedSuccessfully": "تم غلق الورديه بنجاح"
+  "shiftClosedSuccessfully": "تم غلق الورديه بنجاح",
+  "receiptVouchers": "سندات القبض",
+  "TreasuryType": "الجهه"
 }

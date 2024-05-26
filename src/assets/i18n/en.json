@@ -169,5 +169,7 @@
   "closeShift": "Close Shift",
   "returnToInvoice": "Return To Invoice",
   "stores": "Stores",
-  "shiftClosedSuccessfully": "Shift Closed Successfully"
+  "shiftClosedSuccessfully": "Shift Closed Successfully",
+  "receiptVouchers": "Receipt Vouchers",
+  "TreasuryType": "Destination"
 }

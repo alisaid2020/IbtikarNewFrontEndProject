@@ -1,0 +1,135 @@
+<div class="app-toolbar pb-3 pb-md-6 d-flex">
+  <div class="me-5">
+    <a
+      routerLink="active"
+      [routerLink]="'/receipt-vouchers'"
+      class="btn btn-icon btn-light"
+    >
+      <span
+        [inlineSVG]="'./assets/media/icons/duotune/arrows/arr063.svg'"
+        class="svg-icon svg-icon-3 text-gray-800 fw-bolder rotate-ar"
+      ></span>
+    </a>
+  </div>
+  <div class="page-title d-flex flex-column justify-content-center flex-wrap">
+    <h1 class="page-heading d-flex text-dark fw-bold fs-2 my-0">
+      {{ "addNew" | translate }}
+    </h1>
+  </div>
+</div>
+<form [formGroup]="receiptVoucherForm">
+  <div class="card mb-5 mb-xxl-8">
+    <div class="card-body">
+      <div class="row g-5">
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [type]="'number'"
+            [placeholder]="'Serial'"
+            [label]="'Serial'"
+            [control]="receiptVoucherForm.get('id')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [type]="'datepicker'"
+            [placeholder]="'date'"
+            [label]="'date'"
+            [control]="receiptVoucherForm.get('docDate')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-select
+            [hasStaticValues]="true"
+            [items]="typeOfDealing"
+            [placeholder]="'Type of dealing'"
+            [label]="'Type of dealing'"
+            [bindValue]="'value'"
+            [bindLabel]="'name'"
+            [control]="receiptVoucherForm.get('typeofpayment')!"
+          ></app-ebtikar-select>
+        </div>
+        <div
+          class="col-md-6"
+          *ngIf="receiptVoucherForm.get('typeofpayment')!.value === 1"
+        >
+          <app-ebtikar-select
+            [items]="banks"
+            [hasMultipleLabels]="true"
+            [placeholder]="'bank'"
+            [label]="'bank'"
+            [bindValue]="'Id'"
+            [control]="receiptVoucherForm.get('treasuryId')!"
+          ></app-ebtikar-select>
+        </div>
+        <div
+          class="col-md-6"
+          *ngIf="receiptVoucherForm.get('typeofpayment')!.value === 2"
+        >
+          <app-ebtikar-select
+            [items]="treasuries"
+            [hasMultipleLabels]="true"
+            [placeholder]="'safe'"
+            [label]="'safe'"
+            [bindValue]="'Id'"
+            [control]="receiptVoucherForm.get('treasuryId')!"
+          ></app-ebtikar-select>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-select
+            [hasStaticValues]="true"
+            [items]="treasuryTypes"
+            [placeholder]="'treasuryType'"
+            [label]="'treasuryType'"
+            [bindValue]="'value'"
+            [bindLabel]="'name'"
+            [control]="receiptVoucherForm.get('treasuryType')!"
+          ></app-ebtikar-select>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-select
+            [items]="costCenters"
+            [hasMultipleLabels]="true"
+            [placeholder]="'costCenter'"
+            [label]="'costCenter'"
+            [control]="receiptVoucherForm.get('ccenter')!"
+          ></app-ebtikar-select>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-select
+            [items]="currencies"
+            [hasMultipleLabels]="true"
+            [placeholder]="'currency'"
+            [label]="'currency'"
+            [control]="receiptVoucherForm.get('currencyId')!"
+          ></app-ebtikar-select>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [type]="'number'"
+            [placeholder]="'exchangeRate'"
+            [label]="'exchangeRate'"
+            [control]="receiptVoucherForm.get('exchangeRate')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            class="disabled-form"
+            [type]="'number'"
+            [readonly]="true"
+            [placeholder]="'deserved'"
+            [label]="'deserved'"
+            [control]="receiptVoucherForm.get('deserved')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [type]="'textArea'"
+            [placeholder]="'notes'"
+            [label]="'notes'"
+            [control]="receiptVoucherForm.get('notes')!"
+          ></app-ebtikar-input>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

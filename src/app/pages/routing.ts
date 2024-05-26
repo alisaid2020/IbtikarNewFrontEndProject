@@ -47,6 +47,13 @@ const Routing: Routes = [
       ),
   },
   {
+    path: 'receipt-vouchers',
+    loadChildren: () =>
+      import('./sales/receipt-voucher/receipt-voucher.module').then(
+        (m) => m.ReceiptVoucherModule
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'error/404',
   },
