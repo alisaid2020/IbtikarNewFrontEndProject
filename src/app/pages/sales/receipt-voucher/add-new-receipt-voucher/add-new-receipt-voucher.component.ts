@@ -6,7 +6,7 @@ import { DataService } from '@services/data.service';
 import { TableService } from '@services/table.service';
 import { ToastService } from '@services/toast-service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription, filter, firstValueFrom, tap } from 'rxjs';
+import { Subscription, firstValueFrom, tap } from 'rxjs';
 
 @Component({
   selector: 'app-add-new-receipt-voucher',
@@ -185,7 +185,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     let ccenter;
     let docNoManual;
     let isMobile = false;
-    let exchangeRate;
+    let exchangeRate = 1;
     let currencyId;
     let mainBank;
     // let docNo : not in the code but in swagger what its value
@@ -231,17 +231,18 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   }
 
   newLine(value?: any) {
+    let accTreeId;
     let clientId;
     let clientName;
     let saleInvoiceId;
-    let notes;
     let amount;
-    let costCenterId;
-    let accTreeId;
-    let bankId;
-    let bankName;
-    let treasuryId;
     let supplierId;
+    let treasuryId;
+    let costCenterId;
+    let bankId;
+    let treasuryName;
+    let bankName;
+    let notes;
 
     return this.fb.group({
       clientId: [clientId],
@@ -254,11 +255,12 @@ export class AddNewReceiptVoucherComponent implements OnInit {
       bankId: [bankId],
       bankName: [bankName],
       treasuryId: [treasuryId],
+      treasuryName: [treasuryName],
       supplierId: [supplierId],
     });
   }
 
-  selectClient(ev: any, i: number): void {
+  selectClientInLine(ev: any, i: number): void {
     let form = this.linesArray.controls[i];
     if (ev) {
       form.patchValue({ clientName: ev.NameAr });
@@ -330,6 +332,63 @@ export class AddNewReceiptVoucherComponent implements OnInit {
       ];
     }
     this._selectedColumns = this.defaultSelected;
+    this.linesArray.controls.forEach((form) => {
+      if (ev.value === 1) {
+        form.patchValue({
+          clientId: null,
+          clientName: null,
+          saleInvoiceId: null,
+          bankId: null,
+          bankName: null,
+          treasuryId: null,
+          supplierId: null,
+          treasuryName: null,
+        });
+      }
+      if (ev.value === 2) {
+        form.patchValue({
+          accTreeId: null,
+          bankId: null,
+          bankName: null,
+          treasuryId: null,
+          supplierId: null,
+          treasuryName: null,
+        });
+      }
+      if (ev.value === 3) {
+        form.patchValue({
+          accTreeId: null,
+          clientId: null,
+          clientName: null,
+          saleInvoiceId: null,
+          supplierId: null,
+          treasuryId: null,
+          treasuryName: null,
+        });
+      }
+      if (ev.value === 4) {
+        form.patchValue({
+          accTreeId: null,
+          clientId: null,
+          clientName: null,
+          saleInvoiceId: null,
+          supplierId: null,
+          bankId: null,
+          bankName: null,
+        });
+      }
+      if (ev.value === 5) {
+        form.patchValue({
+          accTreeId: null,
+          clientId: null,
+          clientName: null,
+          bankId: null,
+          bankName: null,
+          treasuryId: null,
+          treasuryName: null,
+        });
+      }
+    });
   }
 
   selectBankInLine(ev: any, i: any) {
@@ -343,6 +402,13 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     let form = this.linesArray.controls[i];
     if (ev) {
       this.getInvoicesBySupplierId(ev.SupplierId);
+    }
+  }
+
+  selectTreasuryInLine(ev: any, i: number) {
+    let form = this.linesArray.controls[i];
+    if (ev) {
+      form.patchValue({ treasuryName: ev.NameAr });
     }
   }
 

@@ -100,6 +100,7 @@
             [hasMultipleLabels]="true"
             [placeholder]="'costCenter'"
             [label]="'costCenter'"
+            [bindValue]="'Id'"
             [control]="receiptVoucherForm.get('ccenter')!"
           ></app-ebtikar-select>
         </div>
@@ -109,10 +110,17 @@
             [hasMultipleLabels]="true"
             [placeholder]="'currency'"
             [label]="'currency'"
+            [bindValue]="'Id'"
             [control]="receiptVoucherForm.get('currencyId')!"
           ></app-ebtikar-select>
         </div>
-        <div class="col-md-6">
+        <div
+          class="col-md-6"
+          *ngIf="
+            receiptVoucherForm.get('currencyId')!.value &&
+            receiptVoucherForm.get('currencyId')!.value !== 1
+          "
+        >
           <app-ebtikar-input
             [type]="'number'"
             [placeholder]="'exchangeRate'"
@@ -186,9 +194,10 @@
                       [bindValue]="'Id'"
                       [searchBy]="'trim'"
                       [control]="linesArray.controls[i].get('clientId')!"
-                      (emitChanged)="selectClient($event, i)"
+                      (emitChanged)="selectClientInLine($event, i)"
                     ></app-ebtikar-select>
                   </td>
+                  @if (receiptVoucherForm.get('treasuryType')!.value===2) {
                   <td
                     *ngSwitchCase="'SaleInvoiceId'"
                     style="min-width: 200px"
@@ -202,6 +211,7 @@
                       [control]="linesArray.controls[i].get('saleInvoiceId')!"
                     ></app-ebtikar-select>
                   </td>
+                  }
                   <td
                     *ngSwitchCase="'AccTreeId'"
                     style="min-width: 200px"
@@ -241,6 +251,7 @@
                       [placeholder]="'TreasuryId'"
                       [bindValue]="'Id'"
                       [control]="linesArray.controls[i].get('treasuryId')!"
+                      (emitChanged)="selectTreasuryInLine($event, i)"
                     ></app-ebtikar-select>
                   </td>
                   <td
@@ -257,6 +268,7 @@
                       (emitChanged)="selectSupplier($event, i)"
                     ></app-ebtikar-select>
                   </td>
+                  @if (receiptVoucherForm.get('treasuryType')!.value===5) {
                   <td
                     *ngSwitchCase="'SaleInvoiceId'"
                     style="min-width: 200px"
@@ -270,6 +282,7 @@
                       [control]="linesArray.controls[i].get('saleInvoiceId')!"
                     ></app-ebtikar-select>
                   </td>
+                  }
                   <td
                     *ngSwitchCase="'Amount'"
                     style="min-width: 200px"
