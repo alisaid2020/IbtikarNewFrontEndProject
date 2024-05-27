@@ -38,6 +38,14 @@
           ></app-ebtikar-input>
         </div>
         <div class="col-md-6">
+          <app-ebtikar-input
+            [type]="'number'"
+            [placeholder]="'DocNoManual'"
+            [label]="'DocNoManual'"
+            [control]="receiptVoucherForm.get('docNoManual')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
           <app-ebtikar-select
             [hasStaticValues]="true"
             [items]="typeOfDealing"
@@ -58,7 +66,7 @@
             [placeholder]="'bank'"
             [label]="'bank'"
             [bindValue]="'Id'"
-            [control]="receiptVoucherForm.get('treasuryId')!"
+            [control]="receiptVoucherForm.get('mainBank')!"
           ></app-ebtikar-select>
         </div>
         <div
@@ -83,6 +91,7 @@
             [bindValue]="'value'"
             [bindLabel]="'name'"
             [control]="receiptVoucherForm.get('treasuryType')!"
+            (emitChanged)="selectTreasuryType($event)"
           ></app-ebtikar-select>
         </div>
         <div class="col-md-6">
@@ -116,9 +125,9 @@
             class="disabled-form"
             [type]="'number'"
             [readonly]="true"
-            [placeholder]="'deserved'"
-            [label]="'deserved'"
-            [control]="receiptVoucherForm.get('deserved')!"
+            [placeholder]="'equivalentPrice'"
+            [label]="'equivalentPrice'"
+            [control]="receiptVoucherForm.get('equivalentPrice')!"
           ></app-ebtikar-input>
         </div>
         <div class="col-md-6">
@@ -129,6 +138,185 @@
             [control]="receiptVoucherForm.get('notes')!"
           ></app-ebtikar-input>
         </div>
+      </div>
+      <div class="row mt-5">
+        <p-table
+          [columns]="_selectedColumns"
+          [value]="linesArray.controls"
+          styleClass="p-datatable-gridlines p-datatable-striped"
+          [stateKey]="tableStorage"
+          columnResizeMode="expand"
+        >
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              @for (column of columns; track $index) {
+              <th class="bg-primary fw-bolder text-white fs-5">
+                {{ column.header | translate }}
+              </th>
+              }
+              <th class="bg-primary fw-bolder text-white fs-5">
+                {{ "actions" | translate }}
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template
+            pTemplate="body"
+            let-rowData
+            let-columns="columns"
+            let-i="rowIndex"
+          >
+            <ng-container formArrayName="treasuryTransactionDetails">
+              <tr
+                [formGroupName]="i"
+                [style.background-color]="
+                  i % 2 !== 0 ? '#add8e633' : 'rgb(250 250 250)'
+                "
+              >
+                @for (col of columns; track $index) {
+                <ng-container [ngSwitch]="col.header">
+                  <td
+                    *ngSwitchCase="'clientId'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      [apiUrl]="clientsApi"
+                      [hasMultipleLabels]="true"
+                      [placeholder]="'clientName'"
+                      [bindValue]="'Id'"
+                      [searchBy]="'trim'"
+                      [control]="linesArray.controls[i].get('clientId')!"
+                      (emitChanged)="selectClient($event, i)"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
+                    *ngSwitchCase="'SaleInvoiceId'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      [items]="clientInvoices"
+                      [placeholder]="'saleInvoiceId'"
+                      [bindValue]="'Id'"
+                      [bindLabel]="'DocNo'"
+                      [control]="linesArray.controls[i].get('saleInvoiceId')!"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
+                    *ngSwitchCase="'AccTreeId'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      [apiUrl]="accountsApi"
+                      [hasMultipleLabels]="true"
+                      [placeholder]="'accTreeId'"
+                      [searchBy]="'AccName'"
+                      [bindValue]="'Id'"
+                      [control]="linesArray.controls[i].get('accTreeId')!"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
+                    *ngSwitchCase="'BankId'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      [items]="banksInLine"
+                      [hasMultipleLabels]="true"
+                      [placeholder]="'bankId'"
+                      [bindValue]="'Id'"
+                      [control]="linesArray.controls[i].get('bankId')!"
+                      (emitChanged)="selectBankInLine($event, i)"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
+                    *ngSwitchCase="'TreasuryId'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      [items]="treasuriesInLine"
+                      [hasMultipleLabels]="true"
+                      [placeholder]="'TreasuryId'"
+                      [bindValue]="'Id'"
+                      [control]="linesArray.controls[i].get('treasuryId')!"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
+                    *ngSwitchCase="'SupplierId'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      [items]="suppliers"
+                      [hasMultipleLabels]="true"
+                      [placeholder]="'supplierId'"
+                      [bindValue]="'SupplierId'"
+                      [control]="linesArray.controls[i].get('supplierId')!"
+                      (emitChanged)="selectSupplier($event, i)"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
+                    *ngSwitchCase="'SaleInvoiceId'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      [items]="supplierInvoices"
+                      [placeholder]="'saleInvoiceId'"
+                      [bindValue]="'Id'"
+                      [bindLabel]="'DocNo'"
+                      [control]="linesArray.controls[i].get('saleInvoiceId')!"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
+                    *ngSwitchCase="'Amount'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-input
+                      type="'number'"
+                      [placeholder]="'Amount'"
+                      [control]="linesArray.controls[i].get('amount')!"
+                    ></app-ebtikar-input>
+                  </td>
+                  <td
+                    *ngSwitchCase="'costCenterId'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      [items]="costCenters"
+                      [hasMultipleLabels]="true"
+                      [placeholder]="'costCenter'"
+                      [control]="linesArray.controls[i].get('costCenterId')!"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
+                    *ngSwitchCase="'notes'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-input
+                      [placeholder]="'notes'"
+                      [control]="linesArray.controls[i].get('notes')!"
+                    ></app-ebtikar-input></td
+                ></ng-container>
+                }
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-icon btn-danger ms-3"
+                    [disabled]="linesArray.value?.length === 1"
+                    (click)="removeLine(i)"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr> </ng-container
+          ></ng-template>
+        </p-table>
       </div>
     </div>
   </div>

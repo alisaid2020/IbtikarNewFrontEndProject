@@ -1,12 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { apiUrl } from '@constants/api.constant';
+import { apiUrl, receiptVouchersApi } from '@constants/api.constant';
+import { PAGE_SIZE } from '@constants/general.constant';
+import { IPagination } from '@models/IPagination.model';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '@services/data.service';
 import { HelpersService } from '@services/helpers.service';
 import { TableService } from '@services/table.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription, firstValueFrom, map, tap } from 'rxjs';
+import { Subscription, first, firstValueFrom, map, tap } from 'rxjs';
 
 @Component({
   selector: 'app-receipt-voucher-list',
@@ -14,6 +16,8 @@ import { Subscription, firstValueFrom, map, tap } from 'rxjs';
 })
 export class ReceiptVoucherListComponent implements OnInit {
   changedColumns: any;
+  pagination: IPagination;
+  pageNo: number = 1;
   allColumns: any[] = [];
   receiptVouchersList: any;
   subs: Subscription[] = [];
@@ -46,7 +50,7 @@ export class ReceiptVoucherListComponent implements OnInit {
         map((res) => res.receiptVouchersList),
         tap((res) => {
           if (res?.IsSuccess) {
-            this.receiptVouchersList = res.Obj.list;
+            this.setData(res.Obj);
           }
         })
       )
@@ -93,6 +97,37 @@ export class ReceiptVoucherListComponent implements OnInit {
       }
       this.helpers.setItemToLocalStorage(this.tableStorage, ts);
     }
+  }
+
+  setData(res: any) {
+    this.receiptVouchersList = res.TreasuryTransactions;
+    this.pagination = {
+      PageSize: PAGE_SIZE,
+      TotalCount: res.TotalCount,
+    };
+  }
+
+  page(ev: any) {
+    this.pageNo = ev;
+    this.getReceiptVouchers();
+  }
+
+  getReceiptVouchers(): void {
+    this.spinner.show();
+    let params = {
+      pageNumber: this.pageNo,
+      pageSize: this.pagination.PageSize,
+    };
+    firstValueFrom(
+      this.dataService.get(receiptVouchersApi, { params }).pipe(
+        tap((res) => {
+          if (res?.IsSuccess) {
+            this.spinner.hide();
+            this.setData(res.Obj);
+          }
+        })
+      )
+    );
   }
 
   downloadPdf(id: number): void {

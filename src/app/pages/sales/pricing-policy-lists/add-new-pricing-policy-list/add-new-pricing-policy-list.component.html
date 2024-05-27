@@ -170,7 +170,7 @@
                     <app-ebtikar-select
                       id="parCode"
                       [apiUrl]="itemsApi"
-                      [searchByTerm]="true"
+                      [searchBy]="'trim'"
                       [placeholder]="'Barcode'"
                       [bindValue]="'Barcode'"
                       [bindLabel]="'Barcode'"
@@ -186,7 +186,7 @@
                     <app-ebtikar-select
                       [customData]="items[i]"
                       [apiUrl]="itemsApi"
-                      [searchByTerm]="true"
+                      [searchBy]="'trim'"
                       [hasMultipleLabels]="true"
                       [placeholder]="'productName'"
                       [bindValue]="'Id'"

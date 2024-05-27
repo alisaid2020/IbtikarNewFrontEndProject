@@ -36,7 +36,7 @@
             [placeholder]="'clientName'"
             [label]="'clientName'"
             [bindValue]="'Id'"
-            [searchByTerm]="true"
+            [searchBy]="'trim'"
             [control]="salesInvoiceForm.get('clientId')!"
           ></app-ebtikar-select>
         </div>
@@ -179,7 +179,7 @@
                       [placeholder]="'Barcode'"
                       [bindValue]="'Barcode'"
                       [bindLabel]="'Barcode'"
-                      [searchByBarcode]="true"
+                      [searchBy]="'barcode'"
                       [control]="linesArray.controls[i].get('productBarcode')!"
                       (emitChanged)="selectedItemByBarcode($event, i)"
                     ></app-ebtikar-select>
@@ -207,7 +207,7 @@
                       "
                       [apiUrl]="itemsByTermApi"
                       [customData]="items[i]"
-                      [searchByTerm]="true"
+                      [searchBy]="'trim'"
                       [bindLabel]="'NameAr'"
                       [placeholder]="'item'"
                       [bindValue]="'ItemId'"

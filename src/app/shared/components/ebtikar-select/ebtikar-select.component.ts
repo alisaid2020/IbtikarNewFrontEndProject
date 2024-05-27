@@ -55,9 +55,8 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
   @Input() customData: any[] = [];
   @Input() isAddNewLine?: any;
   @Input() uid?: any;
-  @Input() searchByTerm: boolean;
-  @Input() searchByBarcode: boolean;
   @Input() isReadOnly: boolean;
+  @Input() searchBy: string;
 
   @Output() emitChanged = new EventEmitter<any>();
   @ViewChild('select', { static: false }) selectComponent: NgSelectComponent;
@@ -222,11 +221,8 @@ export class EbtikarSelectComponent implements OnInit, OnDestroy, OnChanges {
         tap((ـ) => (this.loading = true)),
         switchMap((term) => {
           let params: any = {};
-          if (this.searchByTerm) {
-            params['trim'] = term;
-          }
-          if (this.searchByBarcode) {
-            params['barcode'] = term;
+          if (this.searchBy) {
+            params[this.searchBy] = term;
           }
           return this.dataService.get(`${this.apiUrl}`, { params }).pipe(
             catchError(() => of([])), // empty list on error
