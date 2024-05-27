@@ -98,8 +98,6 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         tap((res: any) => {
           if (res?.IsSuccess) {
             this.priceListData = res.Obj.PriceList;
-            console.log(res.Obj);
-
             this.setData(res.Obj);
           }
         })
@@ -478,7 +476,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       priceListDetail: this.helpers.removeEmptyLines(this.linesArray),
     };
     formValue.priceListDetail.forEach((field: any) => {
-      field.priceListId = this.priceListData.Id;
+      field.priceListId = this.pricingPolicyListForm.value.pricePolicyId;
     });
     let branchesLength = formValue?.branches?.filter(Number).length;
     if (branchesLength) {
