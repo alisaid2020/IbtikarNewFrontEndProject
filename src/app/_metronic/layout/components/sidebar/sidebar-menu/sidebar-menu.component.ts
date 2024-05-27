@@ -45,11 +45,11 @@ export class SidebarMenuComponent implements OnInit {
           route: '/sales-settings',
           permission: 'SaleInvoice',
         },
-        {
-          title: 'receiptVouchers',
-          route: 'receipt-vouchers',
-          permission: 'SaleInvoice',
-        },
+        // {
+        //   title: 'receiptVouchers',
+        //   route: 'receipt-vouchers',
+        //   permission: 'SaleInvoice',
+        // },
       ],
     },
   ];

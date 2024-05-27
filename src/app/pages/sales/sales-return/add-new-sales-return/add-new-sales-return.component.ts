@@ -458,10 +458,12 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
           formValue
         )
         .pipe(
-          tap((_) => {
-            this.spinner.hide();
-            this.toast.show(Toast.added, { classname: Toast.success });
-            this.router.navigateByUrl('/sales-return');
+          tap((res) => {
+            if (res?.IsSuccess) {
+              this.spinner.hide();
+              this.toast.show(Toast.added, { classname: Toast.success });
+              this.router.navigateByUrl('/sales-return');
+            }
           })
         )
     );

@@ -29,7 +29,7 @@
           [class.disabled-form]="priceListData ? true : false"
         >
           <app-ebtikar-select
-            [uid]="priceListData?.Id"
+            [uid]="priceListData?.PricePolicyId"
             [items]="pricingPolicesObj?.group"
             [hasMultipleLabels]="true"
             [placeholder]="'PricePolicy'"
