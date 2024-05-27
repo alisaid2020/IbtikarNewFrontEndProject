@@ -104,16 +104,22 @@
           <td>{{ rowData[col.field] | formatValue }}</td>
           }
           <td>
+            <a
+              class="btn btn-icon btn-light-warning"
+              [routerLink]="['/sales-invoice/details', rowData.Id]"
+            >
+              <i class="fa fa-solid fa-eye fs-3"></i>
+            </a>
             <button
               *ngxPermissionsOnly="'SaleInvoice-Print'"
-              class="btn btn-icon btn-info"
+              class="btn btn-icon btn-info mx-3"
               (click)="downloadPdf(rowData.Id)"
             >
               <i class="fa fa-solid fa-file-invoice fs-2"></i>
             </button>
             <button
               *ngxPermissionsOnly="'SaleInvoice-Delete'"
-              class="btn btn-icon btn-danger ms-3"
+              class="btn btn-icon btn-danger"
               (click)="delete(rowData)"
             >
               <i class="fas fa-trash"></i>

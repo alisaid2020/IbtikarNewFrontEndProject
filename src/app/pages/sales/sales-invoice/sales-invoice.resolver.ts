@@ -5,7 +5,7 @@ import { PAGE_SIZE } from '@constants/general.constant';
 import { DataService } from '@services/data.service';
 import { firstValueFrom } from 'rxjs';
 
-export const salesInvoiceResolver: ResolveFn<boolean> = (route, state) => {
+export const salesInvoiceResolver: ResolveFn<any> = () => {
   let dataService = inject(DataService);
   return firstValueFrom(
     dataService.get(`${salesInvoicesApi}`, {
@@ -15,4 +15,9 @@ export const salesInvoiceResolver: ResolveFn<boolean> = (route, state) => {
       },
     })
   );
+};
+
+export const salesInvoiceDetailsResolver: ResolveFn<any> = (route) => {
+  let dataService = inject(DataService);
+  return firstValueFrom(dataService.get(`${salesInvoicesApi}`));
 };

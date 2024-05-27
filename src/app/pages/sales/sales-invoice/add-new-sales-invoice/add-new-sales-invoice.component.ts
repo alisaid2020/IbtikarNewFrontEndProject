@@ -19,7 +19,7 @@ import { ShiftDetailsDrawerComponent } from '../shift-details-drawer/shift-detai
 import { ToastService } from '@services/toast-service';
 import { Toast } from '@enums/toast.enum';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-new-sales-invoice',
@@ -82,6 +82,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   router = inject(Router);
+  route = inject(ActivatedRoute);
   fb = inject(FormBuilder);
   toast = inject(ToastService);
   renderer = inject(Renderer2);
@@ -95,6 +96,13 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.isRoundToTwoNumbers = this.helpers.salesSettings()?.RoundToTwoNumbers;
+    firstValueFrom(
+      this.route.data.pipe(
+        tap((res) => {
+          console.log(res.saleInvoice);
+        })
+      )
+    );
     this.initForm();
     this.salesInvoiceInit();
     this.checkIfUserShiftOpened();

@@ -325,11 +325,11 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     if (ev.value === 5) {
       this.defaultSelected = [
         { field: 'SupplierId', header: 'SupplierId' },
+        { field: 'SaleInvoiceId', header: 'SaleInvoiceId' },
         ...commonDefaultSelected,
       ];
     }
     this._selectedColumns = this.defaultSelected;
-    // { field: 'BuyInvoiceId', header: 'Sa.Invoices' },
   }
 
   selectBankInLine(ev: any, i: any) {

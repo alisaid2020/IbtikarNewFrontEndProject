@@ -2,7 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SalesInvoiceListComponent } from './sales-invoice-list/sales-invoice-list.component';
 import { AddNewSalesInvoiceComponent } from './add-new-sales-invoice/add-new-sales-invoice.component';
-import { salesInvoiceResolver } from './sales-invoice.resolver';
+import {
+  salesInvoiceDetailsResolver,
+  salesInvoiceResolver,
+} from './sales-invoice.resolver';
 
 const routes: Routes = [
   {
@@ -19,6 +22,9 @@ const routes: Routes = [
   {
     path: ':id',
     component: AddNewSalesInvoiceComponent,
+    resolve: {
+      saleInvoice: salesInvoiceDetailsResolver,
+    },
   },
 ];
 
