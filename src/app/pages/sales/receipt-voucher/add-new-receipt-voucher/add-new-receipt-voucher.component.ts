@@ -1,12 +1,20 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { apiUrl } from '@constants/api.constant';
+import { E_USER_ROLE, USER_PROFILE } from '@constants/general.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '@services/data.service';
+import { HelpersService } from '@services/helpers.service';
 import { TableService } from '@services/table.service';
 import { ToastService } from '@services/toast-service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription, firstValueFrom, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  firstValueFrom,
+  tap,
+} from 'rxjs';
 
 @Component({
   selector: 'app-add-new-receipt-voucher',
@@ -27,6 +35,8 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   subs: Subscription[] = [];
   _selectedColumns: any[] = [];
   receiptVoucherForm: FormGroup;
+  isSalesPerson: Boolean;
+  E_USER_ROLE = E_USER_ROLE;
   tableStorage = 'receipt-voucher-form-table';
   defaultStorage = 'receipt-voucher-form-default-selected';
   clientsApi = `${apiUrl}/XtraAndPos_GeneralLookups/CustomerByTerm`;
@@ -69,6 +79,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   toast = inject(ToastService);
   translate = inject(TranslateService);
   tableService = inject(TableService);
+  helpers = inject(HelpersService);
 
   async ngOnInit() {
     this.getTreasuries();
@@ -175,6 +186,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
 
   initForm() {
     let id;
+    let docNo;
     let docDate = new Date();
     let nameAr = 'سند قبض';
     let notes;
@@ -186,20 +198,19 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     let docNoManual;
     let isMobile = false;
     let exchangeRate = 1;
-    let currencyId;
+    let curencyId;
     let mainBank;
-    // let docNo : not in the code but in swagger what its value
-    // let currencyId : not in the swagger but in the view ,will add to api or not
 
     this.receiptVoucherForm = this.fb.group({
       id: [id],
+      docNo: [docNo],
       nameAr: [nameAr],
       docDate: [docDate],
       typeofpayment: [typeofpayment],
       treasuryId: [treasuryId],
       treasuryType: [treasuryType],
       ccenter: [ccenter],
-      currencyId: [currencyId],
+      curencyId: [curencyId],
       exchangeRate: [exchangeRate],
       notes: [notes],
       equivalentPrice: [equivalentPrice],
@@ -271,14 +282,11 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   getInvoicesByClientId(id: number): void {
     firstValueFrom(
       this.dataService
-        .get(`${apiUrl}/ExtraAndPOS_SaleInvoice/GetInvoicesByClientIs`)
+        .get(`${apiUrl}/ExtraAndPOS_SaleInvoice/GetInvoicesByClientIs?id=${id}`)
         .pipe(
           tap((res) => {
             if (res?.IsSuccess) {
               this.clientInvoices = res.Obj;
-              this.clientInvoices = this.clientInvoices.filter(
-                (res) => res.ClientId == id
-              );
             }
           })
         )
@@ -415,14 +423,29 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   getInvoicesBySupplierId(id: number): void {
     firstValueFrom(
       this.dataService
-        .get(`${apiUrl}/ExtraAndPOS_BuyInvoice/GetInvoicesBySuppliers`)
+        .get(`${apiUrl}/ExtraAndPOS_BuyInvoice/GetInvoicesBySuppliers?id=${id}`)
         .pipe(
           tap((res) => {
             if (res?.IsSuccess) {
               this.supplierInvoices = res?.Obj;
-              this.supplierInvoices = this.supplierInvoices.filter(
-                (res) => res.SupplierId == id
-              );
+            }
+          })
+        )
+    );
+  }
+
+  CheckIsSalesPerson(): void {
+    let employeeId =
+      this.helpers!.getItemFromLocalStorage('USER_PROFILE')?.EmployeeId;
+    firstValueFrom(
+      this.dataService
+        .get(
+          `${apiUrl}/XtraAndPOS_EmployeeSetting/GetEmployeeInfo?id=${employeeId}`
+        )
+        .pipe(
+          tap((res) => {
+            if (res?.IsSuccess) {
+              this.isSalesPerson = res.Obj.IsSalesRepresentative;
             }
           })
         )

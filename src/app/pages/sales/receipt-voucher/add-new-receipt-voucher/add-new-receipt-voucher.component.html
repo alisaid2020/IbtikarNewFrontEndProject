@@ -23,10 +23,12 @@
       <div class="row g-5">
         <div class="col-md-6">
           <app-ebtikar-input
+            class="disabled-form"
             [type]="'number'"
             [placeholder]="'Serial'"
             [label]="'Serial'"
-            [control]="receiptVoucherForm.get('id')!"
+            [readonly]="true"
+            [control]="receiptVoucherForm.get('docNo')!"
           ></app-ebtikar-input>
         </div>
         <div class="col-md-6">
@@ -47,6 +49,7 @@
         </div>
         <div class="col-md-6">
           <app-ebtikar-select
+            [class.disabled-form]="isSalesPerson"
             [hasStaticValues]="true"
             [items]="typeOfDealing"
             [placeholder]="'Type of dealing'"
@@ -74,6 +77,9 @@
           *ngIf="receiptVoucherForm.get('typeofpayment')!.value === 2"
         >
           <app-ebtikar-select
+            [class.disabled-form]="
+              helpers.getItemFromLocalStorage(E_USER_ROLE) !== 'Admin'
+            "
             [items]="treasuries"
             [hasMultipleLabels]="true"
             [placeholder]="'safe'"
@@ -106,19 +112,22 @@
         </div>
         <div class="col-md-6">
           <app-ebtikar-select
+            [class.disabled-form]="
+              helpers.getItemFromLocalStorage(E_USER_ROLE) !== 'Admin'
+            "
             [items]="currencies"
             [hasMultipleLabels]="true"
             [placeholder]="'currency'"
             [label]="'currency'"
             [bindValue]="'Id'"
-            [control]="receiptVoucherForm.get('currencyId')!"
+            [control]="receiptVoucherForm.get('curencyId')!"
           ></app-ebtikar-select>
         </div>
         <div
           class="col-md-6"
           *ngIf="
-            receiptVoucherForm.get('currencyId')!.value &&
-            receiptVoucherForm.get('currencyId')!.value !== 1
+            receiptVoucherForm.get('curencyId')!.value &&
+            receiptVoucherForm.get('curencyId')!.value !== 1
           "
         >
           <app-ebtikar-input

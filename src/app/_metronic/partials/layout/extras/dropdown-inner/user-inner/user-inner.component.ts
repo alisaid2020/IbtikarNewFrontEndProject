@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ACCESS_TOKEN, ADMIN_PROFILE } from '@constants/general.constant';
+import { ACCESS_TOKEN, USER_PROFILE } from '@constants/general.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { HelpersService } from '@services/helpers.service';
 
@@ -22,9 +22,8 @@ export class UserInnerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.helpers.checkItemFromLocalStorage(ADMIN_PROFILE)) {
-      this.userProfile =
-        this.helpers.getItemFromLocalStorage(ADMIN_PROFILE).Obj;
+    if (this.helpers.checkItemFromLocalStorage(USER_PROFILE)) {
+      this.userProfile = this.helpers.getItemFromLocalStorage(USER_PROFILE);
     }
   }
 
