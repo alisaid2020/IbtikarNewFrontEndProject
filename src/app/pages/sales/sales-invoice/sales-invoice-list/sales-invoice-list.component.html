@@ -60,7 +60,6 @@
       [columns]="_selectedColumns"
       [stateKey]="tableStorage"
       columnResizeMode="expand"
-      responsiveLayout="stack"
     >
       <ng-template pTemplate="caption">
         <div class="d-flex">
@@ -94,7 +93,7 @@
             {{ column.header | translate }}
           </th>
           }
-          <th class="bg-primary fw-bolder text-white fs-5 min-w-150px">
+          <th class="bg-primary fw-bolder text-white fs-5 min-w-200px">
             {{ "actions" | translate }}
           </th>
         </tr>
