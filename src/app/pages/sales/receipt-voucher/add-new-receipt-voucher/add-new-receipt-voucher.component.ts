@@ -181,7 +181,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     let treasuryType = 2;
     let treasuryId;
     let equivalentPrice = 0;
-    let typeofpayment;
+    let typeofpayment = 2;
     let ccenter;
     let docNoManual;
     let isMobile = false;

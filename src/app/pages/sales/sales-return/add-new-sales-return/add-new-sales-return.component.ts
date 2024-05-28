@@ -187,7 +187,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     let saleInvoiceDetailId;
     let correctQty = 0;
     let productBarcode;
-    let totalPriceAfterVat = 0;
+    let TotalPriceAfterVat = 0;
     let vatAmount = 0;
     let uniteId;
     let docDate;
@@ -204,7 +204,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
       saleInvoiceDetailId = value.Id;
       correctQty = value.Quantity;
       productBarcode = value.ProductBarcode;
-      totalPriceAfterVat = value.TotalPriceAfterVat;
+      TotalPriceAfterVat = value.TotalPriceAfterVat;
       vatAmount = value.VatAmount;
       uniteId = value.UniteId;
       isProductFree = value.IsProductFree;
@@ -220,7 +220,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
       correctQty: [correctQty],
       price: [price],
       discount: [discount],
-      totalPriceAfterVat: [totalPriceAfterVat],
+      TotalPriceAfterVat: [TotalPriceAfterVat],
       docDate: [docDate],
       productBarcode: [productBarcode],
       vatAmount: [vatAmount],
@@ -341,7 +341,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     let discount: any = form.get('discount')?.value;
     let vat: any = form.get('vat')?.value;
     let allQuantity = form.get('correctQty')?.value;
-    let totalPriceAfterVat: any = form.get('totalPriceAfterVat')?.value;
+    let totalPriceAfterVat: any = form.get('TotalPriceAfterVat')?.value;
     let vatAmount: any;
 
     if (!this.isRoundToTwoNumbers) {
@@ -360,7 +360,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
       totalPriceAfterVat = Math.round((part2 + vatAmount) * 100) / 100;
     }
     form.patchValue({
-      totalPriceAfterVat: totalPriceAfterVat,
+      TotalPriceAfterVat: totalPriceAfterVat,
       vatAmount: vatAmount,
     });
     this.getTotalsOfInvoice();
@@ -368,7 +368,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
 
   getTotalsOfInvoice(): void {
     let totalNet = this.linesArray.controls
-      .map((line: any) => +line.value?.totalPriceAfterVat)
+      .map((line: any) => +line.value?.TotalPriceAfterVat)
       .reduce((acc, curr) => acc + curr, 0);
 
     let totalVat = this.linesArray.controls
@@ -441,7 +441,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     this.spinner.show();
     let formValue = {
       ...this.salesInvoiceForm.value,
-      saleInvoiceDetails: this.helpers.removeEmptyLines(this.linesArray),
+      saleInvoiceReturnDetails: this.helpers.removeEmptyLines(this.linesArray),
     };
     if (
       this.helpers.getItemFromLocalStorage(this.userRole) === 'Admin' ||
