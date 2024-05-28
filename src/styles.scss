@@ -391,6 +391,10 @@ ng-select.ng-select-single .ng-select-container .ng-value-container .ng-value {
   border: none;
 }
 
+.p-datatable-tbody > tr > td {
+  justify-content: unset !important;
+}
+
 .overlay-box {
   position: fixed;
   top: 0;

@@ -27,6 +27,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   shiftData: any;
+  saleInvoice: any;
   items: any[] = [];
   isRoundToTwoNumbers: any;
   invoiceInitObj: any;
@@ -95,16 +96,19 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   offcanvasService = inject(NgbOffcanvas);
 
   async ngOnInit() {
+    this.salesInvoiceInit();
     this.isRoundToTwoNumbers = this.helpers.salesSettings()?.RoundToTwoNumbers;
     firstValueFrom(
       this.route.data.pipe(
+        map((res) => res.saleInvoice),
         tap((res) => {
-          console.log(res.saleInvoice);
+          if (res) {
+            this.saleInvoice = res?.Obj;
+          }
         })
       )
     );
     this.initForm();
-    this.salesInvoiceInit();
     this.checkIfUserShiftOpened();
     this.getShiftInfo();
     await this.initTableColumns();
@@ -136,7 +140,25 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let cash = 0;
     let visa = 0;
     let debt = 0;
-
+    if (this.saleInvoice) {
+      clientId = { Id: this.saleInvoice.inv?.ClientId };
+      docDate = new Date(this.saleInvoice.inv?.DocDate);
+      notes = this.saleInvoice.inv?.Notes;
+      bankId = { Id: this.saleInvoice.inv?.BankId };
+      isPendingPayment = this.saleInvoice.inv?.IsPendingPayment;
+      exchangePrice = this.saleInvoice.inv?.ExchangePrice;
+      clientType = this.saleInvoice.inv?.ClientType;
+      docType = this.saleInvoice.inv.DocType;
+      isMobile = this.saleInvoice.inv.IsMobile;
+      visaTrxType = this.saleInvoice.inv.VisaTrxType;
+      visaTrxNo = this.saleInvoice.inv.VisaTrxNo;
+      totalDisc = this.saleInvoice.inv.TotalDisc;
+      totalVat = this.saleInvoice.inv.TotalInvoiceVatAmount;
+      totalNet = this.saleInvoice.inv.TotalInvoiceAfterVat;
+      cash = this.saleInvoice.inv.Cash;
+      visa = this.saleInvoice.inv.Visa;
+      debt = this.saleInvoice.inv.Debt;
+    }
     this.salesInvoiceForm = this.fb.group({
       clientId: [clientId, [Validators.required]],
       paymentType: [paymentType],
@@ -152,7 +174,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       exchangePrice: [exchangePrice],
       clientType: [clientType],
       docType: [docType],
-      storeId: [storeId],
+      storeId: [storeId, [Validators.required]],
       isMobile: [isMobile],
       visaTrxType: [visaTrxType],
       visaTrxNo: [visaTrxNo],
@@ -160,6 +182,36 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       totalVat: [totalVat],
       totalNet: [totalNet],
     });
+    if (this.saleInvoice?.inv?.SaleInvoiceDetails?.length) {
+      this.saleInvoice.inv.SaleInvoiceDetails.forEach(
+        (line: any, i: number) => {
+          this.items[i] = [
+            {
+              ItemId: this.saleInvoice.ItemList[i].Id,
+              NameAr: this.saleInvoice.ItemList[i]?.NameAr,
+              NameEn: this.saleInvoice.ItemList[i]?.NameAr,
+            },
+          ];
+          let unitObj = this.saleInvoice.ItemList[i].ItemUnits.find(
+            (el: any) => el.UnitId === line?.UniteId
+          );
+          this.units[i] = [
+            { unitId: unitObj?.UnitId, name: unitObj?.UnitName },
+          ];
+          let newLine = {
+            ...line,
+            ItemID: {
+              ItemId: this.saleInvoice.ItemList[i].Id,
+            },
+            ProductBarcode: { Barcode: line.ProductBarcode },
+          };
+          this.addNewLine(newLine, i);
+          setTimeout(() => {
+            this.getBalance({ Id: this.saleInvoice.ItemUnitList[i].Id }, i);
+          }, 0);
+        }
+      );
+    }
   }
 
   get linesArray(): FormArray {
@@ -256,16 +308,18 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
               this.invoiceInitObj = res.Obj;
               this.salesInvoiceForm.patchValue({
                 treasuryId: this.invoiceInitObj.empTreasury,
-                storeId:
-                  this.invoiceInitObj?.empStore > 0
-                    ? this.invoiceInitObj.empStore
-                    : null,
               });
-              if (this.invoiceInitObj.isSalesPerson) {
-                this.salesInvoiceForm.get('paymentType')?.setValue(2);
-              }
-              if (!this.invoiceInitObj.isSalesPerson) {
-                this.salesInvoiceForm.get('paymentType')?.setValue(1);
+              if (!this.saleInvoice) {
+                let matchingStore = this.invoiceInitObj.stores.find(
+                  (el: any) => el.Id === this.invoiceInitObj?.empStore
+                );
+                this.salesInvoiceForm.patchValue({
+                  paymentType: this.invoiceInitObj.isSalesPerson ? 2 : 1,
+                  storeId:
+                    this.invoiceInitObj?.empStore > 0 && matchingStore
+                      ? this.invoiceInitObj.empStore
+                      : null,
+                });
               }
             }
           })
@@ -310,6 +364,13 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       });
       return;
     }
+    if (!this.salesInvoiceForm.get('storeId')!.value) {
+      this.toast.show('selectStoreFirst', {
+        classname: Toast.error,
+      });
+      form.patchValue({ productBarcode: null });
+      return;
+    }
     this.items[i] = [{ ...ev, NameAr: ev.Item?.NameAr }];
     this.units[i] = [{ unitId: ev?.UnitId, name: ev?.UnitName }];
     this.linesArray.controls[i].patchValue({
@@ -345,14 +406,21 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   }
 
   selectedUnit(ev: any, i: any): void {
-    if (ev) {
-      let form = this.linesArray.controls[i];
+    let form = this.linesArray.controls[i];
+    if (!this.salesInvoiceForm.get('storeId')!.value) {
+      this.toast.show('selectStoreFirst', {
+        classname: Toast.error,
+      });
+      form.patchValue({ itemID: null });
+      return;
+    }
+    if (ev && !form.get('productBarcode')!.value) {
       this.barcodeItems[i] = [ev];
       form.patchValue({
         vat: ev?.Vat,
         productId: ev?.Id,
         quantity: 1,
-        productBarcode: ev?.Barcode,
+        productBarcode: { Barcode: ev?.Barcode },
       });
       this.getBalance(ev, i);
     }
@@ -372,7 +440,9 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
           tap((res) => {
             if (res?.IsSuccess) {
               this.linesArray.controls[i].patchValue({ balance: res.Obj });
-              this.getPrice(ev, i);
+              if (!this.saleInvoice) {
+                this.getPrice(ev, i);
+              }
             }
           })
         )
@@ -448,7 +518,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let itemUnites = this.itemPriceList[i]?.offers?.ItemUnites;
     let freeItemsCount = Math.floor(quantity / offers?.ItemQty);
 
-    if (offers.ItemDiscount > 0) {
+    if (offers?.ItemDiscount > 0) {
       if (quantity >= this.itemPriceList[i]?.offers.ItemQty) {
         let discountValue = this.helpers.convertDiscountToValue(
           form,

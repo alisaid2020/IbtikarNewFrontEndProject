@@ -171,5 +171,6 @@
   "stores": "Stores",
   "shiftClosedSuccessfully": "Shift Closed Successfully",
   "receiptVouchers": "Receipt Vouchers",
-  "TreasuryType": "Destination"
+  "TreasuryType": "Destination",
+  "selectStoreFirst": "Choose a store first"
 }

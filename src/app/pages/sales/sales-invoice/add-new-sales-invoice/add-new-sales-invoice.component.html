@@ -13,7 +13,7 @@
   </div>
   <div class="page-title d-flex flex-column justify-content-center flex-wrap">
     <h1 class="page-heading d-flex text-dark fw-bold fs-2 my-0">
-      {{ "addNew" | translate }}
+      {{ saleInvoice ? ("details" | translate) : ("addNew" | translate) }}
     </h1>
   </div>
   <button
@@ -32,6 +32,7 @@
         <div class="col-md-6">
           <app-ebtikar-select
             [apiUrl]="clientsApi"
+            [customData]="invoiceInitObj?.clients"
             [hasMultipleLabels]="true"
             [placeholder]="'clientName'"
             [label]="'clientName'"
@@ -43,6 +44,7 @@
         <div class="col-md-6">
           <app-ebtikar-select
             [hasStaticValues]="true"
+            [uid]="saleInvoice?.inv?.PaymentType"
             [items]="paymentTypes"
             [placeholder]="'paymentType'"
             [label]="'paymentType'"
@@ -55,6 +57,7 @@
         <div class="col-md-6">
           <app-ebtikar-select
             [items]="invoiceInitObj?.stores"
+            [uid]="saleInvoice?.inv?.StoreId"
             [hasMultipleLabels]="true"
             [placeholder]="'storeName'"
             [label]="'stores'"
@@ -411,7 +414,10 @@
         </div>
       </div>
     </div>
-    <div class="card-footer d-flex align-items-activity py-6 px-9">
+    <div
+      *ngIf="!saleInvoice"
+      class="card-footer d-flex align-items-activity py-6 px-9"
+    >
       <div class="d-flex gap-3 ms-auto">
         <app-submit-button
           [isDisabled]="salesInvoiceForm.invalid"

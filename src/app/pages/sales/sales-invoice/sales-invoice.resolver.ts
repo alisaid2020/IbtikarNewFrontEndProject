@@ -20,10 +20,10 @@ export const salesInvoiceResolver: ResolveFn<any> = () => {
 export const salesInvoiceDetailsResolver: ResolveFn<any> = (route) => {
   let dataService = inject(DataService);
   return firstValueFrom(
-    dataService.post(`${apiUrl}/ExtraAndPOS_SaleInvoice/GetSaleInvoicesById`, {
-      params: {
-        id: route.params.id,
-      },
-    })
+    dataService.post(
+      `${apiUrl}/ExtraAndPOS_SaleInvoice/GetSaleInvoicesById?id=${+route.params
+        .id}`,
+      null
+    )
   );
 };

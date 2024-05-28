@@ -60,6 +60,7 @@
       [columns]="_selectedColumns"
       [stateKey]="tableStorage"
       columnResizeMode="expand"
+      responsiveLayout="stack"
     >
       <ng-template pTemplate="caption">
         <div class="d-flex">
@@ -108,7 +109,7 @@
               class="btn btn-icon btn-light-warning"
               [routerLink]="['/sales-invoice', rowData.Id]"
             >
-              <i class="fa fa-solid fa-eye fs-3"></i>
+              <i class="fa fa-solid fa-eye fs-4"></i>
             </a>
             <button
               *ngxPermissionsOnly="'SaleInvoice-Print'"
