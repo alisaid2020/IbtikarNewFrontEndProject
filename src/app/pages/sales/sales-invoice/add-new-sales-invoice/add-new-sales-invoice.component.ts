@@ -392,6 +392,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         uniteId: null,
         productBarcode: null,
       });
+      form.reset();
       return;
     }
     ev?.ItemUnits?.forEach((el: any) => {
@@ -411,7 +412,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       this.toast.show('selectStoreFirst', {
         classname: Toast.error,
       });
-      form.patchValue({ itemID: null });
+      form.patchValue({ itemID: null, uniteId: null });
       return;
     }
     if (ev && !form.get('productBarcode')!.value) {
@@ -420,7 +421,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         vat: ev?.Vat,
         productId: ev?.Id,
         quantity: 1,
-        productBarcode: { Barcode: ev?.Barcode },
+        productBarcode: ev?.Barcode,
       });
       this.getBalance(ev, i);
     }
