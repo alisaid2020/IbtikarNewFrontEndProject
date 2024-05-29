@@ -2,19 +2,14 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { apiUrl } from '@constants/api.constant';
 import { E_USER_ROLE, USER_PROFILE } from '@constants/general.constant';
+import { Toast } from '@enums/toast.enum';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '@services/data.service';
 import { HelpersService } from '@services/helpers.service';
 import { TableService } from '@services/table.service';
 import { ToastService } from '@services/toast-service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import {
-  BehaviorSubject,
-  Observable,
-  Subscription,
-  firstValueFrom,
-  tap,
-} from 'rxjs';
+import { Subscription, firstValueFrom, tap } from 'rxjs';
 
 @Component({
   selector: 'app-add-new-receipt-voucher',
@@ -46,17 +41,17 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     { value: 2, name: 'safe' },
   ];
   treasuryTypes = [
-    { value: 1, name: 'شجره الحسابات' },
-    { value: 2, name: 'العملاء' },
-    { value: 3, name: ' البنك' },
-    { value: 4, name: 'خزينه اخري ' },
-    { value: 5, name: 'الموردين' },
+    { value: 1, name: 'accountsTree' },
+    { value: 2, name: 'clients' },
+    { value: 3, name: 'bank' },
+    { value: 4, name: 'anotherSafe' },
+    { value: 5, name: 'suppliers' },
   ];
   defaultSelected = [
-    { field: 'clientId', header: 'clientId' },
-    { field: 'SaleInvoiceId', header: 'SaleInvoiceId' },
-    { field: 'Amount', header: 'Amount' },
-    { field: 'costCenterId', header: 'costCenterId' },
+    { field: 'clientId', header: 'clients' },
+    { field: 'SaleInvoiceId', header: 'invoices' },
+    { field: 'Amount', header: 'amount' },
+    { field: 'costCenterId', header: 'costCenter' },
     { field: 'Notes', header: 'notes' },
   ];
   invoiceLineKeys = [
@@ -309,33 +304,33 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     );
     if (ev.value === 1) {
       this.defaultSelected = [
-        { field: 'AccTreeId', header: 'AccTreeId' },
+        { field: 'accounts', header: 'accounts' },
         ...commonDefaultSelected,
       ];
     }
     if (ev.value === 2) {
       this.defaultSelected = [
-        { field: 'clientId', header: 'clientId' },
-        { field: 'SaleInvoiceId', header: 'SaleInvoiceId' },
+        { field: 'clients', header: 'clients' },
+        { field: 'invoices', header: 'invoices' },
         ...commonDefaultSelected,
       ];
     }
     if (ev.value === 3) {
       this.defaultSelected = [
-        { field: 'BankId', header: 'BankId' },
+        { field: 'banks', header: 'banks' },
         ...commonDefaultSelected,
       ];
     }
     if (ev.value === 4) {
       this.defaultSelected = [
-        { field: 'TreasuryId', header: 'TreasuryId' },
+        { field: 'safe', header: 'safe' },
         ...commonDefaultSelected,
       ];
     }
     if (ev.value === 5) {
       this.defaultSelected = [
-        { field: 'SupplierId', header: 'SupplierId' },
-        { field: 'SaleInvoiceId', header: 'SaleInvoiceId' },
+        { field: 'suppliers', header: 'suppliers' },
+        { field: 'invoices', header: 'invoices' },
         ...commonDefaultSelected,
       ];
     }
@@ -446,6 +441,26 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           tap((res) => {
             if (res?.IsSuccess) {
               this.isSalesPerson = res.Obj.IsSalesRepresentative;
+            }
+          })
+        )
+    );
+  }
+
+  submit(): void {
+    this.spinner.show();
+    firstValueFrom(
+      this.dataService
+        .post(
+          `${apiUrl}/XtraAndPos_TreasuryManagement/CreateTreasury`,
+          this.receiptVoucherForm.value
+        )
+        .pipe(
+          tap((res) => {
+            if (res.IsSuccess) {
+              this.spinner.hide();
+              this.toast.show(Toast.added, { classname: Toast.success });
+              console.log(res);
             }
           })
         )
