@@ -191,5 +191,6 @@
   "supplier": "Supplier",
   "account": "Account",
   "accounts": "Accounts",
-  "banks": "Banks"
+  "banks": "Banks",
+  "addRow": "Add Row"
 }

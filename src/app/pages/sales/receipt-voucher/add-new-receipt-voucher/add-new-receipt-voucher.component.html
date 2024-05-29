@@ -49,7 +49,10 @@
         </div>
         <div class="col-md-6">
           <app-ebtikar-select
-            [class.disabled-form]="isSalesPerson"
+            [class.disabled-form]="
+              helpers.getItemFromLocalStorage(USER_PROFILE)
+                ?.IsSalesRepresentative
+            "
             [hasStaticValues]="true"
             [items]="typeOfDealing"
             [placeholder]="'dealingType'"
@@ -164,6 +167,15 @@
           [stateKey]="tableStorage"
           columnResizeMode="expand"
         >
+          <ng-template pTemplate="caption">
+            <button
+              type="button"
+              class="btn btn-warning"
+              (click)="addNewLine()"
+            >
+              {{ "addRow" | translate }}
+            </button>
+          </ng-template>
           <ng-template pTemplate="header" let-columns>
             <tr>
               @for (column of columns; track $index) {
@@ -301,6 +313,7 @@
                       type="'number'"
                       [placeholder]="'amount'"
                       [control]="linesArray.controls[i].get('amount')!"
+                      (emitChanged)="changeAmount()"
                     ></app-ebtikar-input>
                   </td>
                   <td

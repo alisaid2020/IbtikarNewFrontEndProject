@@ -30,8 +30,8 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   subs: Subscription[] = [];
   _selectedColumns: any[] = [];
   receiptVoucherForm: FormGroup;
-  isSalesPerson: Boolean;
   E_USER_ROLE = E_USER_ROLE;
+  USER_PROFILE = USER_PROFILE;
   tableStorage = 'receipt-voucher-form-table';
   defaultStorage = 'receipt-voucher-form-default-selected';
   clientsApi = `${apiUrl}/XtraAndPos_GeneralLookups/CustomerByTerm`;
@@ -77,14 +77,15 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   helpers = inject(HelpersService);
 
   async ngOnInit() {
+    this.initForm();
     this.getTreasuries();
+    this.getEmployeeTreasury();
     this.getBanks();
     this.getCostCenters();
     this.getCurrencies();
     this.getBanksInLine();
     this.getTreasuriesInLine();
     this.getSuppliers();
-    this.initForm();
     await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
@@ -147,6 +148,12 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           tap((res) => {
             if (res?.IsSuccess) {
               this.currencies = res.Obj.Currencies;
+              let defaultCurrency = this.currencies.find(
+                (el) => el.IsDefault == true
+              );
+              this.receiptVoucherForm.patchValue({
+                curencyId: defaultCurrency.Id,
+              });
             }
           })
         )
@@ -429,22 +436,27 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     );
   }
 
-  CheckIsSalesPerson(): void {
+  getEmployeeTreasury(): void {
     let employeeId =
-      this.helpers!.getItemFromLocalStorage('USER_PROFILE')?.EmployeeId;
+      this.helpers.getItemFromLocalStorage(USER_PROFILE)?.EmployeeId;
     firstValueFrom(
       this.dataService
         .get(
-          `${apiUrl}/XtraAndPOS_EmployeeSetting/GetEmployeeInfo?id=${employeeId}`
+          `${apiUrl}/ExtraAndPOS_Employee/GetEmployeeTreasury?id=${employeeId}`
         )
         .pipe(
           tap((res) => {
-            if (res?.IsSuccess) {
-              this.isSalesPerson = res.Obj.IsSalesRepresentative;
-            }
+            this.receiptVoucherForm.patchValue({ treasuryId: res });
           })
         )
     );
+  }
+
+  changeAmount(): void {
+    let equivalentPrice = this.linesArray.controls
+      .map((line: any) => +line.value?.amount)
+      .reduce((acc, curr) => acc + curr, 0);
+    this.receiptVoucherForm.patchValue({ equivalentPrice });
   }
 
   submit(): void {
@@ -458,6 +470,8 @@ export class AddNewReceiptVoucherComponent implements OnInit {
         .pipe(
           tap((res) => {
             if (res.IsSuccess) {
+              console.log(res);
+
               this.spinner.hide();
               this.toast.show(Toast.added, { classname: Toast.success });
               console.log(res);
