@@ -97,7 +97,6 @@ export class AddNewReceiptVoucherComponent implements OnInit {
       )
     );
     this.getTreasuryTransactionInit();
-    this.getEmployeeTreasury();
     await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
@@ -127,6 +126,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
                 this.receiptVoucherForm.patchValue({
                   curencyId: this.defaultCurrency.Id,
                   docNo: res.Obj.docNo,
+                  treasuryId: res.Obj.employee.TreasuryId,
                 });
               } else {
                 this.defaultCurrency = this.currencies.find(
@@ -454,25 +454,6 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           tap((res) => {
             if (res?.IsSuccess) {
               this.supplierInvoices = res?.Obj;
-            }
-          })
-        )
-    );
-  }
-
-  getEmployeeTreasury(): void {
-    let employeeId =
-      this.helpers.getItemFromLocalStorage(USER_PROFILE)?.EmployeeId;
-    firstValueFrom(
-      this.dataService
-        .get(
-          `${apiUrl}/ExtraAndPOS_Employee/GetEmployeeTreasury?id=${employeeId}`
-        )
-        .pipe(
-          tap((res) => {
-            this.employeeTreasury = res;
-            if (!this.receiptVoucher) {
-              this.receiptVoucherForm.patchValue({ treasuryId: res });
             }
           })
         )
