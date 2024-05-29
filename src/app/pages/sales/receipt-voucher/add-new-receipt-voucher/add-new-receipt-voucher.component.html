@@ -60,6 +60,7 @@
             [bindValue]="'value'"
             [bindLabel]="'name'"
             [control]="receiptVoucherForm.get('typeofpayment')!"
+            (emitChanged)="changePaymentType($event)"
           ></app-ebtikar-select>
         </div>
         <div
@@ -100,7 +101,7 @@
             [bindValue]="'value'"
             [bindLabel]="'name'"
             [control]="receiptVoucherForm.get('treasuryType')!"
-            (emitChanged)="selectTreasuryType($event)"
+            (emitChanged)="changeTreasuryType($event)"
           ></app-ebtikar-select>
         </div>
         <div class="col-md-6">
@@ -124,13 +125,14 @@
             [label]="'currency'"
             [bindValue]="'Id'"
             [control]="receiptVoucherForm.get('curencyId')!"
+            (emitChanged)="changeCurrency($event)"
           ></app-ebtikar-select>
         </div>
         <div
           class="col-md-6"
           *ngIf="
             receiptVoucherForm.get('curencyId')!.value &&
-            receiptVoucherForm.get('curencyId')!.value !== 1
+            !defaultCurrency?.IsDefault
           "
         >
           <app-ebtikar-input
@@ -209,6 +211,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
+                      [customData]="clientsData[i]"
                       [apiUrl]="clientsApi"
                       [hasMultipleLabels]="true"
                       [placeholder]="'clientName'"
@@ -239,6 +242,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
+                      [customData]="accTreeAccountsData[i]"
                       [apiUrl]="accountsApi"
                       [hasMultipleLabels]="true"
                       [placeholder]="'account'"
@@ -325,6 +329,7 @@
                       [items]="costCenters"
                       [hasMultipleLabels]="true"
                       [placeholder]="'costCenter'"
+                      [bindValue]="'Id'"
                       [control]="linesArray.controls[i].get('costCenterId')!"
                     ></app-ebtikar-select>
                   </td>

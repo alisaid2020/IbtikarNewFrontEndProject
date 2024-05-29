@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { apiUrl } from '@constants/api.constant';
 import { E_USER_ROLE, USER_PROFILE } from '@constants/general.constant';
 import { Toast } from '@enums/toast.enum';
@@ -9,7 +10,7 @@ import { HelpersService } from '@services/helpers.service';
 import { TableService } from '@services/table.service';
 import { ToastService } from '@services/toast-service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription, firstValueFrom, tap } from 'rxjs';
+import { Subscription, firstValueFrom, map, tap } from 'rxjs';
 
 @Component({
   selector: 'app-add-new-receipt-voucher',
@@ -17,21 +18,26 @@ import { Subscription, firstValueFrom, tap } from 'rxjs';
 })
 export class AddNewReceiptVoucherComponent implements OnInit {
   banks: any[];
-  banksInLine: any[];
-  treasuries: any[];
-  treasuriesInLine: any[];
-  currencies: any[];
-  costCenters: any[];
-  clientInvoices: any[];
-  supplierInvoices: any[];
   suppliers: any[];
+  currencies: any[];
+  treasuries: any[];
+  banksInLine: any[];
+  costCenters: any[];
+  receiptVoucher: any;
   changedColumns: any;
+  defaultCurrency: any;
+  clientInvoices: any[];
+  employeeTreasury: any;
   allColumns: any[] = [];
+  clientsData: any[] = [];
+  treasuriesInLine: any[];
+  supplierInvoices: any[];
   subs: Subscription[] = [];
-  _selectedColumns: any[] = [];
-  receiptVoucherForm: FormGroup;
   E_USER_ROLE = E_USER_ROLE;
   USER_PROFILE = USER_PROFILE;
+  _selectedColumns: any[] = [];
+  receiptVoucherForm: FormGroup;
+  accTreeAccountsData: any[] = [];
   tableStorage = 'receipt-voucher-form-table';
   defaultStorage = 'receipt-voucher-form-default-selected';
   clientsApi = `${apiUrl}/XtraAndPos_GeneralLookups/CustomerByTerm`;
@@ -62,12 +68,6 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     'Notes',
   ];
 
-  set selectedColumns(val: any[]) {
-    this._selectedColumns = this.defaultSelected.filter((col: any) =>
-      val.includes(col)
-    );
-  }
-
   fb = inject(FormBuilder);
   dataService = inject(DataService);
   spinner = inject(NgxSpinnerService);
@@ -75,9 +75,27 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   translate = inject(TranslateService);
   tableService = inject(TableService);
   helpers = inject(HelpersService);
+  route = inject(ActivatedRoute);
+  router = inject(Router);
 
   async ngOnInit() {
-    this.initForm();
+    firstValueFrom(
+      this.route.data.pipe(
+        map((res) => res.receiptVoucher),
+        tap((res) => {
+          if (res?.IsSuccess) {
+            this.receiptVoucher = res.Obj.Treasury;
+            this.initForm();
+            this.changeTreasuryType({
+              value: this.receiptVoucher.TreasuryType,
+            });
+            this.fillLinesFromApi();
+            return;
+          }
+          this.initForm();
+        })
+      )
+    );
     this.getTreasuries();
     this.getEmployeeTreasury();
     this.getBanks();
@@ -148,12 +166,18 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           tap((res) => {
             if (res?.IsSuccess) {
               this.currencies = res.Obj.Currencies;
-              let defaultCurrency = this.currencies.find(
-                (el) => el.IsDefault == true
-              );
-              this.receiptVoucherForm.patchValue({
-                curencyId: defaultCurrency.Id,
-              });
+              if (!this.receiptVoucher) {
+                this.defaultCurrency = this.currencies.find(
+                  (el) => el.IsDefault == true
+                );
+                this.receiptVoucherForm.patchValue({
+                  curencyId: this.defaultCurrency.Id,
+                });
+              } else {
+                this.defaultCurrency = this.currencies.find(
+                  (el) => el.Id == this.receiptVoucher.CurencyId
+                );
+              }
             }
           })
         )
@@ -203,6 +227,24 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     let curencyId;
     let mainBank;
 
+    if (this.receiptVoucher) {
+      id = this.receiptVoucher.Id;
+      docDate = new Date(this.receiptVoucher.DocDate);
+      docNo = this.receiptVoucher.DocNo;
+      nameAr = this.receiptVoucher.NameAr;
+      notes = this.receiptVoucher.Notes;
+      treasuryType = this.receiptVoucher.TreasuryType;
+      treasuryId = this.receiptVoucher.TreasuryId;
+      equivalentPrice = this.receiptVoucher.EquivalentPrice;
+      typeofpayment = this.receiptVoucher.Typeofpayment;
+      ccenter = this.receiptVoucher.MainCostCenter || null;
+      docNoManual = this.receiptVoucher.DocNoManual;
+      isMobile = this.receiptVoucher.IsMobile;
+      exchangeRate = this.receiptVoucher.ExchangeRate;
+      curencyId = this.receiptVoucher.CurencyId || null;
+      mainBank = this.receiptVoucher.MainBank;
+    }
+
     this.receiptVoucherForm = this.fb.group({
       id: [id],
       docNo: [docNo],
@@ -221,6 +263,36 @@ export class AddNewReceiptVoucherComponent implements OnInit {
       mainBank: [mainBank],
       treasuryTransactionDetails: this.fb.array([this.newLine()]),
     });
+  }
+
+  fillLinesFromApi(): void {
+    if (this.receiptVoucher?.TreasuryTransactionsDetails?.length) {
+      this.linesArray.clear();
+      this.receiptVoucher?.TreasuryTransactionsDetails.forEach(
+        (line: any, i: number) => {
+          this.addNewLine(line);
+          if (this.receiptVoucher.TreasuryType === 1) {
+            this.accTreeAccountsData[i] = [
+              {
+                Id: line.AccTreeId,
+                NameAr: line.AccTreeName,
+                NameEn: line.AccTreeName,
+              },
+            ];
+          }
+          if (this.receiptVoucher.TreasuryType === 2) {
+            this.getInvoicesByClientId(line.ClientId);
+            this.clientsData[i] = [
+              {
+                Id: line.ClientId,
+                NameAr: line.ClientName,
+                NameEn: line.ClientName,
+              },
+            ];
+          }
+        }
+      );
+    }
   }
 
   get linesArray(): FormArray {
@@ -256,6 +328,25 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     let treasuryName;
     let bankName;
     let notes;
+
+    if (value) {
+      accTreeId = {
+        Id: value.AccTreeId || null,
+      };
+      clientId = {
+        Id: value.ClientId || null,
+      };
+      clientName = value.ClientName;
+      saleInvoiceId = { Id: value.SaleInvoiceId || null };
+      amount = value.Amount;
+      supplierId = value.SupplierId || null;
+      treasuryId = value.TreasuryId || null;
+      costCenterId = value.CostCenterId || null;
+      bankId = value.BankId || null;
+      treasuryName = value.TreasuryName;
+      bankName = value.BankName;
+      notes = value.Notes;
+    }
 
     return this.fb.group({
       clientId: [clientId],
@@ -305,7 +396,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     );
   }
 
-  selectTreasuryType(ev: any) {
+  changeTreasuryType(ev: any) {
     let commonDefaultSelected = this.defaultSelected.slice(
       this.defaultSelected.length - 3
     );
@@ -446,7 +537,10 @@ export class AddNewReceiptVoucherComponent implements OnInit {
         )
         .pipe(
           tap((res) => {
-            this.receiptVoucherForm.patchValue({ treasuryId: res });
+            this.employeeTreasury = res;
+            if (!this.receiptVoucher) {
+              this.receiptVoucherForm.patchValue({ treasuryId: res });
+            }
           })
         )
     );
@@ -459,8 +553,45 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     this.receiptVoucherForm.patchValue({ equivalentPrice });
   }
 
+  changePaymentType(ev: any): void {
+    if (ev.value === 1) {
+      this.receiptVoucherForm.patchValue({ treasuryId: null });
+    }
+    if (ev.value === 2) {
+      this.receiptVoucherForm.patchValue({
+        mainBank: null,
+        treasuryId: this.employeeTreasury,
+      });
+    }
+  }
+
+  changeCurrency(ev: any): void {
+    if (ev) {
+      this.defaultCurrency = ev;
+    }
+  }
+
   submit(): void {
     this.spinner.show();
+    if (this.receiptVoucher) {
+      firstValueFrom(
+        this.dataService
+          .put(
+            `${apiUrl}/XtraAndPos_TreasuryManagement/updateTreasury`,
+            this.receiptVoucherForm.value
+          )
+          .pipe(
+            tap((res) => {
+              if (res.IsSuccess) {
+                this.spinner.hide();
+                this.toast.show(Toast.added, { classname: Toast.success });
+                this.router.navigateByUrl('/receipt-vouchers');
+              }
+            })
+          )
+      );
+      return;
+    }
     firstValueFrom(
       this.dataService
         .post(
@@ -470,11 +601,9 @@ export class AddNewReceiptVoucherComponent implements OnInit {
         .pipe(
           tap((res) => {
             if (res.IsSuccess) {
-              console.log(res);
-
               this.spinner.hide();
               this.toast.show(Toast.added, { classname: Toast.success });
-              console.log(res);
+              this.router.navigateByUrl('/receipt-vouchers');
             }
           })
         )

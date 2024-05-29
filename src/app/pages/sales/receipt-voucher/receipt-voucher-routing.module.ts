@@ -2,7 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ReceiptVoucherListComponent } from './receipt-voucher-list/receipt-voucher-list.component';
 import { AddNewReceiptVoucherComponent } from './add-new-receipt-voucher/add-new-receipt-voucher.component';
-import { receiptVouchersListResolver } from './receipt-voucher.resolver';
+import {
+  receiptVoucherResolver,
+  receiptVouchersListResolver,
+} from './receipt-voucher.resolver';
 
 const routes: Routes = [
   {
@@ -17,6 +20,7 @@ const routes: Routes = [
   {
     path: ':id',
     component: AddNewReceiptVoucherComponent,
+    resolve: { receiptVoucher: receiptVoucherResolver },
   },
 ];
 
