@@ -330,14 +330,18 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     let notes;
 
     if (value) {
-      accTreeId = {
-        Id: value.AccTreeId || null,
-      };
-      clientId = {
-        Id: value.ClientId || null,
-      };
+      accTreeId = value.AccTreeId
+        ? {
+            Id: value.AccTreeId,
+          }
+        : null;
+      clientId = value.ClientId
+        ? {
+            Id: value.ClientId,
+          }
+        : null;
       clientName = value.ClientName;
-      saleInvoiceId = { Id: value.SaleInvoiceId || null };
+      saleInvoiceId = value.SaleInvoiceId ? { Id: value.SaleInvoiceId } : null;
       amount = value.Amount;
       supplierId = value.SupplierId || null;
       treasuryId = value.TreasuryId || null;
