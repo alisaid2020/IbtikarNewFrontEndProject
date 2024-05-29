@@ -229,6 +229,9 @@ export class AddNewReceiptVoucherComponent implements OnInit {
               },
             ];
           }
+          if (this.receiptVoucher.TreasuryType === 5) {
+            this.getInvoicesBySupplierId(line.SupplierId);
+          }
         }
       );
     }
@@ -366,7 +369,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
       ];
     }
     this._selectedColumns = this.defaultSelected;
-    this.linesArray.controls.forEach((form) => {
+    this.linesArray.controls.forEach((form, i: any) => {
       if (ev.value === 1) {
         form.patchValue({
           clientId: null,
@@ -378,6 +381,9 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           supplierId: null,
           treasuryName: null,
         });
+        this.clientsData[i] = [];
+        this.clientInvoices = [];
+        this.supplierInvoices = [];
       }
       if (ev.value === 2) {
         form.patchValue({
@@ -386,8 +392,11 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           bankName: null,
           treasuryId: null,
           supplierId: null,
+          saleInvoiceId: null,
           treasuryName: null,
         });
+        this.accTreeAccountsData[i] = [];
+        this.supplierInvoices = [];
       }
       if (ev.value === 3) {
         form.patchValue({
@@ -399,6 +408,10 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           treasuryId: null,
           treasuryName: null,
         });
+        this.clientsData[i] = [];
+        this.accTreeAccountsData[i] = [];
+        this.clientInvoices = [];
+        this.supplierInvoices = [];
       }
       if (ev.value === 4) {
         form.patchValue({
@@ -410,17 +423,25 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           bankId: null,
           bankName: null,
         });
+        this.clientsData[i] = [];
+        this.accTreeAccountsData[i] = [];
+        this.clientInvoices = [];
+        this.supplierInvoices = [];
       }
       if (ev.value === 5) {
         form.patchValue({
           accTreeId: null,
           clientId: null,
           clientName: null,
+          saleInvoiceId: null,
           bankId: null,
           bankName: null,
           treasuryId: null,
           treasuryName: null,
         });
+        this.clientsData[i] = [];
+        this.accTreeAccountsData[i] = [];
+        this.clientInvoices = [];
       }
     });
   }
@@ -432,10 +453,9 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     }
   }
 
-  selectSupplier(ev: any, i: number): void {
-    let form = this.linesArray.controls[i];
+  selectSupplier(ev: any): void {
     if (ev) {
-      this.getInvoicesBySupplierId(ev.SupplierId);
+      this.getInvoicesBySupplierId(ev.Id);
     }
   }
 
@@ -481,6 +501,9 @@ export class AddNewReceiptVoucherComponent implements OnInit {
 
   changeCurrency(ev: any): void {
     if (ev) {
+      if (ev.IsDefault) {
+        this.receiptVoucherForm.patchValue({ exchangeRate: 1 });
+      }
       this.defaultCurrency = ev;
     }
   }
