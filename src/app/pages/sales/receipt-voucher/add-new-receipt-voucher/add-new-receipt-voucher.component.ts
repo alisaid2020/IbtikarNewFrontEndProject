@@ -96,14 +96,8 @@ export class AddNewReceiptVoucherComponent implements OnInit {
         })
       )
     );
-    this.getTreasuries();
+    this.getTreasuryTransactionInit();
     this.getEmployeeTreasury();
-    this.getBanks();
-    this.getCostCenters();
-    this.getCurrencies();
-    this.getBanksInLine();
-    this.getTreasuriesInLine();
-    this.getSuppliers();
     await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
@@ -112,66 +106,27 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     );
   }
 
-  async initTableColumns() {
-    this.allColumns = this.tableService.tableColumns(this.invoiceLineKeys);
-    [this.changedColumns, this._selectedColumns] =
-      await this.tableService.storageFn(
-        this.defaultSelected,
-        this.defaultStorage,
-        this._selectedColumns
-      );
-  }
-
-  getBanks(): void {
-    firstValueFrom(
-      this.dataService.get(`${apiUrl}/ExtraAndPOS_Bank/ManagementInfo`).pipe(
-        tap((res) => {
-          if (res?.IsSuccess) {
-            this.banks = res.Obj.list;
-          }
-        })
-      )
-    );
-  }
-
-  getTreasuries(): void {
-    firstValueFrom(
-      this.dataService.get(`${apiUrl}/Treasury/GetAllForDropDown`).pipe(
-        tap((res) => {
-          this.treasuries = res;
-        })
-      )
-    );
-  }
-
-  getCostCenters() {
+  getTreasuryTransactionInit(): void {
     firstValueFrom(
       this.dataService
-        .get(`${apiUrl}/ExtraAndPOS_CostCenter/ManagementInfo`)
+        .get(`${apiUrl}/XtraAndPos_TreasuryManagement/TreasuryTransactionInit`)
         .pipe(
           tap((res) => {
             if (res?.IsSuccess) {
-              this.costCenters = res.Obj.list;
-            }
-          })
-        )
-    );
-  }
-
-  getCurrencies(): void {
-    firstValueFrom(
-      this.dataService
-        .get(`${apiUrl}/XtraAndPOS_HREmployee/GetCurrencyForDropDown`)
-        .pipe(
-          tap((res) => {
-            if (res?.IsSuccess) {
-              this.currencies = res.Obj.Currencies;
+              this.treasuries = res.Obj.treasuries;
+              this.banks = res.Obj.Banks;
+              this.costCenters = res.Obj.CostCenters;
+              this.banksInLine = res.Obj.BankInMainBranch;
+              this.treasuriesInLine = res.Obj.TreasuryInMainBranch;
+              this.suppliers = res.Obj.Suppliers;
+              this.currencies = res.Obj.Currencyies;
               if (!this.receiptVoucher) {
                 this.defaultCurrency = this.currencies.find(
                   (el) => el.IsDefault == true
                 );
                 this.receiptVoucherForm.patchValue({
                   curencyId: this.defaultCurrency.Id,
+                  docNo: res.Obj.docNo,
                 });
               } else {
                 this.defaultCurrency = this.currencies.find(
@@ -184,30 +139,14 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     );
   }
 
-  getBanksInLine(): void {
-    firstValueFrom(
-      this.dataService.get(`${apiUrl}/ExtraAndPOS_Bank/banksInMainBranch`).pipe(
-        tap((res) => {
-          if (res?.IsSuccess) {
-            this.banksInLine = res.Obj;
-          }
-        })
-      )
-    );
-  }
-
-  getSuppliers(): void {
-    firstValueFrom(
-      this.dataService
-        .get(`${apiUrl}/ExtraAndPOS_Client/GetAllSupplierForDropDown`)
-        .pipe(
-          tap((res) => {
-            if (res?.IsSuccess) {
-              this.suppliers = res?.Obj?.Result;
-            }
-          })
-        )
-    );
+  async initTableColumns() {
+    this.allColumns = this.tableService.tableColumns(this.invoiceLineKeys);
+    [this.changedColumns, this._selectedColumns] =
+      await this.tableService.storageFn(
+        this.defaultSelected,
+        this.defaultStorage,
+        this._selectedColumns
+      );
   }
 
   initForm() {
@@ -387,16 +326,6 @@ export class AddNewReceiptVoucherComponent implements OnInit {
             }
           })
         )
-    );
-  }
-
-  getTreasuriesInLine(): void {
-    firstValueFrom(
-      this.dataService.get(`${apiUrl}/Treasury/GetAllTreasuryMainBranch`).pipe(
-        tap((res) => {
-          this.treasuriesInLine = res;
-        })
-      )
     );
   }
 
