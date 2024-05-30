@@ -98,9 +98,18 @@
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns">
         <tr>
-          @for (col of columns; track $index) {
+          @for (col of columns; track $index) { @if (col.field==='PaymentType')
+          {
+          <td>
+            {{
+              rowData[col.field] === 1
+                ? ("cash" | translate)
+                : ("debt" | translate)
+            }}
+          </td>
+          }@else {
           <td>{{ rowData[col.field] | formatValue }}</td>
-          }
+          } }
           <td>
             <button
               *ngxPermissionsOnly="'SaleInvoice_Return-Print'"
