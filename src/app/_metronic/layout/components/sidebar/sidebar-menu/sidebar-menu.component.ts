@@ -41,13 +41,18 @@ export class SidebarMenuComponent implements OnInit {
           permission: 'pricelist',
         },
         {
-          title: 'salesSettings',
-          route: '/sales-settings',
-          permission: 'SaleInvoice',
-        },
-        {
           title: 'receiptVouchers',
           route: 'receipt-vouchers',
+          permission: 'SaleInvoice',
+        },
+        // {
+        //   title: 'paymentVouchers',
+        //   route: 'payment-vouchers',
+        //   permission: 'SaleInvoice',
+        // },
+        {
+          title: 'salesSettings',
+          route: '/sales-settings',
           permission: 'SaleInvoice',
         },
       ],

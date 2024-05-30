@@ -201,5 +201,6 @@
   "TotalAfterVat": "إجمالي ما بعد الضريبة",
   "BranchId": "رقم الفرع",
   "MainCostCenter": "مركز التكلفه الرئيسى",
-  "CurencyId": "رقم العمله"
+  "CurencyId": "رقم العمله",
+  "paymentVouchers": "سندات الصرف"
 }

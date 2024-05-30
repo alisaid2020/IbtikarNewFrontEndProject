@@ -54,6 +54,13 @@ const Routing: Routes = [
       ),
   },
   {
+    path: 'payment-vouchers',
+    loadChildren: () =>
+      import('./sales/payment-voucher/payment-voucher.module').then(
+        (m) => m.PaymentVoucherModule
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'error/404',
   },

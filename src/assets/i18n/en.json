@@ -201,5 +201,6 @@
   "TotalAfterVat": "Total After Vat",
   "BranchId": "Branch Number",
   "MainCostCenter": "Main Cost Center",
-  "CurencyId": "Currency Number"
+  "CurencyId": "Currency Number",
+  "paymentVouchers": "Payment Vouchers"
 }
