@@ -26,12 +26,12 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   receiptVoucher: any;
   changedColumns: any;
   defaultCurrency: any;
-  clientInvoices: any[];
+  clientInvoices: any[] = [];
   employeeTreasury: any;
   allColumns: any[] = [];
   clientsData: any[] = [];
   treasuriesInLine: any[];
-  supplierInvoices: any[];
+  supplierInvoices: any[] = [];
   subs: Subscription[] = [];
   E_USER_ROLE = E_USER_ROLE;
   USER_PROFILE = USER_PROFILE;
@@ -110,6 +110,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
       this.dataService
         .get(`${apiUrl}/XtraAndPos_TreasuryManagement/TreasuryTransactionInit`)
         .pipe(
+          map((res) => res.Data),
           tap((res) => {
             if (res?.IsSuccess) {
               this.treasuries = res.Obj.treasuries;
@@ -220,7 +221,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
             ];
           }
           if (this.receiptVoucher.TreasuryType === 2) {
-            this.getInvoicesByClientId(line.ClientId);
+            this.getInvoicesByClientId(line.ClientId, i);
             this.clientsData[i] = [
               {
                 Id: line.ClientId,
@@ -230,7 +231,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
             ];
           }
           if (this.receiptVoucher.TreasuryType === 5) {
-            this.getInvoicesBySupplierId(line.SupplierId);
+            this.getInvoicesBySupplierId(line.SupplierId, i);
           }
         }
       );
@@ -283,7 +284,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           }
         : null;
       clientName = value.ClientName;
-      saleInvoiceId = value.SaleInvoiceId ? { Id: value.SaleInvoiceId } : null;
+      saleInvoiceId = value.SaleInvoiceId ? value.SaleInvoiceId : null;
       amount = value.Amount;
       supplierId = value.SupplierId || null;
       treasuryId = value.TreasuryId || null;
@@ -314,18 +315,18 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     let form = this.linesArray.controls[i];
     if (ev) {
       form.patchValue({ clientName: ev.NameAr });
-      this.getInvoicesByClientId(ev.Id);
+      this.getInvoicesByClientId(ev.Id, i);
     }
   }
 
-  getInvoicesByClientId(id: number): void {
+  getInvoicesByClientId(id: number, i: number): void {
     firstValueFrom(
       this.dataService
         .get(`${apiUrl}/ExtraAndPOS_SaleInvoice/GetInvoicesByClientIs?id=${id}`)
         .pipe(
           tap((res) => {
             if (res?.IsSuccess) {
-              this.clientInvoices = res.Obj;
+              this.clientInvoices[i] = res.Obj;
             }
           })
         )
@@ -382,8 +383,8 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           treasuryName: null,
         });
         this.clientsData[i] = [];
-        this.clientInvoices = [];
-        this.supplierInvoices = [];
+        this.clientInvoices[i] = [];
+        this.supplierInvoices[i] = [];
       }
       if (ev.value === 2) {
         form.patchValue({
@@ -396,7 +397,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           treasuryName: null,
         });
         this.accTreeAccountsData[i] = [];
-        this.supplierInvoices = [];
+        this.supplierInvoices[i] = [];
       }
       if (ev.value === 3) {
         form.patchValue({
@@ -410,8 +411,8 @@ export class AddNewReceiptVoucherComponent implements OnInit {
         });
         this.clientsData[i] = [];
         this.accTreeAccountsData[i] = [];
-        this.clientInvoices = [];
-        this.supplierInvoices = [];
+        this.clientInvoices[i] = [];
+        this.supplierInvoices[i] = [];
       }
       if (ev.value === 4) {
         form.patchValue({
@@ -425,8 +426,8 @@ export class AddNewReceiptVoucherComponent implements OnInit {
         });
         this.clientsData[i] = [];
         this.accTreeAccountsData[i] = [];
-        this.clientInvoices = [];
-        this.supplierInvoices = [];
+        this.clientInvoices[i] = [];
+        this.supplierInvoices[i] = [];
       }
       if (ev.value === 5) {
         form.patchValue({
@@ -441,7 +442,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
         });
         this.clientsData[i] = [];
         this.accTreeAccountsData[i] = [];
-        this.clientInvoices = [];
+        this.clientInvoices[i] = [];
       }
     });
   }
@@ -453,9 +454,9 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     }
   }
 
-  selectSupplier(ev: any): void {
+  selectSupplier(ev: any, i: any): void {
     if (ev) {
-      this.getInvoicesBySupplierId(ev.Id);
+      this.getInvoicesBySupplierId(ev.Id, i);
     }
   }
 
@@ -466,14 +467,14 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     }
   }
 
-  getInvoicesBySupplierId(id: number): void {
+  getInvoicesBySupplierId(id: number, i: number): void {
     firstValueFrom(
       this.dataService
         .get(`${apiUrl}/ExtraAndPOS_BuyInvoice/GetInvoicesBySuppliers?id=${id}`)
         .pipe(
           tap((res) => {
             if (res?.IsSuccess) {
-              this.supplierInvoices = res?.Obj;
+              this.supplierInvoices[i] = res?.Obj;
             }
           })
         )
@@ -521,7 +522,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
             tap((res) => {
               if (res.IsSuccess) {
                 this.spinner.hide();
-                this.toast.show(Toast.added, { classname: Toast.success });
+                this.toast.show(Toast.updated, { classname: Toast.success });
                 this.router.navigateByUrl('/receipt-vouchers');
               }
             })

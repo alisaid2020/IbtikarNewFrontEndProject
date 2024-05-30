@@ -228,7 +228,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
-                      [items]="clientInvoices"
+                      [items]="clientInvoices[i]"
                       [placeholder]="'invoiceNumber'"
                       [bindValue]="'Id'"
                       [bindLabel]="'DocNo'"
@@ -290,7 +290,7 @@
                       [placeholder]="'supplier'"
                       [bindValue]="'Id'"
                       [control]="linesArray.controls[i].get('supplierId')!"
-                      (emitChanged)="selectSupplier($event)"
+                      (emitChanged)="selectSupplier($event, i)"
                     ></app-ebtikar-select>
                   </td>
                   @if (receiptVoucherForm.get('treasuryType')!.value===5) {
@@ -300,7 +300,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
-                      [items]="supplierInvoices"
+                      [items]="supplierInvoices[i]"
                       [placeholder]="'invoiceNumber'"
                       [bindValue]="'Id'"
                       [bindLabel]="'DocNo'"
