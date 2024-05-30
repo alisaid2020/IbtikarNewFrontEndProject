@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { apiUrl } from '@constants/api.constant';
 import { E_USER_ROLE, USER_PROFILE } from '@constants/general.constant';
@@ -196,7 +196,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
       curencyId: [curencyId],
       exchangeRate: [exchangeRate],
       notes: [notes],
-      equivalentPrice: [equivalentPrice],
+      equivalentPrice: [equivalentPrice, [Validators.required]],
       docNoManual: [docNoManual],
       isMobile: [isMobile],
       mainBank: [mainBank],

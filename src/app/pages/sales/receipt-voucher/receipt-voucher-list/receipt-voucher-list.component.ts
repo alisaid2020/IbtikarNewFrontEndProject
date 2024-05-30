@@ -25,17 +25,12 @@ export class ReceiptVoucherListComponent implements OnInit {
   tableStorage = 'receipt-voucher-list-table';
   defaultStorage = 'receipt-voucher-list-default-selected';
   defaultSelected: any[] = [
-    { field: 'DocNo', header: 'DocNo' },
+    { field: 'Id', header: 'Id' },
     { field: 'DocDate', header: 'DocDate' },
     { field: 'TreasuryType', header: 'TreasuryType' },
     { field: 'TotalAmount', header: 'TotalAmount' },
     { field: 'Notes', header: 'Notes' },
   ];
-  set selectedColumns(val: any[]) {
-    this._selectedColumns = this.defaultSelected.filter((col: any) =>
-      val.includes(col)
-    );
-  }
 
   route = inject(ActivatedRoute);
   tableService = inject(TableService);
@@ -68,6 +63,7 @@ export class ReceiptVoucherListComponent implements OnInit {
   }
 
   async initTableColumns() {
+    delete this.receiptVouchersList[0]?.DocNo;
     this.allColumns = this.tableService.tableColumns(
       this.receiptVouchersList[0]
     );
