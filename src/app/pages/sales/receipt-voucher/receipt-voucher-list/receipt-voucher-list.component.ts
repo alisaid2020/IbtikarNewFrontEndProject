@@ -26,6 +26,7 @@ export class ReceiptVoucherListComponent implements OnInit {
   defaultStorage = 'receipt-voucher-list-default-selected';
   defaultSelected: any[] = [
     { field: 'Id', header: 'Id' },
+    { field: 'BranchName', header: 'BranchName' },
     { field: 'DocDate', header: 'DocDate' },
     { field: 'TreasuryType', header: 'TreasuryType' },
     { field: 'TotalAmount', header: 'TotalAmount' },

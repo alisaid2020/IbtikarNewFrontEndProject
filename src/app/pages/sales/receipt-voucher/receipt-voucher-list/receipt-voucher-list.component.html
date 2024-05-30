@@ -57,7 +57,16 @@
       <ng-template pTemplate="body" let-rowData let-columns="columns">
         <tr>
           @for (col of columns; track $index) {
-          <td>{{ rowData[col.field] | formatValue }}</td>
+          <td *ngIf="col.field === 'TreasuryType'">
+            @switch (rowData[col.field]) { @case (1) {
+            {{ "accountsTree" | translate }} } @case (2) {
+            {{ "clients" | translate }} } @case (3) { {{ "bank" | translate }} }
+            @case (4) { {{ "anotherSafe" | translate }} }@case (5) {
+            {{ "suppliers" | translate }} }}
+          </td>
+          <td *ngIf="col.field !== 'TreasuryType'">
+            {{ rowData[col.field] | formatValue }}
+          </td>
           }
           <td>
             <a
