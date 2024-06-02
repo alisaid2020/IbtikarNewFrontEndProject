@@ -33,7 +33,7 @@
     <div class="fv-row mb-5">
       <app-ebtikar-select
         [items]="branches"
-        [uid]="userProfile ? userProfile.Role.BranchId : ''"
+        [uid]="userProfile ? userProfile?.Role?.BranchId : ''"
         [label]="'branch'"
         [placeholder]="'chooseBranch'"
         [bindValue]="'Id'"
