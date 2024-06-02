@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { apiUrl } from '@constants/api.constant';
 import { PAGE_SIZE } from '@constants/general.constant';
 import { IPagination } from '@models/IPagination.model';
 import { TranslateService } from '@ngx-translate/core';
@@ -96,7 +97,7 @@ export class PaymentVoucherListComponent implements OnInit {
     }
   }
 
-  setData(res: any) {
+  setData(res: any): void {
     this.paymentVouchersList = res.TreasuryTransactions;
     this.pagination = {
       PageSize: PAGE_SIZE,
@@ -104,5 +105,23 @@ export class PaymentVoucherListComponent implements OnInit {
     };
   }
 
-  downloadPdf(id: number) {}
+  downloadPdf(id: number): void {
+    firstValueFrom(
+      this.dataService
+        .post(
+          `${apiUrl}/XtraAndPosMobileReport/TreasuryTransactionOut?id=${id}`,
+          null
+        )
+        .pipe(
+          tap((res) => {
+            if (res?.IsSuccess) {
+              this.helpers.getPdfFromBase64(
+                res.Obj.LayoutData,
+                res.Obj?.DisplayName
+              );
+            }
+          })
+        )
+    );
+  }
 }

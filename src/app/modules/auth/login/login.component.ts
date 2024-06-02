@@ -73,10 +73,7 @@ export class LoginComponent implements OnInit {
           if (res?.IsSuccess) {
             this.spinner.hide();
             this.helpers.setItemToLocalStorage(USER_PROFILE, res.Obj);
-            this.helpers.setItemToLocalStorage(
-              E_USER_ROLE,
-              res.Obj.Role.NameEn
-            );
+            this.helpers.setItemToLocalStorage(E_USER_ROLE, res.Obj?.RoleName);
             this.helpers.setItemToLocalStorage(
               ACCESS_TOKEN,
               res.Obj.AccessToken
@@ -85,10 +82,10 @@ export class LoginComponent implements OnInit {
               REMEMBER_ME,
               this.loginForm.value.rememberMe
             );
-            this.helpers.setItemToLocalStorage(
-              E_USER_RoleSCREENS,
-              res.Obj.Role.RoleScreens
-            );
+            // this.helpers.setItemToLocalStorage(
+            //   E_USER_RoleSCREENS,
+            //   res.Obj?.Role?.RoleScreens
+            // );
             this.router.navigateByUrl('/');
           }
         })

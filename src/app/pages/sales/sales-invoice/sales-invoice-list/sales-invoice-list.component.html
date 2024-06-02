@@ -5,11 +5,8 @@
     </h1>
   </div>
   @if (isUserShiftOpened) {
-  <div
-    *ngxPermissionsOnly="'SaleInvoice-Create'"
-    class="ms-auto"
-    routerLink="/sales-invoice/add"
-  >
+  <!-- *ngxPermissionsOnly="'SaleInvoice-Create'" -->
+  <div class="ms-auto" routerLink="/sales-invoice/add">
     <a class="btn btn-primary">{{ "addNew" | translate }}</a>
   </div>
   }
@@ -52,7 +49,8 @@
   </div>
 </form>
 
-<div class="card mb-5 mb-xxl-8 mt-7" *ngxPermissionsOnly="'SaleInvoice-GetAll'">
+<!-- *ngxPermissionsOnly="'SaleInvoice-GetAll'" -->
+<div class="card mb-5 mb-xxl-8 mt-7">
   <div class="card-body p-0">
     <p-table
       [value]="invoices"
@@ -119,18 +117,15 @@
             >
               <i class="fa fa-solid fa-eye fs-4"></i>
             </a>
+            <!-- *ngxPermissionsOnly="'SaleInvoice-Print'" -->
             <button
-              *ngxPermissionsOnly="'SaleInvoice-Print'"
               class="btn btn-icon btn-info mx-3"
               (click)="downloadPdf(rowData.Id)"
             >
               <i class="fa fa-solid fa-file-invoice fs-2"></i>
             </button>
-            <button
-              *ngxPermissionsOnly="'SaleInvoice-Delete'"
-              class="btn btn-icon btn-danger"
-              (click)="delete(rowData)"
-            >
+            <!-- *ngxPermissionsOnly="'SaleInvoice-Delete'" -->
+            <button class="btn btn-icon btn-danger" (click)="delete(rowData)">
               <i class="fas fa-trash"></i>
             </button>
           </td>

@@ -46,8 +46,8 @@
           routerLinkActive="menu-active-bg"
         >
           <div class="menu-item" *ngFor="let link of item?.children">
+            <!-- *ngIf="helpers.hasPermission(link?.permission)" -->
             <a
-              *ngIf="helpers.hasPermission(link?.permission)"
               class="menu-link without-sub"
               [routerLink]="link.route"
               routerLinkActive="active"

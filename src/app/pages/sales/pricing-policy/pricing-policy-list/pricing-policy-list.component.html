@@ -4,19 +4,14 @@
       {{ "pricingPolicy" | translate }}
     </h1>
   </div>
-  <div
-    *ngxPermissionsOnly="'pricelistDefintion-Create'"
-    class="ms-auto"
-    (click)="openDrawer()"
-  >
+  <!-- *ngxPermissionsOnly="'pricelistDefintion-Create'" -->
+  <div class="ms-auto" (click)="openDrawer()">
     <a class="btn btn-primary">{{ "addNew" | translate }}</a>
   </div>
 </div>
 
-<div
-  class="card mb-5 mb-xxl-8 mt-7"
-  *ngxPermissionsOnly="'pricelistDefintion-ManagementInfo'"
->
+<!-- *ngxPermissionsOnly="'pricelistDefintion-ManagementInfo'" -->
+<div class="card mb-5 mb-xxl-8 mt-7">
   <div class="card-body p-0">
     <p-table
       [value]="pricingPolicyList"
@@ -68,8 +63,8 @@
           <td>{{ rowData[col.field] | formatValue }}</td>
           }
           <td>
+            <!-- *ngxPermissionsOnly="'pricelistDefintion-Update'" -->
             <button
-              *ngxPermissionsOnly="'pricelistDefintion-Update'"
               class="btn btn-icon btn-secondary"
               (click)="openDrawer(rowData)"
             >

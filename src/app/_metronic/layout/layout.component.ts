@@ -90,15 +90,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const roleScreens =
-      this.helpers.getItemFromLocalStorage(E_USER_RoleSCREENS);
-    const permissions = roleScreens?.flatMap((screen: any) =>
-      screen.ViewActions.map((action: any) => {
-        const uniqueId = `${screen.NameEn}-${action.NameEn}`;
-        return uniqueId;
-      })
-    );
-    this.permissionsService.loadPermissions(permissions);
+    // const roleScreens =
+    //   this.helpers.getItemFromLocalStorage(E_USER_RoleSCREENS);
+    // const permissions = roleScreens?.flatMap((screen: any) =>
+    //   screen.ViewActions.map((action: any) => {
+    //     const uniqueId = `${screen.NameEn}-${action.NameEn}`;
+    //     return uniqueId;
+    //   })
+    // );
+    // this.permissionsService.loadPermissions(permissions);
 
     const subscr = this.layout.layoutConfigSubject
       .asObservable()
