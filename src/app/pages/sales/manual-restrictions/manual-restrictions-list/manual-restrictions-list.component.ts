@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { apiUrl, receiptVouchersApi } from '@constants/api.constant';
 import { PAGE_SIZE } from '@constants/general.constant';
 import { IPagination } from '@models/IPagination.model';
 import { TranslateService } from '@ngx-translate/core';
@@ -8,44 +7,44 @@ import { DataService } from '@services/data.service';
 import { HelpersService } from '@services/helpers.service';
 import { TableService } from '@services/table.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription, first, firstValueFrom, map, tap } from 'rxjs';
+import { Subscription, firstValueFrom, map, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-receipt-voucher-list',
-  templateUrl: './receipt-voucher-list.component.html',
+  selector: 'app-manual-restrictions-list',
+  templateUrl: './manual-restrictions-list.component.html',
 })
-export class ReceiptVoucherListComponent implements OnInit {
+export class ManualRestrictionsListComponent implements OnInit {
+  manualRestrictionsList: any;
   changedColumns: any;
-  pagination: IPagination;
-  pageNo: number = 1;
-  allColumns: any[] = [];
-  receiptVouchersList: any;
   subs: Subscription[] = [];
   _selectedColumns: any[] = [];
-  tableStorage = 'receipt-voucher-list-table';
-  defaultStorage = 'receipt-voucher-list-default-selected';
+  pagination: IPagination;
+  allColumns: any[] = [];
+  tableStorage = 'manual-restrictions-list-table';
+  defaultStorage = 'manual-restrictions-list-default-selected';
   defaultSelected: any[] = [
     { field: 'BranchName', header: 'BranchName' },
     { field: 'DocDate', header: 'DocDate' },
-    { field: 'TreasuryType', header: 'TreasuryType' },
-    { field: 'TotalAmount', header: 'TotalAmount' },
+    { field: 'DocName', header: 'DocName' },
+    { field: 'CrAmount', header: 'CrAmount' },
+    { field: 'DrAmount', header: 'DrAmount' },
     { field: 'Notes', header: 'Notes' },
   ];
 
+  dataService = inject(DataService);
   route = inject(ActivatedRoute);
-  tableService = inject(TableService);
-  spinner = inject(NgxSpinnerService);
   translate = inject(TranslateService);
   helpers = inject(HelpersService);
-  dataService = inject(DataService);
+  tableService = inject(TableService);
+  spinner = inject(NgxSpinnerService);
 
   async ngOnInit() {
     firstValueFrom(
       this.route.data.pipe(
-        map((res) => res.receiptVouchersList),
+        map((res) => res.manualRestrictions),
         tap((res) => {
-          if (res?.IsSuccess) {
-            this.setData(res.Obj);
+          if (res.IsSuccess) {
+            this.manualRestrictionsList = res.Obj;
           }
         })
       )
@@ -63,9 +62,9 @@ export class ReceiptVoucherListComponent implements OnInit {
   }
 
   async initTableColumns() {
-    delete this.receiptVouchersList[0]?.DocNo;
+    delete this.manualRestrictionsList[0]?.DocNo;
     this.allColumns = this.tableService.tableColumns(
-      this.receiptVouchersList[0]
+      this.manualRestrictionsList[0]
     );
     [this.changedColumns, this._selectedColumns] =
       await this.tableService.storageFn(
@@ -95,54 +94,11 @@ export class ReceiptVoucherListComponent implements OnInit {
     }
   }
 
-  setData(res: any) {
-    this.receiptVouchersList = res.TreasuryTransactions;
+  setData(res: any): void {
+    this.manualRestrictionsList = res.TreasuryTransactions;
     this.pagination = {
       PageSize: PAGE_SIZE,
       TotalCount: res.TotalCount,
     };
-  }
-
-  page(ev: any) {
-    this.pageNo = ev;
-    this.getReceiptVouchers();
-  }
-
-  getReceiptVouchers(): void {
-    this.spinner.show();
-    let params = {
-      pageNumber: this.pageNo,
-      pageSize: this.pagination.PageSize,
-    };
-    firstValueFrom(
-      this.dataService.get(receiptVouchersApi, { params }).pipe(
-        tap((res) => {
-          if (res?.IsSuccess) {
-            this.spinner.hide();
-            this.setData(res.Obj);
-          }
-        })
-      )
-    );
-  }
-
-  downloadPdf(id: number): void {
-    firstValueFrom(
-      this.dataService
-        .post(
-          `${apiUrl}/XtraAndPosMobileReport/TreasuryTransaction?id=${id}`,
-          null
-        )
-        .pipe(
-          tap((res) => {
-            if (res?.IsSuccess) {
-              this.helpers.getPdfFromBase64(
-                res.Obj.LayoutData,
-                res.Obj?.DisplayName
-              );
-            }
-          })
-        )
-    );
   }
 }

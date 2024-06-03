@@ -202,5 +202,9 @@
   "BranchId": "Branch Number",
   "MainCostCenter": "Main Cost Center",
   "CurencyId": "Currency Number",
-  "paymentVouchers": "Payment Vouchers"
+  "paymentVouchers": "Payment Vouchers",
+  "manualRestrictions": "Manual Restrictions",
+  "DocName": "Doc Name",
+  "CrAmount": "Credit Amount",
+  "DrAmount": "Debit Amount"
 }

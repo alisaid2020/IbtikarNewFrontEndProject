@@ -193,7 +193,7 @@
   "accounts": "الحسابات",
   "banks": "البنوك",
   "addRow": "إضافة صف",
-  "Id": "رقم",
+  "Id": "الكود",
   "EquivalentPrice": "المبلغ المستحق",
   "TotalAmount": "المبلغ الإجمالي",
   "TreasuryName": "إسم الخزينة",
@@ -202,5 +202,9 @@
   "BranchId": "رقم الفرع",
   "MainCostCenter": "مركز التكلفه الرئيسى",
   "CurencyId": "رقم العمله",
-  "paymentVouchers": "سندات الصرف"
+  "paymentVouchers": "سندات الصرف",
+  "manualRestrictions": "القيود اليدوية",
+  "DocName": "إسم المستند",
+  "CrAmount": "مدين",
+  "DrAmount": "دائن"
 }

@@ -61,6 +61,13 @@ const Routing: Routes = [
       ),
   },
   {
+    path: 'manual-restrictions',
+    loadChildren: () =>
+      import('./sales/manual-restrictions/manual-restrictions.module').then(
+        (m) => m.ManualRestrictionsModule
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'error/404',
   },

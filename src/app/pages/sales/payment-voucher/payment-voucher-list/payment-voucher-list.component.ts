@@ -25,7 +25,6 @@ export class PaymentVoucherListComponent implements OnInit {
   tableStorage = 'payment-voucher-list-table';
   defaultStorage = 'payment-voucher-list-default-selected';
   defaultSelected: any[] = [
-    { field: 'Id', header: 'Id' },
     { field: 'BranchName', header: 'BranchName' },
     { field: 'DocDate', header: 'DocDate' },
     { field: 'TreasuryType', header: 'TreasuryType' },

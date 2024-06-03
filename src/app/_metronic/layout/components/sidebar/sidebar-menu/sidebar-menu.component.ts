@@ -51,6 +51,11 @@ export class SidebarMenuComponent implements OnInit {
           // permission: 'SaleInvoice',
         },
         {
+          title: 'manualRestrictions',
+          route: 'manual-restrictions',
+          // permission: 'SaleInvoice',
+        },
+        {
           title: 'salesSettings',
           route: '/sales-settings',
           // permission: 'SaleInvoice',
