@@ -3,12 +3,14 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { apiUrl } from '@constants/api.constant';
 import { E_USER_ROLE, USER_PROFILE } from '@constants/general.constant';
+import { Toast } from '@enums/toast.enum';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '@services/data.service';
 import { HelpersService } from '@services/helpers.service';
 import { TableService } from '@services/table.service';
 import { ToastService } from '@services/toast-service';
-import { Subscription, firstValueFrom, tap } from 'rxjs';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Subscription, firstValueFrom, map, tap } from 'rxjs';
 
 @Component({
   selector: 'app-add-new-payment-voucher',
@@ -16,26 +18,26 @@ import { Subscription, firstValueFrom, tap } from 'rxjs';
 })
 export class AddNewPaymentVoucherComponent implements OnInit {
   banks: any[];
-  defaultCurrency: any;
-  treasuries: any[];
-  treasuriesInLine: any[];
-  costCenters: any[];
-  accTreeAccountsData: any[] = [];
-  currencies: any[];
-  allColumns: any[] = [];
-  supplierInvoices: any[] = [];
-  paymentVoucher: any;
-  employeeTreasury: any;
-  changedColumns: any;
   suppliers: any[];
-  clientsData: any[] = [];
-  clientInvoices: any[] = [];
-  E_USER_ROLE = E_USER_ROLE;
-  USER_PROFILE = USER_PROFILE;
-  paymentVoucherForm: FormGroup;
-  subs: Subscription[] = [];
-  _selectedColumns: any[] = [];
+  treasuries: any[];
+  currencies: any[];
+  costCenters: any[];
   banksInLine: any[];
+  changedColumns: any;
+  paymentVoucher: any;
+  defaultCurrency: any;
+  employeeTreasury: any;
+  allColumns: any[] = [];
+  treasuriesInLine: any[];
+  clientsData: any[] = [];
+  E_USER_ROLE = E_USER_ROLE;
+  subs: Subscription[] = [];
+  clientInvoices: any[] = [];
+  USER_PROFILE = USER_PROFILE;
+  supplierInvoices: any[] = [];
+  _selectedColumns: any[] = [];
+  paymentVoucherForm: FormGroup;
+  accTreeAccountsData: any[] = [];
   tableStorage = 'payment-voucher-form-table';
   defaultStorage = 'payment-voucher-form-default-selected';
   clientsApi = `${apiUrl}/XtraAndPos_GeneralLookups/CustomerByTerm`;
@@ -52,8 +54,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     { value: 5, name: 'suppliers' },
   ];
   defaultSelected = [
-    { field: 'clientId', header: 'clients' },
-    { field: 'BuyInvoiceId', header: 'invoices' },
+    { field: 'accounts', header: 'accounts' },
     { field: 'Amount', header: 'amount' },
     { field: 'costCenterId', header: 'costCenter' },
     { field: 'Notes', header: 'notes' },
@@ -77,9 +78,26 @@ export class AddNewPaymentVoucherComponent implements OnInit {
   toast = inject(ToastService);
   translate = inject(TranslateService);
   tableService = inject(TableService);
+  spinner = inject(NgxSpinnerService);
 
   async ngOnInit() {
-    this.initForm();
+    firstValueFrom(
+      this.route.data.pipe(
+        map((res) => res.paymentVoucher),
+        tap((res) => {
+          if (res?.IsSuccess) {
+            this.paymentVoucher = res.Obj.TreasuryOut;
+            this.initForm();
+            this.changeTreasuryType({
+              value: this.paymentVoucher.TreasuryType,
+            });
+            this.fillLinesFromApi();
+            return;
+          }
+          this.initForm();
+        })
+      )
+    );
     this.getMainBanks();
     this.getMainTreasuries();
     this.getCostCenters();
@@ -87,6 +105,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     this.getBanksInLine();
     this.getSuppliers();
     this.getTreasuryInLine();
+    this.getEmployeeTreasury();
     await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
@@ -94,6 +113,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
       })
     );
   }
+
   async initTableColumns() {
     this.allColumns = this.tableService.tableColumns(this.invoiceLineKeys);
     [this.changedColumns, this._selectedColumns] =
@@ -112,17 +132,36 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     let ccenter;
     let docDate = new Date();
     let equivalentPrice = 0;
-    let treasuryType;
-    let typeofpayment;
+    let treasuryType = 1;
+    let typeofpayment = 2;
     let mainBank;
     let docNoManual;
     let docNo;
     let totalAmount = 0;
     let totalVat = 0;
     let totalAfterVat = 0;
-    // not found in swagger api
     let curencyId;
-    let exchangeRate;
+    let exchangeRate = 1;
+
+    if (this.paymentVoucher) {
+      id = this.paymentVoucher.Id;
+      nameAr = this.paymentVoucher.NameAr;
+      notes = this.paymentVoucher.Notes;
+      treasuryId = this.paymentVoucher.TreasuryId;
+      ccenter = this.paymentVoucher.MainCostCenter;
+      docDate = new Date(this.paymentVoucher.DocDate);
+      equivalentPrice = this.paymentVoucher.EquivalentPrice;
+      treasuryType = this.paymentVoucher.TreasuryType;
+      typeofpayment = this.paymentVoucher.Typeofpayment;
+      mainBank = this.paymentVoucher.MainBank;
+      docNoManual = this.paymentVoucher.DocNoManual;
+      docNo = this.paymentVoucher.DocNo;
+      totalAmount = this.paymentVoucher.TotalAmount;
+      totalVat = this.paymentVoucher.TotalVat;
+      totalAfterVat = this.paymentVoucher.TotalAfterVat;
+      curencyId = this.paymentVoucher.CurencyId;
+      exchangeRate = this.paymentVoucher.ExchangeRate;
+    }
 
     this.paymentVoucherForm = this.fb.group({
       id: [id],
@@ -146,6 +185,39 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     });
   }
 
+  fillLinesFromApi(): void {
+    if (this.paymentVoucher?.TreasuryTransactionOutDetails?.length) {
+      this.linesArray.clear();
+      this.paymentVoucher?.TreasuryTransactionOutDetails.forEach(
+        (line: any, i: number) => {
+          this.addNewLine(line);
+          if (this.paymentVoucher.TreasuryType === 1) {
+            this.accTreeAccountsData[i] = [
+              {
+                Id: line.AccTreeId,
+                NameAr: line.AccTreeName,
+                NameEn: line.AccTreeName,
+              },
+            ];
+          }
+          if (this.paymentVoucher.TreasuryType === 2) {
+            this.getInvoicesByClientId(line.ClientId, i);
+            this.clientsData[i] = [
+              {
+                Id: line.ClientId,
+                NameAr: line.ClientName,
+                NameEn: line.ClientName,
+              },
+            ];
+          }
+          if (this.paymentVoucher.TreasuryType === 5) {
+            this.getInvoicesBySupplierId(line.SupplierId, i);
+          }
+        }
+      );
+    }
+  }
+
   getCurrencies(): void {
     firstValueFrom(
       this.dataService
@@ -154,6 +226,18 @@ export class AddNewPaymentVoucherComponent implements OnInit {
           tap((res) => {
             if (res?.IsSuccess) {
               this.currencies = res.Obj.Currencies;
+              if (!this.paymentVoucher) {
+                this.defaultCurrency = this.currencies.find(
+                  (el) => el.IsDefault == true
+                );
+                this.paymentVoucherForm.patchValue({
+                  curencyId: this.defaultCurrency.Id,
+                });
+              } else {
+                this.defaultCurrency = this.currencies.find(
+                  (el) => el.Id == this.paymentVoucher.CurencyId
+                );
+              }
             }
           })
         )
@@ -190,6 +274,23 @@ export class AddNewPaymentVoucherComponent implements OnInit {
           this.treasuries = res;
         })
       )
+    );
+  }
+
+  getEmployeeTreasury(): void {
+    let employeeId =
+      this.helpers.getItemFromLocalStorage(USER_PROFILE)?.EmployeeId;
+    firstValueFrom(
+      this.dataService
+        .get(
+          `${apiUrl}/ExtraAndPOS_Employee/GetEmployeeTreasury?id=${employeeId}`
+        )
+        .pipe(
+          tap((res) => {
+            this.employeeTreasury = res;
+            this.paymentVoucherForm.patchValue({ treasuryId: res });
+          })
+        )
     );
   }
 
@@ -236,15 +337,18 @@ export class AddNewPaymentVoucherComponent implements OnInit {
           }
         : null;
       clientName = value.ClientName;
-      buyInvoiceId = value.BuyInvoiceId ? value.BuyInvoiceId : null;
       amount = value.Amount;
+      notes = value.Notes;
+      bankId = value.BankId || null;
+      bankName = value.BankName;
       supplierId = value.SupplierId || null;
       treasuryId = value.TreasuryId || null;
-      costCenterId = value.CostCenterId || null;
-      bankId = value.BankId || null;
       treasuryName = value.TreasuryName;
-      bankName = value.BankName;
-      notes = value.Notes;
+      costCenterId = value.CostCenterId || null;
+      buyInvoiceId = value.BuyInvoiceId ? value.BuyInvoiceId : null;
+      isVatchecked = value.IsVatchecked;
+      vatVal = value.vatVal;
+      taxNotes = value.IsVatcheckedNotes;
     }
 
     return this.fb.group({
@@ -272,7 +376,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     }
   }
 
-  changeTreasuryType(ev: any) {
+  changeTreasuryType(ev: any): void {
     let commonDefaultSelected = this.defaultSelected.slice(
       this.defaultSelected.length - 6
     );
@@ -502,7 +606,9 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     );
   }
 
-  changeAmount(): void {
+  changeAmount(i: number): void {
+    let form = this.linesArray.controls[i];
+    let isVatchecked = form.get('isVatchecked')!.value;
     let equivalentPrice = this.linesArray.controls
       .map((line: any) => +line.value?.amount)
       .reduce((acc, curr) => acc + curr, 0);
@@ -511,10 +617,71 @@ export class AddNewPaymentVoucherComponent implements OnInit {
       totalAmount: equivalentPrice,
       totalAfterVat: equivalentPrice,
     });
+    if (isVatchecked) {
+      this.changeVat(isVatchecked, i);
+    }
   }
 
-  changeVat(ev: any, i: number) {
-    console.log(ev.target.checked);
-    console.log(this.paymentVoucherForm.value);
+  changeVat(ev: any, i: number): void {
+    let equivalentPrice = this.paymentVoucherForm.value.equivalentPrice;
+    let form = this.linesArray.controls[i];
+    let vatVal = form.get('vatVal')!.value;
+    let amount = form.get('amount')!.value;
+    let isChecked = ev?.target?.checked ?? ev;
+
+    if (isChecked) {
+      let netAmount = Math.round((amount / 1.15) * 100) / 100;
+      vatVal = Math.round((amount - netAmount) * 100) / 100;
+      form.patchValue({ vatVal });
+    } else {
+      form.patchValue({ vatVal: 0 });
+    }
+    let totalVat = this.linesArray.controls
+      .map((line: any) => +line.value?.vatVal)
+      .reduce((acc, curr) => acc + curr, 0);
+
+    this.paymentVoucherForm.patchValue({
+      totalAmount: equivalentPrice - totalVat,
+      totalVat,
+    });
+  }
+
+  submit(): void {
+    this.spinner.show();
+    if (this.paymentVoucher) {
+      firstValueFrom(
+        this.dataService
+          .put(
+            `${apiUrl}/XtraAndPos_TreasuryManagement/updateTreasuryOut`,
+            this.paymentVoucherForm.value
+          )
+          .pipe(
+            tap((res) => {
+              if (res.IsSuccess) {
+                this.spinner.hide();
+                this.toast.show(Toast.updated, { classname: Toast.success });
+                this.router.navigateByUrl('/payment-vouchers');
+              }
+            })
+          )
+      );
+      return;
+    }
+    firstValueFrom(
+      this.dataService
+        .post(
+          `${apiUrl}/XtraAndPos_TreasuryManagement/CreateTreasuryOut`,
+          this.paymentVoucherForm.value
+        )
+        .pipe(
+          tap((res) => {
+            if (res.IsSuccess) {
+              this.spinner.hide();
+              this.toast.show(Toast.added, { classname: Toast.success });
+              this.router.navigateByUrl('/payment-vouchers');
+            }
+          })
+        )
+    );
   }
 }

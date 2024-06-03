@@ -338,7 +338,7 @@
                       type="'number'"
                       [placeholder]="'amount'"
                       [control]="linesArray.controls[i].get('amount')!"
-                      (emitChanged)="changeAmount()"
+                      (emitChanged)="changeAmount(i)"
                     ></app-ebtikar-input>
                   </td>
                   <td
@@ -366,12 +366,13 @@
                   </td>
                   <td
                     *ngSwitchCase="'includeTax'"
-                    style="min-width: 200px"
+                    style="min-width: 150px"
                     class="disabled-form"
                     appAppArrowFocus
                   >
                     <input
                       class="form-check-input cursor-pointer"
+                      style="width: 2rem; height: 2rem; border-width: 3px"
                       type="checkbox"
                       formControlName="isVatchecked"
                       (change)="changeVat($event, i)"
@@ -415,6 +416,15 @@
               </tr> </ng-container
           ></ng-template>
         </p-table>
+      </div>
+    </div>
+    <div class="card-footer d-flex align-items-activity py-6 px-9">
+      <div class="d-flex gap-3 ms-auto">
+        <app-submit-button
+          [isDisabled]="paymentVoucherForm.invalid"
+          [buttonText]="'save'"
+          (btnClick)="submit()"
+        ></app-submit-button>
       </div>
     </div>
   </div>

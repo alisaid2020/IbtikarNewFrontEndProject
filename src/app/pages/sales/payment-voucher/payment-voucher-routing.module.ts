@@ -2,7 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PaymentVoucherListComponent } from './payment-voucher-list/payment-voucher-list.component';
 import { AddNewPaymentVoucherComponent } from './add-new-payment-voucher/add-new-payment-voucher.component';
-import { paymentVoucherListResolver } from './payment-voucher.resolver';
+import {
+  paymentVoucherListResolver,
+  paymentVoucherResolver,
+} from './payment-voucher.resolver';
 
 const routes: Routes = [
   {
@@ -11,6 +14,13 @@ const routes: Routes = [
     resolve: { paymentVouchersList: paymentVoucherListResolver },
   },
   { path: 'add', component: AddNewPaymentVoucherComponent },
+  {
+    path: ':id',
+    component: AddNewPaymentVoucherComponent,
+    resolve: {
+      paymentVoucher: paymentVoucherResolver,
+    },
+  },
 ];
 
 @NgModule({
