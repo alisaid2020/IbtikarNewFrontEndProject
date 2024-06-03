@@ -44,9 +44,8 @@ export class PaymentVoucherListComponent implements OnInit {
       this.route.data.pipe(
         map((res) => res.paymentVouchersList),
         tap((res) => {
-          if (res?.IsSuccess) {
-            this.paymentVouchersList = res.Obj.list;
-            // this.setData(res.Obj);
+          if (res?.Success) {
+            this.setData(res.Data.Obj);
           }
         })
       )
@@ -102,6 +101,34 @@ export class PaymentVoucherListComponent implements OnInit {
       PageSize: PAGE_SIZE,
       TotalCount: res.TotalCount,
     };
+  }
+
+  page(ev: any) {
+    this.pageNo = ev;
+    this.getPaymentVouchers();
+  }
+
+  getPaymentVouchers(): void {
+    this.spinner.show();
+    let params = {
+      pageNumber: this.pageNo,
+      pageSize: this.pagination.PageSize,
+    };
+    firstValueFrom(
+      this.dataService
+        .get(
+          `${apiUrl}/XtraAndPos_TreasuryManagement/GetPagedTreasuryTransactionOutList`,
+          { params }
+        )
+        .pipe(
+          tap((res) => {
+            if (res?.Success) {
+              this.spinner.hide();
+              this.setData(res.Data.Obj);
+            }
+          })
+        )
+    );
   }
 
   downloadPdf(id: number): void {

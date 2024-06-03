@@ -1,1 +1,37 @@
-<p>add-new-manual-restriction works!</p>
+<div class="app-toolbar pb-3 pb-md-6 d-flex">
+  <div class="me-5">
+    <a
+      routerLink="active"
+      [routerLink]="'/manual-restrictions'"
+      class="btn btn-icon btn-light"
+    >
+      <span
+        [inlineSVG]="'./assets/media/icons/duotune/arrows/arr063.svg'"
+        class="svg-icon svg-icon-3 text-gray-800 fw-bolder rotate-ar"
+      ></span>
+    </a>
+  </div>
+  <div class="page-title d-flex flex-column justify-content-center flex-wrap">
+    <h1 class="page-heading d-flex text-dark fw-bold fs-2 my-0">
+      {{ manualRestriction ? ("edit" | translate) : ("addNew" | translate) }}
+    </h1>
+  </div>
+</div>
+<form [formGroup]="manualRestrictionForm">
+  <div class="card mb-5 mb-xxl-8">
+    <div class="card-body">
+      <div class="row g-5">
+        <div class="col-md-6">
+          <app-ebtikar-input
+            class="disabled-form"
+            [type]="'number'"
+            [placeholder]="'serial'"
+            [label]="'serial'"
+            [readonly]="true"
+            [control]="manualRestrictionForm.get('docNo')!"
+          ></app-ebtikar-input>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

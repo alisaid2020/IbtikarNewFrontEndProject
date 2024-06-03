@@ -32,7 +32,7 @@ export class ErrorInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       tap((res: any) => {
-        if (!res?.body?.IsSuccess) {
+        if (res?.body?.IsSuccess == false || res?.body?.Success == false) {
           this.spinner.hide();
           this.loadingService.isLoading$.next(false);
           this.toast.show(res?.body?.Message, {
