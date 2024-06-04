@@ -309,7 +309,7 @@
                       [items]="suppliers"
                       [hasMultipleLabels]="true"
                       [placeholder]="'supplier'"
-                      [bindValue]="'Id'"
+                      [bindValue]="'SupplierId'"
                       [control]="linesArray.controls[i].get('supplierId')!"
                       (emitChanged)="selectSupplier($event, i)"
                     ></app-ebtikar-select>

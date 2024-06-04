@@ -148,7 +148,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
       nameAr = this.paymentVoucher.NameAr;
       notes = this.paymentVoucher.Notes;
       treasuryId = this.paymentVoucher.TreasuryId;
-      ccenter = this.paymentVoucher.MainCostCenter;
+      ccenter = this.paymentVoucher.MainCostCenter || null;
       docDate = new Date(this.paymentVoucher.DocDate);
       equivalentPrice = this.paymentVoucher.EquivalentPrice;
       treasuryType = this.paymentVoucher.TreasuryType;
@@ -159,7 +159,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
       totalAmount = this.paymentVoucher.TotalAmount;
       totalVat = this.paymentVoucher.TotalVat;
       totalAfterVat = this.paymentVoucher.TotalAfterVat;
-      curencyId = this.paymentVoucher.CurencyId;
+      curencyId = this.paymentVoucher.CurencyId || null;
       exchangeRate = this.paymentVoucher.ExchangeRate;
     }
 
@@ -588,7 +588,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
 
   selectSupplier(ev: any, i: any): void {
     if (ev) {
-      this.getInvoicesBySupplierId(ev.Id, i);
+      this.getInvoicesBySupplierId(ev.SupplierId, i);
     }
   }
 

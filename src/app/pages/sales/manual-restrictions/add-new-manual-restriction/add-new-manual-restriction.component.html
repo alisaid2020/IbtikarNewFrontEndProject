@@ -31,6 +31,68 @@
             [control]="manualRestrictionForm.get('docNo')!"
           ></app-ebtikar-input>
         </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [type]="'datepicker'"
+            [placeholder]="'date'"
+            [label]="'date'"
+            [control]="manualRestrictionForm.get('docDate')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [type]="'number'"
+            [placeholder]="'DocNoManual'"
+            [label]="'DocNoManual'"
+            [control]="manualRestrictionForm.get('docNoManual')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-select
+            [items]="costCenters"
+            [hasMultipleLabels]="true"
+            [placeholder]="'costCenter'"
+            [label]="'costCenter'"
+            [bindValue]="'Id'"
+            [control]="manualRestrictionForm.get('ccenter')!"
+          ></app-ebtikar-select>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-select
+            [class.disabled-form]="
+              helpers.getItemFromLocalStorage(E_USER_ROLE) !== 'Admin'
+            "
+            [items]="currencies"
+            [hasMultipleLabels]="true"
+            [placeholder]="'currency'"
+            [label]="'currency'"
+            [bindValue]="'Id'"
+            [control]="manualRestrictionForm.get('currencyId')!"
+            (emitChanged)="changeCurrency($event)"
+          ></app-ebtikar-select>
+        </div>
+        <div
+          class="col-md-6"
+          *ngIf="
+            manualRestrictionForm.get('currencyId')!.value &&
+            !defaultCurrency?.IsDefault
+          "
+        >
+          <app-ebtikar-input
+            [type]="'number'"
+            [placeholder]="'ExchangeRate'"
+            [label]="'ExchangeRate'"
+            [control]="manualRestrictionForm.get('exchangeRate')!"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            [type]="'textArea'"
+            [placeholder]="'notes'"
+            [label]="'notes'"
+            [control]="manualRestrictionForm.get('notes')!"
+          ></app-ebtikar-input>
+        </div>
       </div>
     </div>
   </div>
