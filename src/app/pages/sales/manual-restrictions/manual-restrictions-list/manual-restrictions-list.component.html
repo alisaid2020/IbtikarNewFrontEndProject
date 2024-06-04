@@ -68,6 +68,12 @@
             >
               <i class="fas fa-pen"></i>
             </a>
+            <button
+              class="btn btn-icon btn-info ms-3"
+              (click)="downloadPdf(rowData.Id)"
+            >
+              <i class="fa fa-solid fa-file-invoice fs-2"></i>
+            </button>
           </td>
         </tr>
       </ng-template>
@@ -80,16 +86,16 @@
       </ng-template>
     </p-table>
   </div>
-  <!-- <div class="my-9" *ngIf="pagination.TotalCount! > pagination.PageSize!">
-        <ngb-pagination
-          [collectionSize]="pagination.TotalCount!"
-          [(page)]="pageNo"
-          [maxSize]="3"
-          [rotate]="true"
-          [boundaryLinks]="true"
-          [pageSize]="pagination.PageSize!"
-          (pageChange)="page($event)"
-        >
-        </ngb-pagination>
-      </div> -->
+  <div class="my-9" *ngIf="pagination.TotalCount! > pagination.PageSize!">
+    <ngb-pagination
+      [collectionSize]="pagination.TotalCount!"
+      [(page)]="pageNo"
+      [maxSize]="3"
+      [rotate]="true"
+      [boundaryLinks]="true"
+      [pageSize]="pagination.PageSize!"
+      (pageChange)="page($event)"
+    >
+    </ngb-pagination>
+  </div>
 </div>

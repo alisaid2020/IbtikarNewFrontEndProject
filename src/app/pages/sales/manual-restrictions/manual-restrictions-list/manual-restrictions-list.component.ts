@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { apiUrl } from '@constants/api.constant';
 import { PAGE_SIZE } from '@constants/general.constant';
 import { IPagination } from '@models/IPagination.model';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,6 +15,7 @@ import { Subscription, firstValueFrom, map, tap } from 'rxjs';
   templateUrl: './manual-restrictions-list.component.html',
 })
 export class ManualRestrictionsListComponent implements OnInit {
+  pageNo = 1;
   manualRestrictionsList: any;
   changedColumns: any;
   subs: Subscription[] = [];
@@ -43,8 +45,8 @@ export class ManualRestrictionsListComponent implements OnInit {
       this.route.data.pipe(
         map((res) => res.manualRestrictions),
         tap((res) => {
-          if (res.IsSuccess) {
-            this.manualRestrictionsList = res.Obj;
+          if (res.Success) {
+            this.setData(res.Data.Obj);
           }
         })
       )
@@ -100,5 +102,50 @@ export class ManualRestrictionsListComponent implements OnInit {
       PageSize: PAGE_SIZE,
       TotalCount: res.TotalCount,
     };
+  }
+
+  page(ev: any) {
+    this.pageNo = ev;
+    this.getManualRestrictions();
+  }
+
+  getManualRestrictions(): void {
+    this.spinner.show();
+    let params = {
+      pageNumber: this.pageNo,
+      pageSize: this.pagination.PageSize,
+    };
+    firstValueFrom(
+      this.dataService
+        .get(
+          `${apiUrl}/XtraAndPos_TreasuryManagement/GetPagedGeneralLedgerList`,
+          { params }
+        )
+        .pipe(
+          tap((res) => {
+            if (res?.Success) {
+              this.spinner.hide();
+              this.setData(res.Data.Obj);
+            }
+          })
+        )
+    );
+  }
+
+  downloadPdf(id: number): void {
+    firstValueFrom(
+      this.dataService
+        .post(`${apiUrl}/GLReport/PrintGLSettlement?id=${id}`, null)
+        .pipe(
+          tap((res) => {
+            if (res?.IsSuccess) {
+              this.helpers.getPdfFromBase64(
+                res.Obj.LayoutData,
+                res.Obj?.DisplayName
+              );
+            }
+          })
+        )
+    );
   }
 }

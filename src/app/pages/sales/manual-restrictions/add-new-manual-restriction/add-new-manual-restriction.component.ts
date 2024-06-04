@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { apiUrl } from '@constants/api.constant';
 import { E_USER_ROLE } from '@constants/general.constant';
 import { Toast } from '@enums/toast.enum';
@@ -10,7 +10,7 @@ import { HelpersService } from '@services/helpers.service';
 import { TableService } from '@services/table.service';
 import { ToastService } from '@services/toast-service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Subscription, firstValueFrom, tap } from 'rxjs';
+import { Subscription, firstValueFrom, map, tap } from 'rxjs';
 
 @Component({
   selector: 'app-add-new-manual-restriction',
@@ -22,12 +22,12 @@ export class AddNewManualRestrictionComponent implements OnInit {
   changedColumns: any;
   defaultCurrency: any;
   manualRestriction: any;
-  treasuryTypesData = [];
   allColumns: any[] = [];
   E_USER_ROLE = E_USER_ROLE;
   docNo = new FormControl();
   subs: Subscription[] = [];
   _selectedColumns: any[] = [];
+  treasuryTypesData: any[] = [];
   totalDebit = new FormControl(0);
   totalCredit = new FormControl(0);
   manualRestrictionForm: FormGroup;
@@ -50,6 +50,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
   ];
 
   router = inject(Router);
+  route = inject(ActivatedRoute);
   fb = inject(FormBuilder);
   toast = inject(ToastService);
   helpers = inject(HelpersService);
@@ -59,7 +60,20 @@ export class AddNewManualRestrictionComponent implements OnInit {
   translate = inject(TranslateService);
 
   async ngOnInit() {
-    this.initForm();
+    firstValueFrom(
+      this.route.data.pipe(
+        map((res) => res.manualRestriction),
+        tap((res) => {
+          if (res?.IsSuccess) {
+            this.manualRestriction = res.Obj.Treasury;
+            this.initForm();
+            this.fillLinesFromApi();
+            return;
+          }
+          this.initForm();
+        })
+      )
+    );
     this.getCostCenters();
     this.getCurrencies();
     await this.initTableColumns();
@@ -92,6 +106,20 @@ export class AddNewManualRestrictionComponent implements OnInit {
     let notes;
     let docType;
 
+    if (this.manualRestriction) {
+      console.log(this.manualRestriction);
+      id = this.manualRestriction.Id;
+      docName = this.manualRestriction.DocName;
+      docDate = new Date(this.manualRestriction.DocDate);
+      ccenter = this.manualRestriction?.CostCenterId || null;
+      currencyId = this.manualRestriction.CurrencyId;
+      docNoManual = this.manualRestriction.DocNoManual;
+      exchangeRate = this.manualRestriction.ExchangeRate;
+      notes = this.manualRestriction.Notes;
+      docType = this.manualRestriction.DocType;
+      this.docNo.setValue(this.manualRestriction.DocNo);
+    }
+
     this.manualRestrictionForm = this.fb.group({
       id: [id],
       docName: [docName],
@@ -105,6 +133,56 @@ export class AddNewManualRestrictionComponent implements OnInit {
       notes: [notes],
       glDetail: this.fb.array([this.newLine()]),
     });
+  }
+
+  fillLinesFromApi(): void {
+    if (this.manualRestriction?.GlDetails?.length) {
+      this.linesArray.clear();
+      this.manualRestriction?.GlDetails.forEach((line: any, i: number) => {
+        this.addNewLine(line);
+        let form = this.linesArray.controls[i];
+        if (line?.ClientId) {
+          form.patchValue({ treasureType: { Id: line.ClientId } });
+          this.treasuryTypesData[i] = [
+            {
+              Id: line.ClientId,
+              NameAr: line?.ClientName,
+              NameEn: line?.ClientName,
+            },
+          ];
+        }
+        if (line?.MainBank) {
+          form.patchValue({ treasureType: { Id: line.MainBank } });
+          this.treasuryTypesData[i] = [
+            {
+              Id: line.MainBank,
+              NameAr: line?.BankName,
+              NameEn: line?.BankName,
+            },
+          ];
+        }
+        if (line?.AccTreeId) {
+          form.patchValue({ treasureType: { Id: line.AccTreeId } });
+          this.treasuryTypesData[i] = [
+            {
+              Id: line.AccTreeId,
+              NameAr: line?.AccTreeName,
+              NameEn: line?.AccTreeName,
+            },
+          ];
+        }
+        if (line?.TreasuryId) {
+          form.patchValue({ treasureType: { Id: line.TreasuryId } });
+          this.treasuryTypesData[i] = [
+            {
+              Id: line.TreasuryId,
+              NameAr: line?.treasuryName,
+              NameEn: line?.treasuryName,
+            },
+          ];
+        }
+      });
+    }
   }
 
   get linesArray(): FormArray {
@@ -135,6 +213,22 @@ export class AddNewManualRestrictionComponent implements OnInit {
     let clientName;
     let notes;
     let treasureType;
+    if (value) {
+      accTreeId = value?.AccTreeId || null;
+      treasuryName = value?.TreasuryName;
+      accTreeName = value?.AccTreeName;
+      accTreeCode = value.AccTreeCode;
+      credit = value?.Credit;
+      debit = value?.Debit;
+      docName = value?.DocName;
+      treasuryId = value?.TreasuryId || null;
+      mainBank = value?.MainBank || null;
+      bankName = value?.BankName;
+      costCenterId = value?.CostCenterId || null;
+      clientId = value.ClientId || null;
+      clientName = value?.ClientName;
+      notes = value?.Notes;
+    }
     return this.fb.group({
       accTreeId: [accTreeId],
       accTreeName: [accTreeName],
@@ -157,6 +251,8 @@ export class AddNewManualRestrictionComponent implements OnInit {
   removeLine(i: number) {
     if (this.linesArray?.length > 1) {
       this.linesArray.removeAt(i);
+      this.getTotalCredit();
+      this.getTotalDebit();
     }
   }
 
@@ -191,7 +287,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
                 });
               } else {
                 this.defaultCurrency = this.currencies.find(
-                  (el) => el.Id == this.manualRestriction.CurencyId
+                  (el) => el.Id == this.manualRestriction.CurrencyId
                 );
               }
             }
