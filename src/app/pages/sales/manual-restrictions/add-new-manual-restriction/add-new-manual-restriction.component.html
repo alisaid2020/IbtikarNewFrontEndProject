@@ -28,7 +28,7 @@
             [placeholder]="'serial'"
             [label]="'serial'"
             [readonly]="true"
-            [control]="manualRestrictionForm.get('docNo')!"
+            [control]="docNo"
           ></app-ebtikar-input>
         </div>
         <div class="col-md-6">
@@ -87,12 +87,164 @@
         </div>
         <div class="col-md-6">
           <app-ebtikar-input
+            class="disabled-form"
+            [type]="'number'"
+            [readonly]="true"
+            [placeholder]="'TotalCredit'"
+            [label]="'TotalCredit'"
+            [control]="totalCredit"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
+            class="disabled-form"
+            [type]="'number'"
+            [readonly]="true"
+            [placeholder]="'TotalDebit'"
+            [label]="'TotalDebit'"
+            [control]="totalDebit"
+          ></app-ebtikar-input>
+        </div>
+        <div class="col-md-6">
+          <app-ebtikar-input
             [type]="'textArea'"
             [placeholder]="'notes'"
             [label]="'notes'"
             [control]="manualRestrictionForm.get('notes')!"
           ></app-ebtikar-input>
         </div>
+      </div>
+      <div class="row mt-5">
+        <p-table
+          [columns]="_selectedColumns"
+          [value]="linesArray.controls"
+          styleClass="p-datatable-gridlines p-datatable-striped"
+          [stateKey]="tableStorage"
+          columnResizeMode="expand"
+        >
+          <ng-template pTemplate="caption">
+            <button
+              type="button"
+              class="btn btn-warning"
+              (click)="addNewLine()"
+            >
+              {{ "addRow" | translate }}
+            </button>
+          </ng-template>
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              @for (column of columns; track $index) {
+              <th class="bg-primary fw-bolder text-white fs-5">
+                {{ column.header | translate }}
+              </th>
+              }
+              <th class="bg-primary fw-bolder text-white fs-5">
+                {{ "actions" | translate }}
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template
+            pTemplate="body"
+            let-rowData
+            let-columns="columns"
+            let-i="rowIndex"
+          >
+            <ng-container formArrayName="glDetail">
+              <tr
+                [formGroupName]="i"
+                [style.background-color]="
+                  i % 2 !== 0 ? '#add8e633' : 'rgb(250 250 250)'
+                "
+              >
+                @for (col of columns; track $index) {
+                <ng-container [ngSwitch]="col.header">
+                  <td
+                    *ngSwitchCase="'treasuryType'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      [customData]="treasuryTypesData[i]"
+                      [apiUrl]="treasuryTypesApi"
+                      [hasMultipleLabels]="true"
+                      [placeholder]="'treasuryType'"
+                      [bindValue]="'Id'"
+                      [searchBy]="'val'"
+                      [control]="linesArray.controls[i].get('treasureType')!"
+                      (emitChanged)="selectTreasuryType($event, i)"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
+                    *ngSwitchCase="'Credit'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-input
+                      type="'number'"
+                      [placeholder]="'Credit'"
+                      [control]="linesArray.controls[i].get('credit')!"
+                      (emitChanged)="getTotalCredit()"
+                    ></app-ebtikar-input>
+                  </td>
+                  <td
+                    *ngSwitchCase="'Debit'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-input
+                      type="'number'"
+                      [placeholder]="'debit'"
+                      [control]="linesArray.controls[i].get('debit')!"
+                      (emitChanged)="getTotalDebit()"
+                    ></app-ebtikar-input>
+                  </td>
+                  <td
+                    *ngSwitchCase="'costCenter'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      [items]="costCenters"
+                      [hasMultipleLabels]="true"
+                      [placeholder]="'costCenter'"
+                      [bindValue]="'Id'"
+                      [control]="linesArray.controls[i].get('costCenterId')!"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
+                    *ngSwitchCase="'notes'"
+                    style="min-width: 200px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-input
+                      [placeholder]="'notes'"
+                      [control]="linesArray.controls[i].get('notes')!"
+                    ></app-ebtikar-input>
+                  </td>
+                </ng-container>
+                }
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-icon btn-danger ms-3"
+                    [disabled]="linesArray.value?.length === 1"
+                    (click)="removeLine(i)"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr> </ng-container
+          ></ng-template>
+        </p-table>
+      </div>
+    </div>
+    <div class="card-footer d-flex align-items-activity py-6 px-9">
+      <div class="d-flex gap-3 ms-auto">
+        <app-submit-button
+          [isDisabled]="manualRestrictionForm.invalid"
+          [buttonText]="'save'"
+          (btnClick)="submit()"
+        ></app-submit-button>
       </div>
     </div>
   </div>
