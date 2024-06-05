@@ -370,9 +370,14 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     });
   }
 
-  removeLine(i: number) {
+  removeLine(i: number): void {
     if (this.linesArray?.length > 1) {
+      let form = this.linesArray.controls[i];
+      if (form.get('isVatchecked')!.value) {
+        this.changeVat(false, i);
+      }
       this.linesArray.removeAt(i);
+      this.changeAmount(i);
     }
   }
 
@@ -608,7 +613,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
 
   changeAmount(i: number): void {
     let form = this.linesArray.controls[i];
-    let isVatchecked = form.get('isVatchecked')!.value;
+    let isVatchecked = form?.get('isVatchecked')!.value;
     let equivalentPrice = this.linesArray.controls
       .map((line: any) => +line.value?.amount)
       .reduce((acc, curr) => acc + curr, 0);
@@ -634,7 +639,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
       vatVal = Math.round((amount - netAmount) * 100) / 100;
       form.patchValue({ vatVal });
     } else {
-      form.patchValue({ vatVal: 0 });
+      form.patchValue({ vatVal: 0, isVatchecked: false });
     }
     let totalVat = this.linesArray.controls
       .map((line: any) => +line.value?.vatVal)

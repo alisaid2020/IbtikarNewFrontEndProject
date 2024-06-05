@@ -248,7 +248,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
     });
   }
 
-  removeLine(i: number) {
+  removeLine(i: number): void {
     if (this.linesArray?.length > 1) {
       this.linesArray.removeAt(i);
       this.getTotalCredit();
