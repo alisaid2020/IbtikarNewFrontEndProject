@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { apiUrl, receiptVouchersApi } from '@constants/api.constant';
+import { apiUrl, treasuryManagementApi } from '@constants/api.constant';
 import { PAGE_SIZE } from '@constants/general.constant';
 import { IPagination } from '@models/IPagination.model';
 import { TranslateService } from '@ngx-translate/core';
@@ -115,14 +115,18 @@ export class ReceiptVoucherListComponent implements OnInit {
       pageSize: this.pagination.PageSize,
     };
     firstValueFrom(
-      this.dataService.get(receiptVouchersApi, { params }).pipe(
-        tap((res) => {
-          if (res?.IsSuccess) {
-            this.spinner.hide();
-            this.setData(res.Obj);
-          }
+      this.dataService
+        .get(`${treasuryManagementApi}/GetPagedTreasuryTransactionList`, {
+          params,
         })
-      )
+        .pipe(
+          tap((res) => {
+            if (res?.IsSuccess) {
+              this.spinner.hide();
+              this.setData(res.Obj);
+            }
+          })
+        )
     );
   }
 
