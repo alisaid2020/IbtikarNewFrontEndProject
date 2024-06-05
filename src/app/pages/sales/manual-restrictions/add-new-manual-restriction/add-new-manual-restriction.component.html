@@ -90,8 +90,8 @@
             class="disabled-form"
             [type]="'number'"
             [readonly]="true"
-            [placeholder]="'TotalCredit'"
-            [label]="'TotalCredit'"
+            [placeholder]="'CrAmountTotal'"
+            [label]="'CrAmountTotal'"
             [control]="totalCredit"
           ></app-ebtikar-input>
         </div>
@@ -100,8 +100,8 @@
             class="disabled-form"
             [type]="'number'"
             [readonly]="true"
-            [placeholder]="'TotalDebit'"
-            [label]="'TotalDebit'"
+            [placeholder]="'DrAmountTotal'"
+            [label]="'DrAmountTotal'"
             [control]="totalDebit"
           ></app-ebtikar-input>
         </div>
@@ -159,7 +159,7 @@
                 @for (col of columns; track $index) {
                 <ng-container [ngSwitch]="col.header">
                   <td
-                    *ngSwitchCase="'treasuryType'"
+                    *ngSwitchCase="'treasuryTypes'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
@@ -167,7 +167,7 @@
                       [customData]="treasuryTypesData[i]"
                       [apiUrl]="treasuryTypesApi"
                       [hasMultipleLabels]="true"
-                      [placeholder]="'treasuryType'"
+                      [placeholder]="'treasuryTypes'"
                       [bindValue]="'Id'"
                       [searchBy]="'val'"
                       [control]="linesArray.controls[i].get('treasureType')!"
@@ -175,7 +175,7 @@
                     ></app-ebtikar-select>
                   </td>
                   <td
-                    *ngSwitchCase="'Credit'"
+                    *ngSwitchCase="'CrAmount'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
@@ -187,7 +187,7 @@
                     ></app-ebtikar-input>
                   </td>
                   <td
-                    *ngSwitchCase="'Debit'"
+                    *ngSwitchCase="'DrAmount'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >

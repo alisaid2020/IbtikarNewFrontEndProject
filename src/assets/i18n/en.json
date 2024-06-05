@@ -206,5 +206,10 @@
   "manualRestrictions": "Manual Restrictions",
   "DocName": "Doc Name",
   "CrAmount": "Credit Amount",
-  "DrAmount": "Debit Amount"
+  "DrAmount": "Debit Amount",
+  "CrAmountTotal": "Total Credit",
+  "DrAmountTotal": "Total Debit",
+  "includeVat": "Include Vat",
+  "vatValue": "Vat Value",
+  "vatNotes": "Vat Notes"
 }

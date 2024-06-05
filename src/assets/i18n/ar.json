@@ -206,5 +206,10 @@
   "manualRestrictions": "القيود اليدوية",
   "DocName": "إسم المستند",
   "CrAmount": "مدين",
-  "DrAmount": "دائن"
+  "DrAmount": "دائن",
+  "CrAmountTotal": "إجمالى مدين",
+  "DrAmountTotal": "إجمالى دائن",
+  "includeVat": "شامل الضريبة",
+  "vatValue": "قيمة الضريبة",
+  "vatNotes": "ملاحظات الضريبة"
 }

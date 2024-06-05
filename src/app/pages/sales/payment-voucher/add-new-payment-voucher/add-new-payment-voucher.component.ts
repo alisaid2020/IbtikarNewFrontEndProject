@@ -62,9 +62,9 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     { field: 'Amount', header: 'amount' },
     { field: 'costCenterId', header: 'costCenter' },
     { field: 'Notes', header: 'notes' },
-    { field: 'IsVatchecked', header: 'includeTax' },
-    { field: 'vatVal', header: 'taxValue' },
-    { field: 'IsVatcheckedNotes', header: 'taxNotes' },
+    { field: 'IsVatchecked', header: 'includeVat' },
+    { field: 'vatVal', header: 'vatValue' },
+    { field: 'IsVatcheckedNotes', header: 'vatNotes' },
   ];
   invoiceLineKeys = [
     'AccTreeId',

@@ -39,9 +39,9 @@ export class AddNewManualRestrictionComponent implements OnInit {
   defaultStorage = 'manual-restriction-form-default-selected';
   treasuryTypesApi = `${generalLookupsApi}/GetSearchTreasuryTypesServiceTrim`;
   defaultSelected = [
-    { field: 'treasuryType', header: 'treasuryType' },
-    { field: 'Debit', header: 'Debit' },
-    { field: 'Credit', header: 'Credit' },
+    { field: 'treasuryType', header: 'treasuryTypes' },
+    { field: 'Credit', header: 'CrAmount' },
+    { field: 'Debit', header: 'DrAmount' },
     { field: 'CostCenterId', header: 'costCenter' },
     { field: 'Notes', header: 'notes' },
   ];
@@ -395,7 +395,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
               if (res.IsSuccess) {
                 this.spinner.hide();
                 this.toast.show(Toast.updated, { classname: Toast.success });
-                this.router.navigateByUrl('/payment-vouchers');
+                this.router.navigateByUrl('/manual-restrictions');
               }
             })
           )
@@ -413,7 +413,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
             if (res.IsSuccess) {
               this.spinner.hide();
               this.toast.show(Toast.added, { classname: Toast.success });
-              this.router.navigateByUrl('/payment-vouchers');
+              this.router.navigateByUrl('/manual-restrictions');
             }
           })
         )

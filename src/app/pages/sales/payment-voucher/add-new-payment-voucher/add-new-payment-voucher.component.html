@@ -365,7 +365,7 @@
                     ></app-ebtikar-input>
                   </td>
                   <td
-                    *ngSwitchCase="'includeTax'"
+                    *ngSwitchCase="'includeVat'"
                     style="min-width: 150px"
                     class="disabled-form"
                     appAppArrowFocus
@@ -379,7 +379,7 @@
                     />
                   </td>
                   <td
-                    *ngSwitchCase="'taxValue'"
+                    *ngSwitchCase="'vatValue'"
                     style="min-width: 200px"
                     class="disabled-form"
                     appAppArrowFocus
@@ -387,17 +387,17 @@
                     <app-ebtikar-input
                       [type]="'number'"
                       [readonly]="true"
-                      [placeholder]="'vatVal'"
+                      [placeholder]="'vatValue'"
                       [control]="linesArray.controls[i].get('vatVal')!"
                     ></app-ebtikar-input>
                   </td>
                   <td
-                    *ngSwitchCase="'taxNotes'"
+                    *ngSwitchCase="'vatNotes'"
                     style="min-width: 200px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
-                      [placeholder]="'taxNotes'"
+                      [placeholder]="'vatNotes'"
                       [control]="linesArray.controls[i].get('taxNotes')!"
                     ></app-ebtikar-input>
                   </td>
