@@ -1,7 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { apiUrl, treasuryManagementApi } from '@constants/api.constant';
+import {
+  apiUrl,
+  generalLookupsApi,
+  treasuryManagementApi,
+} from '@constants/api.constant';
 import { E_USER_ROLE } from '@constants/general.constant';
 import { Toast } from '@enums/toast.enum';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,7 +37,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
   manualRestrictionForm: FormGroup;
   tableStorage = 'manual-restriction-form-table';
   defaultStorage = 'manual-restriction-form-default-selected';
-  treasuryTypesApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetSearchTreasuryTypesServiceTrim`;
+  treasuryTypesApi = `${generalLookupsApi}/GetSearchTreasuryTypesServiceTrim`;
   defaultSelected = [
     { field: 'treasuryType', header: 'treasuryType' },
     { field: 'Debit', header: 'Debit' },

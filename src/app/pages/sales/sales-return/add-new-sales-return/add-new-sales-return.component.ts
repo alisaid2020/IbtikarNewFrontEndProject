@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { apiUrl } from '@constants/api.constant';
+import { apiUrl, generalLookupsApi } from '@constants/api.constant';
 import { E_USER_ROLE } from '@constants/general.constant';
 import { Toast } from '@enums/toast.enum';
 import { TranslateService } from '@ngx-translate/core';
@@ -34,7 +34,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
   invoiceNumber = new FormControl();
   tableStorage = 'salesReturnLines-table';
   defaultStorage = 'salesReturnLines-default-selected';
-  clientsApi = `${apiUrl}/XtraAndPos_GeneralLookups/CustomerByTerm`;
+  clientsApi = `${generalLookupsApi}/CustomerByTerm`;
   invoiceLineKeys = [
     'Price',
     'Barcode',
@@ -420,21 +420,19 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
 
   salesInvoiceInit(): void {
     firstValueFrom(
-      this.dataService
-        .get(`${apiUrl}/XtraAndPos_GeneralLookups/SalesInvoiceInit`)
-        .pipe(
-          tap((res) => {
-            if (res?.IsSuccess) {
-              this.invoiceInitObj = res.Obj;
-              if (this.invoiceInitObj.isSalesPerson) {
-                this.salesInvoiceForm.get('paymentType')?.setValue(2);
-              }
-              if (!this.invoiceInitObj.isSalesPerson) {
-                this.salesInvoiceForm.get('paymentType')?.setValue(1);
-              }
+      this.dataService.get(`${generalLookupsApi}/SalesInvoiceInit`).pipe(
+        tap((res) => {
+          if (res?.IsSuccess) {
+            this.invoiceInitObj = res.Obj;
+            if (this.invoiceInitObj.isSalesPerson) {
+              this.salesInvoiceForm.get('paymentType')?.setValue(2);
             }
-          })
-        )
+            if (!this.invoiceInitObj.isSalesPerson) {
+              this.salesInvoiceForm.get('paymentType')?.setValue(1);
+            }
+          }
+        })
+      )
     );
   }
 

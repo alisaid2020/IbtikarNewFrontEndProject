@@ -1,7 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { apiUrl, treasuryManagementApi } from '@constants/api.constant';
+import {
+  apiUrl,
+  generalLookupsApi,
+  treasuryManagementApi,
+} from '@constants/api.constant';
 import { E_USER_ROLE, USER_PROFILE } from '@constants/general.constant';
 import { Toast } from '@enums/toast.enum';
 import { TranslateService } from '@ngx-translate/core';
@@ -40,8 +44,8 @@ export class AddNewPaymentVoucherComponent implements OnInit {
   accTreeAccountsData: any[] = [];
   tableStorage = 'payment-voucher-form-table';
   defaultStorage = 'payment-voucher-form-default-selected';
-  clientsApi = `${apiUrl}/XtraAndPos_GeneralLookups/CustomerByTerm`;
-  accountsApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetAccountExpensessByTrim`;
+  clientsApi = `${generalLookupsApi}/CustomerByTerm`;
+  accountsApi = `${generalLookupsApi}/GetAccountExpensessByTrim`;
   typeOfDealing = [
     { value: 1, name: 'bank' },
     { value: 2, name: 'safe' },

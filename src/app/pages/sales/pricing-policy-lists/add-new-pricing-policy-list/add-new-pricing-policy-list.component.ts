@@ -14,7 +14,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { apiUrl, pricePolicyListApi } from '@constants/api.constant';
+import {
+  apiUrl,
+  generalLookupsApi,
+  pricePolicyListApi,
+} from '@constants/api.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '@services/data.service';
 import { HelpersService } from '@services/helpers.service';
@@ -54,7 +58,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   searchControl = new FormControl('');
   defaultStorage = 'pricingPolicyLists-default-selected';
   tableStorage = 'pricingPolicyLists-table';
-  itemsApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemUnitByTrim`;
+  itemsApi = `${generalLookupsApi}/GetItemUnitByTrim`;
   defaultSelected: any[] = [
     { field: 'ParCode', header: 'ParCode' },
     { field: 'ItemUniteId', header: 'ItemUniteId' },
@@ -376,7 +380,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   getPrice(ev: any, i: number): void {
     firstValueFrom(
       this.dataService
-        .get(`${apiUrl}/XtraAndPos_GeneralLookups/ItemPriceList`, {
+        .get(`${generalLookupsApi}/ItemPriceList`, {
           params: { itemUniteId: ev.Id },
         })
         .pipe(

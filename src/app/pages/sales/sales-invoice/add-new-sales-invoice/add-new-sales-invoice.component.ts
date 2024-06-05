@@ -6,7 +6,7 @@ import {
   Renderer2,
   inject,
 } from '@angular/core';
-import { apiUrl } from '@constants/api.constant';
+import { apiUrl, generalLookupsApi } from '@constants/api.constant';
 import { DataService } from '@services/data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TableService } from '@services/table.service';
@@ -43,9 +43,9 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   _selectedColumns: any[] = [];
   tableStorage = 'salesInvoiceLines-table';
   defaultStorage = 'salesInvoiceLines-default-selected';
-  clientsApi = `${apiUrl}/XtraAndPos_GeneralLookups/CustomerByTerm`;
-  itemsByTermApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemsByTrim`;
-  itemsByBarcodeApi = `${apiUrl}/XtraAndPos_GeneralLookups/GetItemByBarcode`;
+  clientsApi = `${generalLookupsApi}/CustomerByTerm`;
+  itemsByTermApi = `${generalLookupsApi}/GetItemsByTrim`;
+  itemsByBarcodeApi = `${generalLookupsApi}/GetItemByBarcode`;
   defaultSelected: any[] = [
     { field: 'productBarcode', header: 'Barcode' },
     { field: 'itemID', header: 'item' },
@@ -301,30 +301,28 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
 
   salesInvoiceInit(): void {
     firstValueFrom(
-      this.dataService
-        .get(`${apiUrl}/XtraAndPos_GeneralLookups/SalesInvoiceInit`)
-        .pipe(
-          tap((res) => {
-            if (res?.IsSuccess) {
-              this.invoiceInitObj = res.Obj;
+      this.dataService.get(`${generalLookupsApi}/SalesInvoiceInit`).pipe(
+        tap((res) => {
+          if (res?.IsSuccess) {
+            this.invoiceInitObj = res.Obj;
+            this.salesInvoiceForm.patchValue({
+              treasuryId: this.invoiceInitObj.empTreasury,
+            });
+            if (!this.saleInvoice) {
+              let matchingStore = this.invoiceInitObj.stores.find(
+                (el: any) => el.Id === this.invoiceInitObj?.empStore
+              );
               this.salesInvoiceForm.patchValue({
-                treasuryId: this.invoiceInitObj.empTreasury,
+                paymentType: this.invoiceInitObj.isSalesPerson ? 2 : 1,
+                storeId:
+                  this.invoiceInitObj?.empStore > 0 && matchingStore
+                    ? this.invoiceInitObj.empStore
+                    : null,
               });
-              if (!this.saleInvoice) {
-                let matchingStore = this.invoiceInitObj.stores.find(
-                  (el: any) => el.Id === this.invoiceInitObj?.empStore
-                );
-                this.salesInvoiceForm.patchValue({
-                  paymentType: this.invoiceInitObj.isSalesPerson ? 2 : 1,
-                  storeId:
-                    this.invoiceInitObj?.empStore > 0 && matchingStore
-                      ? this.invoiceInitObj.empStore
-                      : null,
-                });
-              }
             }
-          })
-        )
+          }
+        })
+      )
     );
   }
 
@@ -435,7 +433,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     };
     firstValueFrom(
       this.dataService
-        .get(`${apiUrl}/XtraAndPos_GeneralLookups/GetItemBalanceFromStorage`, {
+        .get(`${generalLookupsApi}/GetItemBalanceFromStorage`, {
           params,
         })
         .pipe(
@@ -456,7 +454,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     let balance = this.linesArray.controls[i].get('balance')?.value;
     firstValueFrom(
       this.dataService
-        .get(`${apiUrl}/XtraAndPos_GeneralLookups/ItemPriceList`, {
+        .get(`${generalLookupsApi}/ItemPriceList`, {
           params: { barcode: ev.Barcode },
         })
         .pipe(
