@@ -255,6 +255,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   removeLine(i: number) {
     if (this.linesArray?.length > 1) {
       this.linesArray.removeAt(i);
+      this.changeAmount();
     }
   }
 

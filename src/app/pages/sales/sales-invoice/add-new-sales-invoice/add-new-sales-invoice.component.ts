@@ -241,6 +241,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       }
     } else {
       this.linesArray.removeAt(i);
+      this.getTotalsOfInvoice();
     }
   }
 

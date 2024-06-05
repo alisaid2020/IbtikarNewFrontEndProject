@@ -248,6 +248,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
       this.items.splice(i, freeCounts + 1);
     } else {
       this.linesArray.removeAt(i);
+      this.getTotalsOfInvoice();
     }
   }
 
