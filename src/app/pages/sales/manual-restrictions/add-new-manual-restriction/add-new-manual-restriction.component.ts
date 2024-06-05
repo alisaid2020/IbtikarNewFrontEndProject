@@ -78,13 +78,43 @@ export class AddNewManualRestrictionComponent implements OnInit {
         })
       )
     );
-    this.getCostCenters();
-    this.getCurrencies();
+    this.getTreasuryTransactionInit();
     await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
         await this.initTableColumns();
       })
+    );
+  }
+
+  getTreasuryTransactionInit(): void {
+    firstValueFrom(
+      this.dataService
+        .get(
+          `${apiUrl}/XtraAndPos_TreasuryManagement/TreasuryTransactionInit?trxType=3`
+        )
+        .pipe(
+          map((res) => res.Data),
+          tap((res) => {
+            if (res?.IsSuccess) {
+              this.costCenters = res.Obj.CostCenters;
+              this.currencies = res.Obj.Currencyies;
+              if (!this.manualRestriction) {
+                this.defaultCurrency = this.currencies.find(
+                  (el) => el.IsDefault == true
+                );
+                this.manualRestrictionForm.patchValue({
+                  currencyId: this.defaultCurrency.Id,
+                });
+                this.docNo.setValue(res.Obj.docNo);
+              } else {
+                this.defaultCurrency = this.currencies.find(
+                  (el) => el.Id == this.manualRestriction.CurrencyId
+                );
+              }
+            }
+          })
+        )
     );
   }
 
@@ -262,46 +292,6 @@ export class AddNewManualRestrictionComponent implements OnInit {
     }
   }
 
-  getCostCenters(): void {
-    firstValueFrom(
-      this.dataService
-        .get(`${apiUrl}/ExtraAndPOS_CostCenter/ManagementInfo`)
-        .pipe(
-          tap((res) => {
-            if (res?.IsSuccess) {
-              this.costCenters = res.Obj.list;
-            }
-          })
-        )
-    );
-  }
-
-  getCurrencies(): void {
-    firstValueFrom(
-      this.dataService
-        .get(`${apiUrl}/XtraAndPOS_HREmployee/GetCurrencyForDropDown`)
-        .pipe(
-          tap((res) => {
-            if (res?.IsSuccess) {
-              this.currencies = res.Obj.Currencies;
-              if (!this.manualRestriction) {
-                this.defaultCurrency = this.currencies.find(
-                  (el) => el.IsDefault == true
-                );
-                this.manualRestrictionForm.patchValue({
-                  currencyId: this.defaultCurrency.Id,
-                });
-              } else {
-                this.defaultCurrency = this.currencies.find(
-                  (el) => el.Id == this.manualRestriction.CurrencyId
-                );
-              }
-            }
-          })
-        )
-    );
-  }
-
   changeCurrency(ev: any): void {
     if (ev) {
       if (ev.IsDefault) {
@@ -384,6 +374,15 @@ export class AddNewManualRestrictionComponent implements OnInit {
   }
 
   submit(): void {
+    if (
+      this.totalDebit.value !== this.totalCredit.value ||
+      this.totalDebit.value == 0
+    ) {
+      this.toast.show('القيد غير متزن يرجي ضبط طرفي القيد', {
+        classname: Toast.error,
+      });
+      return;
+    }
     this.spinner.show();
     let formValue = {
       ...this.manualRestrictionForm.value,
@@ -412,7 +411,9 @@ export class AddNewManualRestrictionComponent implements OnInit {
           tap((res) => {
             if (res.IsSuccess) {
               this.spinner.hide();
-              this.toast.show(Toast.added, { classname: Toast.success });
+              this.toast.show(res?.Message || Toast.added, {
+                classname: Toast.success,
+              });
               this.router.navigateByUrl('/manual-restrictions');
             }
           })
