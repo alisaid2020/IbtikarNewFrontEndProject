@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { apiUrl } from '@constants/api.constant';
+import { apiUrl, treasuryManagementApi } from '@constants/api.constant';
 import { PAGE_SIZE } from '@constants/general.constant';
 import { IPagination } from '@models/IPagination.model';
 import { TranslateService } from '@ngx-translate/core';
@@ -116,10 +116,9 @@ export class PaymentVoucherListComponent implements OnInit {
     };
     firstValueFrom(
       this.dataService
-        .get(
-          `${apiUrl}/XtraAndPos_TreasuryManagement/GetPagedTreasuryTransactionOutList`,
-          { params }
-        )
+        .get(`${treasuryManagementApi}/GetPagedTreasuryTransactionOutList`, {
+          params,
+        })
         .pipe(
           tap((res) => {
             if (res?.Success) {

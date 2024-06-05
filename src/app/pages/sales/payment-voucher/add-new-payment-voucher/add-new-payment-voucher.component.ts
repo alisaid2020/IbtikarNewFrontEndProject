@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { apiUrl } from '@constants/api.constant';
+import { apiUrl, treasuryManagementApi } from '@constants/api.constant';
 import { E_USER_ROLE, USER_PROFILE } from '@constants/general.constant';
 import { Toast } from '@enums/toast.enum';
 import { TranslateService } from '@ngx-translate/core';
@@ -657,7 +657,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
       firstValueFrom(
         this.dataService
           .put(
-            `${apiUrl}/XtraAndPos_TreasuryManagement/updateTreasuryOut`,
+            `${treasuryManagementApi}/updateTreasuryOut`,
             this.paymentVoucherForm.value
           )
           .pipe(
@@ -675,7 +675,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     firstValueFrom(
       this.dataService
         .post(
-          `${apiUrl}/XtraAndPos_TreasuryManagement/CreateTreasuryOut`,
+          `${treasuryManagementApi}/CreateTreasuryOut`,
           this.paymentVoucherForm.value
         )
         .pipe(
