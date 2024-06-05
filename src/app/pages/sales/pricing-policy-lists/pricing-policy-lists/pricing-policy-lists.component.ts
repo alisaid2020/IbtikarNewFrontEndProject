@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { apiUrl } from '@constants/api.constant';
+import { pricePolicyListApi } from '@constants/api.constant';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '@services/data.service';
@@ -113,7 +113,7 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
         this.spinner.show();
         firstValueFrom(
           this.dataService
-            .delete(`${apiUrl}/XtraAndPos_PricePolicyList/Delete`, {
+            .delete(`${pricePolicyListApi}/Delete`, {
               params: { id: item.Id },
             })
             .pipe(
@@ -139,7 +139,7 @@ export class PricingPolicyListsComponent implements OnInit, OnDestroy {
     };
     firstValueFrom(
       this.dataService
-        .get(`${apiUrl}/XtraAndPos_PricePolicyList/GetPagedPriceList`, {
+        .get(`${pricePolicyListApi}/GetPagedPriceList`, {
           params,
         })
         .pipe(

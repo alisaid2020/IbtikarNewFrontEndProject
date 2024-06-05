@@ -14,7 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { apiUrl } from '@constants/api.constant';
+import { apiUrl, pricePolicyListApi } from '@constants/api.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '@services/data.service';
 import { HelpersService } from '@services/helpers.service';
@@ -488,7 +488,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       firstValueFrom(
         this.dataService
           .post(
-            `${apiUrl}/XtraAndPos_PricePolicyList/UpdatePriceListDetail`,
+            `${pricePolicyListApi}/UpdatePriceListDetail`,
             this.changedFieldsOnly
           )
           .pipe(
@@ -506,19 +506,17 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       return;
     }
     firstValueFrom(
-      this.dataService
-        .post(`${apiUrl}/XtraAndPos_PricePolicyList/Create`, formValue)
-        .pipe(
-          tap((res) => {
-            if (res?.IsSuccess) {
-              this.spinner.hide();
-              this.router.navigateByUrl('/pricing-policy-lists');
-              this.toast.show(Toast.added, {
-                classname: Toast.success,
-              });
-            }
-          })
-        )
+      this.dataService.post(`${pricePolicyListApi}/Create`, formValue).pipe(
+        tap((res) => {
+          if (res?.IsSuccess) {
+            this.spinner.hide();
+            this.router.navigateByUrl('/pricing-policy-lists');
+            this.toast.show(Toast.added, {
+              classname: Toast.success,
+            });
+          }
+        })
+      )
     );
   }
 
