@@ -112,7 +112,9 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   getTreasuryTransactionInit(): void {
     firstValueFrom(
       this.dataService
-        .get(`${apiUrl}/XtraAndPos_TreasuryManagement/TreasuryTransactionInit`)
+        .get(
+          `${apiUrl}/XtraAndPos_TreasuryManagement/TreasuryTransactionInit?trxType=1`
+        )
         .pipe(
           map((res) => res.Data),
           tap((res) => {

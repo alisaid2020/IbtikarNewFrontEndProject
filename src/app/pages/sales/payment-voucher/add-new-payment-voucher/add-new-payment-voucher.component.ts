@@ -102,19 +102,49 @@ export class AddNewPaymentVoucherComponent implements OnInit {
         })
       )
     );
-    this.getMainBanks();
-    this.getMainTreasuries();
-    this.getCostCenters();
-    this.getCurrencies();
-    this.getBanksInLine();
-    this.getSuppliers();
-    this.getTreasuryInLine();
-    this.getEmployeeTreasury();
+    this.getTreasuryTransactionInit();
     await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
         await this.initTableColumns();
       })
+    );
+  }
+
+  getTreasuryTransactionInit(): void {
+    firstValueFrom(
+      this.dataService
+        .get(
+          `${apiUrl}/XtraAndPos_TreasuryManagement/TreasuryTransactionInit?trxType=2`
+        )
+        .pipe(
+          map((res) => res.Data),
+          tap((res) => {
+            if (res?.IsSuccess) {
+              this.banks = res.Obj.Banks;
+              this.treasuries = res.Obj.treasuries;
+              this.costCenters = res.Obj.CostCenters;
+              this.banksInLine = res.Obj.BankInMainBranch;
+              this.treasuriesInLine = res.Obj.TreasuryInMainBranch;
+              this.suppliers = res.Obj.Suppliers;
+              this.currencies = res.Obj.Currencyies;
+              if (!this.paymentVoucher) {
+                this.defaultCurrency = this.currencies.find(
+                  (el) => el.IsDefault == true
+                );
+                this.paymentVoucherForm.patchValue({
+                  curencyId: this.defaultCurrency.Id,
+                  docNo: res.Obj.docNo,
+                  treasuryId: res.Obj.employee.TreasuryId,
+                });
+              } else {
+                this.defaultCurrency = this.currencies.find(
+                  (el) => el.Id == this.paymentVoucher.CurencyId
+                );
+              }
+            }
+          })
+        )
     );
   }
 
@@ -222,32 +252,6 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     }
   }
 
-  getCurrencies(): void {
-    firstValueFrom(
-      this.dataService
-        .get(`${apiUrl}/XtraAndPOS_HREmployee/GetCurrencyForDropDown`)
-        .pipe(
-          tap((res) => {
-            if (res?.IsSuccess) {
-              this.currencies = res.Obj.Currencies;
-              if (!this.paymentVoucher) {
-                this.defaultCurrency = this.currencies.find(
-                  (el) => el.IsDefault == true
-                );
-                this.paymentVoucherForm.patchValue({
-                  curencyId: this.defaultCurrency.Id,
-                });
-              } else {
-                this.defaultCurrency = this.currencies.find(
-                  (el) => el.Id == this.paymentVoucher.CurencyId
-                );
-              }
-            }
-          })
-        )
-    );
-  }
-
   changeCurrency(ev: any): void {
     if (ev) {
       if (ev.IsDefault) {
@@ -255,47 +259,6 @@ export class AddNewPaymentVoucherComponent implements OnInit {
       }
       this.defaultCurrency = ev;
     }
-  }
-
-  getCostCenters(): void {
-    firstValueFrom(
-      this.dataService
-        .get(`${apiUrl}/ExtraAndPOS_CostCenter/ManagementInfo`)
-        .pipe(
-          tap((res) => {
-            if (res?.IsSuccess) {
-              this.costCenters = res.Obj.list;
-            }
-          })
-        )
-    );
-  }
-
-  getMainTreasuries(): void {
-    firstValueFrom(
-      this.dataService.get(`${apiUrl}/Treasury/GetAllForDropDown`).pipe(
-        tap((res) => {
-          this.treasuries = res;
-        })
-      )
-    );
-  }
-
-  getEmployeeTreasury(): void {
-    let employeeId =
-      this.helpers.getItemFromLocalStorage(USER_PROFILE)?.EmployeeId;
-    firstValueFrom(
-      this.dataService
-        .get(
-          `${apiUrl}/ExtraAndPOS_Employee/GetEmployeeTreasury?id=${employeeId}`
-        )
-        .pipe(
-          tap((res) => {
-            this.employeeTreasury = res;
-            this.paymentVoucherForm.patchValue({ treasuryId: res });
-          })
-        )
-    );
   }
 
   get linesArray(): FormArray {
@@ -511,18 +474,6 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     }
   }
 
-  getMainBanks(): void {
-    firstValueFrom(
-      this.dataService.get(`${apiUrl}/ExtraAndPOS_Bank/ManagementInfo`).pipe(
-        tap((res) => {
-          if (res.IsSuccess) {
-            this.banks = res.Obj.list;
-          }
-        })
-      )
-    );
-  }
-
   selectClientInLine(ev: any, i: number): void {
     let form = this.linesArray.controls[i];
     if (ev) {
@@ -545,18 +496,6 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     );
   }
 
-  getBanksInLine(): void {
-    firstValueFrom(
-      this.dataService.get(`${apiUrl}/ExtraAndPOS_Bank/banksInMainBranch`).pipe(
-        tap((res) => {
-          if (res?.IsSuccess) {
-            this.banksInLine = res?.Obj;
-          }
-        })
-      )
-    );
-  }
-
   selectBankInLine(ev: any, i: any) {
     let form = this.linesArray.controls[i];
     if (ev) {
@@ -564,35 +503,11 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     }
   }
 
-  getTreasuryInLine(): void {
-    firstValueFrom(
-      this.dataService.get(`${apiUrl}/Treasury/GetAllTreasuryMainBranch`).pipe(
-        tap((res) => {
-          this.treasuriesInLine = res;
-        })
-      )
-    );
-  }
-
   selectTreasuryInLine(ev: any, i: number) {
     let form = this.linesArray.controls[i];
     if (ev) {
       form.patchValue({ treasuryName: ev.NameAr });
     }
-  }
-
-  getSuppliers(): void {
-    firstValueFrom(
-      this.dataService
-        .get(`${apiUrl}/ExtraAndPOS_Client/GetAllSupplierForDropDown`)
-        .pipe(
-          tap((res) => {
-            if (res?.IsSuccess) {
-              this.suppliers = res.Obj.Result;
-            }
-          })
-        )
-    );
   }
 
   selectSupplier(ev: any, i: any): void {
