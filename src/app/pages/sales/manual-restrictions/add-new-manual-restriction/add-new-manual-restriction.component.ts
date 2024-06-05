@@ -122,6 +122,8 @@ export class AddNewManualRestrictionComponent implements OnInit {
       notes = this.manualRestriction.Notes;
       docType = this.manualRestriction.DocType;
       this.docNo.setValue(this.manualRestriction.DocNo);
+      this.totalCredit.setValue(this.manualRestriction.CrAmount);
+      this.totalDebit.setValue(this.manualRestriction.DrAmount);
     }
 
     this.manualRestrictionForm = this.fb.group({
@@ -383,13 +385,14 @@ export class AddNewManualRestrictionComponent implements OnInit {
 
   submit(): void {
     this.spinner.show();
+    let formValue = {
+      ...this.manualRestrictionForm.value,
+      docDate: this.manualRestrictionForm.value.docDate.toISOString(),
+    };
     if (this.manualRestriction) {
       firstValueFrom(
         this.dataService
-          .put(
-            `${treasuryManagementApi}/updateManualGeneralLedger`,
-            this.manualRestrictionForm.value
-          )
+          .put(`${treasuryManagementApi}/updateManualGeneralLedger`, formValue)
           .pipe(
             tap((res) => {
               if (res.IsSuccess) {
@@ -404,10 +407,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
     }
     firstValueFrom(
       this.dataService
-        .post(
-          `${treasuryManagementApi}/CreateManualGeneralLedger`,
-          this.manualRestrictionForm.value
-        )
+        .post(`${treasuryManagementApi}/CreateManualGeneralLedger`, formValue)
         .pipe(
           tap((res) => {
             if (res.IsSuccess) {

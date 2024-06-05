@@ -211,5 +211,6 @@
   "DrAmountTotal": "Total Debit",
   "includeVat": "Include Vat",
   "vatValue": "Vat Value",
-  "vatNotes": "Vat Notes"
+  "vatNotes": "Vat Notes",
+  "rapidAccess": "Rapid Access"
 }

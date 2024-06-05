@@ -516,13 +516,14 @@ export class AddNewReceiptVoucherComponent implements OnInit {
 
   submit(): void {
     this.spinner.show();
+    let formValue = {
+      ...this.receiptVoucherForm.value,
+      docDate: this.receiptVoucherForm.value.docDate.toISOString(),
+    };
     if (this.receiptVoucher) {
       firstValueFrom(
         this.dataService
-          .put(
-            `${treasuryManagementApi}/updateTreasury`,
-            this.receiptVoucherForm.value
-          )
+          .put(`${treasuryManagementApi}/updateTreasury`, formValue)
           .pipe(
             tap((res) => {
               if (res.IsSuccess) {
@@ -537,10 +538,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     }
     firstValueFrom(
       this.dataService
-        .post(
-          `${treasuryManagementApi}/CreateTreasury`,
-          this.receiptVoucherForm.value
-        )
+        .post(`${treasuryManagementApi}/CreateTreasury`, formValue)
         .pipe(
           tap((res) => {
             if (res.IsSuccess) {

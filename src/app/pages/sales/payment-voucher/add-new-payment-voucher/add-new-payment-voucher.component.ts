@@ -657,13 +657,14 @@ export class AddNewPaymentVoucherComponent implements OnInit {
 
   submit(): void {
     this.spinner.show();
+    let formValue = {
+      ...this.paymentVoucherForm.value,
+      docDate: this.paymentVoucherForm.value.docDate.toISOString(),
+    };
     if (this.paymentVoucher) {
       firstValueFrom(
         this.dataService
-          .put(
-            `${treasuryManagementApi}/updateTreasuryOut`,
-            this.paymentVoucherForm.value
-          )
+          .put(`${treasuryManagementApi}/updateTreasuryOut`, formValue)
           .pipe(
             tap((res) => {
               if (res.IsSuccess) {
@@ -678,10 +679,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     }
     firstValueFrom(
       this.dataService
-        .post(
-          `${treasuryManagementApi}/CreateTreasuryOut`,
-          this.paymentVoucherForm.value
-        )
+        .post(`${treasuryManagementApi}/CreateTreasuryOut`, formValue)
         .pipe(
           tap((res) => {
             if (res.IsSuccess) {
