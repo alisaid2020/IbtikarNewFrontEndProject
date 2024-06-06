@@ -212,5 +212,7 @@
   "includeVat": "Include Vat",
   "vatValue": "Vat Value",
   "vatNotes": "Vat Notes",
-  "rapidAccess": "Rapid Access"
+  "rapidAccess": "Rapid Access",
+  "generalAccounts": "General Accounts",
+  "unbalancedRestriction": "The restriction is unbalanced, please adjust both sides of the restriction"
 }

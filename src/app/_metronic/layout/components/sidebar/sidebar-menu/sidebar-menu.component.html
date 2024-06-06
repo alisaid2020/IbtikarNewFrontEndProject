@@ -18,9 +18,21 @@
     <ng-container *ngFor="let item of navItems">
       <div class="menu-item" *ngIf="!item?.children">
         <a
+          *ngIf="item?.route"
           class="menu-link without-sub"
           [routerLink]="item.route"
           routerLinkActive="active"
+        >
+          <span class="menu-icon">
+            <i [ngClass]="'fa' + ' ' + item.icon"></i>
+          </span>
+          <span class="menu-title" [translate]="item.name"></span>
+        </a>
+        <a
+          *ngIf="item?.href"
+          class="menu-link without-sub"
+          target="_blank"
+          [href]="item.href"
         >
           <span class="menu-icon">
             <i [ngClass]="'fa' + ' ' + item.icon"></i>

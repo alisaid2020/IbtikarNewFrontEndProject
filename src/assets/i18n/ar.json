@@ -212,5 +212,7 @@
   "includeVat": "شامل الضريبة",
   "vatValue": "قيمة الضريبة",
   "vatNotes": "ملاحظات الضريبة",
-  "rapidAccess": "الوصول السريع"
+  "rapidAccess": "الوصول السريع",
+  "generalAccounts": "الحسابات العامة",
+  "unbalancedRestriction": "القيد غير متزن يرجي ضبط طرفي القيد"
 }

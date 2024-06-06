@@ -148,9 +148,8 @@ export class AddNewManualRestrictionComponent implements OnInit {
       ccenter = this.manualRestriction?.CostCenterId || null;
       currencyId = this.manualRestriction.CurrencyId;
       docNoManual = this.manualRestriction.DocNoManual;
-      exchangeRate = this.manualRestriction.ExchangeRate;
+      exchangeRate = this.manualRestriction.ExchangePriceId;
       notes = this.manualRestriction.Notes;
-      docType = this.manualRestriction.DocType;
       this.docNo.setValue(this.manualRestriction.DocNo);
       this.totalCredit.setValue(this.manualRestriction.CrAmount);
       this.totalDebit.setValue(this.manualRestriction.DrAmount);
@@ -378,7 +377,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
       this.totalDebit.value !== this.totalCredit.value ||
       this.totalDebit.value == 0
     ) {
-      this.toast.show('القيد غير متزن يرجي ضبط طرفي القيد', {
+      this.toast.show('unbalancedRestriction', {
         classname: Toast.error,
       });
       return;
@@ -411,7 +410,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
           tap((res) => {
             if (res.IsSuccess) {
               this.spinner.hide();
-              this.toast.show(res?.Message || Toast.added, {
+              this.toast.show(Toast.added, {
                 classname: Toast.success,
               });
               this.router.navigateByUrl('/manual-restrictions');

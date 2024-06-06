@@ -3,6 +3,7 @@ import { LayoutType } from '../../../core/configs/config';
 import { LayoutInitService } from '../../../core/layout-init.service';
 import { LayoutService } from '../../../core/layout.service';
 import { HelpersService } from '@services/helpers.service';
+import { generalAccountsLink } from '@constants/api.constant';
 
 @Component({
   selector: 'app-sidebar-menu',
@@ -15,6 +16,11 @@ export class SidebarMenuComponent implements OnInit {
       name: 'dashboard',
       route: '/dashboard',
       icon: 'fa-chart-line',
+    },
+    {
+      name: 'generalAccounts',
+      href: generalAccountsLink,
+      icon: 'fa-calculator',
     },
     {
       name: 'sales',
