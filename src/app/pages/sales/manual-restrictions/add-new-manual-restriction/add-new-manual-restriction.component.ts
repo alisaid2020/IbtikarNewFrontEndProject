@@ -141,7 +141,6 @@ export class AddNewManualRestrictionComponent implements OnInit {
     let docType;
 
     if (this.manualRestriction) {
-      console.log(this.manualRestriction);
       id = this.manualRestriction.Id;
       docName = this.manualRestriction.DocName;
       docDate = new Date(this.manualRestriction.DocDate);
