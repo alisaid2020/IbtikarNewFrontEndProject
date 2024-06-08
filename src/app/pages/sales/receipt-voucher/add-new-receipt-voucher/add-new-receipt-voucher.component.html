@@ -347,8 +347,14 @@
                     <app-ebtikar-input
                       [placeholder]="'notes'"
                       [control]="linesArray.controls[i].get('notes')!"
-                    ></app-ebtikar-input></td
-                ></ng-container>
+                    ></app-ebtikar-input>
+                  </td>
+                  <td *ngSwitchDefault style="min-width: 200px">
+                    {{
+                      col?.field | tableColumnData : rowData.value | formatValue
+                    }}
+                  </td>
+                </ng-container>
                 }
                 <td>
                   <button

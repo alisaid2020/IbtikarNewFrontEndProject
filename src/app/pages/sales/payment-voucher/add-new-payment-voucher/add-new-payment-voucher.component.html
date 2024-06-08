@@ -407,6 +407,11 @@
                       [control]="linesArray.controls[i].get('taxNotes')!"
                     ></app-ebtikar-input>
                   </td>
+                  <td *ngSwitchDefault style="min-width: 200px">
+                    {{
+                      col?.field | tableColumnData : rowData.value | formatValue
+                    }}
+                  </td>
                 </ng-container>
                 }
                 <td>

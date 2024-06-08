@@ -224,7 +224,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'unit'"
-                    style="min-width: 200px"
+                    style="min-width: 170px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
@@ -246,7 +246,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'quantity'"
-                    style="min-width: 200px"
+                    style="min-width: 170px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
@@ -261,7 +261,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'price'"
-                    style="min-width: 200px"
+                    style="min-width: 170px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
@@ -276,7 +276,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'discount'"
-                    style="min-width: 200px"
+                    style="min-width: 170px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
@@ -290,7 +290,7 @@
                     ></app-ebtikar-input>
                   </td>
 
-                  <td *ngSwitchDefault style="min-width: 200px">
+                  <td *ngSwitchDefault style="min-width: 190px">
                     {{
                       col?.field | tableColumnData : rowData.value | formatValue
                     }}

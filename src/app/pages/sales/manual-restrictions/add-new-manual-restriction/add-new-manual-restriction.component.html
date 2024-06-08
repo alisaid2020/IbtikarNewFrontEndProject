@@ -164,6 +164,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
+                      id="treasuryType"
                       [customData]="treasuryTypesData[i]"
                       [apiUrl]="treasuryTypesApi"
                       [hasMultipleLabels]="true"
@@ -175,8 +176,22 @@
                     ></app-ebtikar-select>
                   </td>
                   <td
+                    *ngSwitchCase="'treasureTypeName'"
+                    style="min-width: 100px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-input
+                      class="disabled-form"
+                      [readonly]="true"
+                      [placeholder]="'treasureTypeName'"
+                      [control]="
+                        linesArray.controls[i].get('treasureTypeName')!
+                      "
+                    ></app-ebtikar-input>
+                  </td>
+                  <td
                     *ngSwitchCase="'CrAmount'"
-                    style="min-width: 200px"
+                    style="min-width: 170px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
@@ -188,7 +203,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'DrAmount'"
-                    style="min-width: 200px"
+                    style="min-width: 170px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
@@ -220,6 +235,11 @@
                       [placeholder]="'notes'"
                       [control]="linesArray.controls[i].get('notes')!"
                     ></app-ebtikar-input>
+                  </td>
+                  <td *ngSwitchDefault style="min-width: 200px">
+                    {{
+                      col?.field | tableColumnData : rowData.value | formatValue
+                    }}
                   </td>
                 </ng-container>
                 }

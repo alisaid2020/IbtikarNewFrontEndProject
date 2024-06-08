@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -40,6 +40,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
   treasuryTypesApi = `${generalLookupsApi}/GetSearchTreasuryTypesServiceTrim`;
   defaultSelected = [
     { field: 'treasuryType', header: 'treasuryTypes' },
+    { field: 'treasureTypeName', header: 'treasureTypeName' },
     { field: 'Credit', header: 'CrAmount' },
     { field: 'Debit', header: 'DrAmount' },
     { field: 'CostCenterId', header: 'costCenter' },
@@ -62,6 +63,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
   tableService = inject(TableService);
   spinner = inject(NgxSpinnerService);
   translate = inject(TranslateService);
+  elementRef = inject(ElementRef);
 
   async ngOnInit() {
     firstValueFrom(
@@ -176,7 +178,11 @@ export class AddNewManualRestrictionComponent implements OnInit {
         this.addNewLine(line);
         let form = this.linesArray.controls[i];
         if (line?.ClientId) {
-          form.patchValue({ treasureType: { Id: line.ClientId } });
+          form.patchValue({
+            treasureType: { Id: line.ClientId },
+            treasureTypeName:
+              this.translate.currentLang === 'ar' ? 'عملاء' : 'Clients',
+          });
           this.treasuryTypesData[i] = [
             {
               Id: line.ClientId,
@@ -186,7 +192,11 @@ export class AddNewManualRestrictionComponent implements OnInit {
           ];
         }
         if (line?.MainBank) {
-          form.patchValue({ treasureType: { Id: line.MainBank } });
+          form.patchValue({
+            treasureType: { Id: line.MainBank },
+            treasureTypeName:
+              this.translate.currentLang === 'ar' ? 'بنوك' : 'Banks',
+          });
           this.treasuryTypesData[i] = [
             {
               Id: line.MainBank,
@@ -196,7 +206,13 @@ export class AddNewManualRestrictionComponent implements OnInit {
           ];
         }
         if (line?.AccTreeId) {
-          form.patchValue({ treasureType: { Id: line.AccTreeId } });
+          form.patchValue({
+            treasureType: { Id: line.AccTreeId },
+            treasureTypeName:
+              this.translate.currentLang === 'ar'
+                ? 'شجرة الحسابات'
+                : 'Acc Tree',
+          });
           this.treasuryTypesData[i] = [
             {
               Id: line.AccTreeId,
@@ -206,7 +222,11 @@ export class AddNewManualRestrictionComponent implements OnInit {
           ];
         }
         if (line?.TreasuryId) {
-          form.patchValue({ treasureType: { Id: line.TreasuryId } });
+          form.patchValue({
+            treasureType: { Id: line.TreasuryId },
+            treasureTypeName:
+              this.translate.currentLang === 'ar' ? 'الخزينة' : 'Safe',
+          });
           this.treasuryTypesData[i] = [
             {
               Id: line.TreasuryId,
@@ -247,6 +267,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
     let clientName;
     let notes;
     let treasureType;
+    let treasureTypeName;
     if (value) {
       accTreeId = value?.AccTreeId || null;
       treasuryName = value?.TreasuryName;
@@ -279,6 +300,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
       treasuryId: [treasuryId],
       treasuryName: [treasuryName],
       treasureType: [treasureType],
+      treasureTypeName: [treasureTypeName],
     });
   }
 
@@ -305,6 +327,8 @@ export class AddNewManualRestrictionComponent implements OnInit {
       form.patchValue({
         clientId: ev.Id,
         clientName: ev.NameAr,
+        treasureTypeName:
+          this.translate.currentLang === 'ar' ? 'عملاء' : 'Clients',
         accTreeId: null,
         accTreeName: null,
         treasuryId: null,
@@ -318,6 +342,8 @@ export class AddNewManualRestrictionComponent implements OnInit {
       form.patchValue({
         mainBank: ev.Id,
         bankName: ev.NameAr,
+        treasureTypeName:
+          this.translate.currentLang === 'ar' ? 'بنوك' : 'Banks',
         clientId: null,
         clientName: null,
         accTreeId: null,
@@ -332,6 +358,8 @@ export class AddNewManualRestrictionComponent implements OnInit {
         accTreeId: ev.Id,
         accTreeName: ev.NameAr,
         accTreeCode: ev.AccCode,
+        treasureTypeName:
+          this.translate.currentLang === 'ar' ? 'شجرة الحسابات' : 'Acc Tree',
         mainBank: null,
         bankName: null,
         clientId: null,
@@ -351,8 +379,14 @@ export class AddNewManualRestrictionComponent implements OnInit {
         clientName: null,
         treasuryId: ev.Id,
         treasuryName: ev.NameAr,
+        treasureTypeName:
+          this.translate.currentLang === 'ar' ? 'الخزينة' : 'Safe',
       });
     }
+    this.addNewLine();
+    setTimeout(() => {
+      this.helpers.focusOnNextRow(i + 1, 'treasuryType', this.elementRef);
+    });
   }
 
   getTotalCredit(): void {
@@ -385,6 +419,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
     let formValue = {
       ...this.manualRestrictionForm.value,
       docDate: this.manualRestrictionForm.value.docDate.toISOString(),
+      glDetail: this.helpers.removeEmptyLines(this.linesArray),
     };
     if (this.manualRestriction) {
       firstValueFrom(
