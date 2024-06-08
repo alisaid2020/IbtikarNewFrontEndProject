@@ -49,21 +49,21 @@ const Routing: Routes = [
   {
     path: 'receipt-vouchers',
     loadChildren: () =>
-      import('./sales/receipt-voucher/receipt-voucher.module').then(
+      import('./accounts/receipt-voucher/receipt-voucher.module').then(
         (m) => m.ReceiptVoucherModule
       ),
   },
   {
     path: 'payment-vouchers',
     loadChildren: () =>
-      import('./sales/payment-voucher/payment-voucher.module').then(
+      import('./accounts/payment-voucher/payment-voucher.module').then(
         (m) => m.PaymentVoucherModule
       ),
   },
   {
     path: 'manual-restrictions',
     loadChildren: () =>
-      import('./sales/manual-restrictions/manual-restrictions.module').then(
+      import('./accounts/manual-restrictions/manual-restrictions.module').then(
         (m) => m.ManualRestrictionsModule
       ),
   },

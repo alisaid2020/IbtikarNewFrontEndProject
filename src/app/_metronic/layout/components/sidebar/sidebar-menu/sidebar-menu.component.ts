@@ -47,6 +47,17 @@ export class SidebarMenuComponent implements OnInit {
           // permission: 'pricelist',
         },
         {
+          title: 'salesSettings',
+          route: '/sales-settings',
+          // permission: 'SaleInvoice',
+        },
+      ],
+    },
+    {
+      name: 'accounts',
+      icon: 'fa-tag',
+      children: [
+        {
           title: 'receiptVouchers',
           route: 'receipt-vouchers',
           // permission: 'SaleInvoice',
@@ -59,11 +70,6 @@ export class SidebarMenuComponent implements OnInit {
         {
           title: 'manualRestrictions',
           route: 'manual-restrictions',
-          // permission: 'SaleInvoice',
-        },
-        {
-          title: 'salesSettings',
-          route: '/sales-settings',
           // permission: 'SaleInvoice',
         },
       ],
