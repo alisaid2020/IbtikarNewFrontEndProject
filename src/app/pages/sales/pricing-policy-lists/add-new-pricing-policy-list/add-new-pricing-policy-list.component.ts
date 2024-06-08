@@ -3,7 +3,6 @@ import {
   ElementRef,
   OnDestroy,
   OnInit,
-  Renderer2,
   inject,
 } from '@angular/core';
 import {
@@ -77,15 +76,9 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     'CommissionPercentage',
     'CommissionValue',
   ];
-  set selectedColumns(val: any[]) {
-    this._selectedColumns = this.defaultSelected.filter((col: any) =>
-      val.includes(col)
-    );
-  }
   router = inject(Router);
   fb = inject(FormBuilder);
   toast = inject(ToastService);
-  renderer = inject(Renderer2);
   elementRef = inject(ElementRef);
   route = inject(ActivatedRoute);
   helpers = inject(HelpersService);
@@ -331,22 +324,9 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     }
     this.addNewLine();
     setTimeout(() => {
-      this.focusOnNextRow(i);
+      this.helpers.focusOnNextRow(i + 1, 'parCode', this.elementRef);
     });
     // this.getPrice(ev, i);
-  }
-
-  focusOnNextRow(i: any): void {
-    const ngSelectElements = this.renderer
-      .selectRootElement(this.elementRef.nativeElement, true)
-      .querySelectorAll('#parCode');
-    const lastNgSelect = ngSelectElements[i + 1];
-    if (lastNgSelect) {
-      const inputElement = lastNgSelect.querySelector('input');
-      if (inputElement) {
-        inputElement.focus();
-      }
-    }
   }
 
   selectedItemByName(ev: any, i: any) {

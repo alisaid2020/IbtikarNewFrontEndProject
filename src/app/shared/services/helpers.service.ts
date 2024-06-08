@@ -1,5 +1,12 @@
 import { DOCUMENT } from '@angular/common';
-import { Inject, Injectable, signal } from '@angular/core';
+import {
+  ElementRef,
+  Inject,
+  Injectable,
+  Renderer2,
+  RendererFactory2,
+  signal,
+} from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { NgxPermissionsService } from 'ngx-permissions';
@@ -10,12 +17,16 @@ import { NgxPermissionsService } from 'ngx-permissions';
 export class HelpersService {
   showOverlay = signal(false);
   salesSettings: any = signal(null);
+  private renderer: Renderer2;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private translate: TranslateService,
-    private permissionsService: NgxPermissionsService
-  ) {}
+    private permissionsService: NgxPermissionsService,
+    private rendererFactory: RendererFactory2
+  ) {
+    this.renderer = rendererFactory.createRenderer(null, null);
+  }
 
   setItemToLocalStorage(name: string, value: any): void {
     localStorage.setItem(name, JSON.stringify(value));
@@ -40,6 +51,14 @@ export class HelpersService {
     return item.id;
   }
 
+  getTranslatedName(item: any): string {
+    const currLang = this.translate.currentLang;
+    if (item?.NameEn) {
+      return currLang === 'ar' ? item?.NameAr : item?.NameEn;
+    }
+    return item?.NameAr ? item?.NameAr : null;
+  }
+
   // get PDF file from base64
   getPdfFromBase64(base64String: string, fileName: string): void {
     const byteCharacters = window.atob(base64String);
@@ -60,14 +79,6 @@ export class HelpersService {
     this.document.body.removeChild(a);
   }
 
-  getTranslatedName(item: any): string {
-    const currLang = this.translate.currentLang;
-    if (item?.NameEn) {
-      return currLang === 'ar' ? item?.NameAr : item?.NameEn;
-    }
-    return item?.NameAr ? item?.NameAr : null;
-  }
-
   // remove empty lines from form array
   removeEmptyLines(myFormArray: FormArray): any {
     return myFormArray.controls
@@ -77,27 +88,18 @@ export class HelpersService {
       .map((formGroup) => formGroup.value);
   }
 
-  //conver discount percentage to discount value
-  convertDiscountToValue(
-    form: any,
-    isRoundToTwoNumbers: any,
-    itemPriceObj: any
-  ): any {
-    let quantity = form.get('quantity')?.value;
-    let price = form.get('price')?.value;
-    let discountValue: any;
-
-    if (!isRoundToTwoNumbers) {
-      let p1 = Math.round(price * quantity);
-      let p2 = Math.round(itemPriceObj.offers.ItemDiscount / 100);
-      discountValue = Math.round(p1 * p2);
-    } else {
-      let part1 = Math.round(quantity * price * 100) / 100;
-      let part2 =
-        Math.round((itemPriceObj.offers.ItemDiscount / 100) * 100) / 100;
-      discountValue = Math.round(part1 * part2 * 100) / 100;
+  // focus on slect field in next row
+  focusOnNextRow(i: any, selector: any, elementRef: ElementRef): void {
+    const ngSelectElements = this.renderer
+      .selectRootElement(elementRef.nativeElement, true)
+      .querySelectorAll(`#${selector}`);
+    const lastNgSelect = ngSelectElements[i];
+    if (lastNgSelect) {
+      const inputElement = lastNgSelect.querySelector('input');
+      if (inputElement) {
+        inputElement.focus();
+      }
     }
-    return discountValue;
   }
 
   hasPermission(pageName: string): boolean {

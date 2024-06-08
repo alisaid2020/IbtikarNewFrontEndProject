@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -81,6 +81,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   helpers = inject(HelpersService);
   route = inject(ActivatedRoute);
   router = inject(Router);
+  elementRef = inject(ElementRef);
 
   async ngOnInit() {
     firstValueFrom(
@@ -323,6 +324,10 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     if (ev) {
       form.patchValue({ clientName: ev.NameAr });
       this.getInvoicesByClientId(ev.Id, i);
+      this.addNewLine();
+      setTimeout(() => {
+        this.helpers.focusOnNextRow(i + 1, 'client', this.elementRef);
+      });
     }
   }
 
@@ -377,6 +382,8 @@ export class AddNewReceiptVoucherComponent implements OnInit {
       ];
     }
     this._selectedColumns = this.defaultSelected;
+    this.linesArray.clear();
+    this.addNewLine();
     this.linesArray.controls.forEach((form, i: any) => {
       if (ev.value === 1) {
         form.patchValue({
@@ -454,16 +461,33 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     });
   }
 
+  selectAccTree(ev: any, i: any) {
+    if (ev) {
+      this.addNewLine();
+      setTimeout(() => {
+        this.helpers.focusOnNextRow(i + 1, 'accTree', this.elementRef);
+      });
+    }
+  }
+
   selectBankInLine(ev: any, i: any) {
     let form = this.linesArray.controls[i];
     if (ev) {
       form.patchValue({ bankName: ev.NameAr });
+      this.addNewLine();
+      setTimeout(() => {
+        this.helpers.focusOnNextRow(i + 1, 'bank', this.elementRef);
+      });
     }
   }
 
   selectSupplier(ev: any, i: any): void {
     if (ev) {
       this.getInvoicesBySupplierId(ev.Id, i);
+      this.addNewLine();
+      setTimeout(() => {
+        this.helpers.focusOnNextRow(i + 1, 'supplier', this.elementRef);
+      });
     }
   }
 
@@ -471,6 +495,10 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     let form = this.linesArray.controls[i];
     if (ev) {
       form.patchValue({ treasuryName: ev.NameAr });
+      this.addNewLine();
+      setTimeout(() => {
+        this.helpers.focusOnNextRow(i + 1, 'treasury', this.elementRef);
+      });
     }
   }
 

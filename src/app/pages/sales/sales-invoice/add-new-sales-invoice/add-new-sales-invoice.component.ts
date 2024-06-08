@@ -3,7 +3,6 @@ import {
   ElementRef,
   OnDestroy,
   OnInit,
-  Renderer2,
   inject,
 } from '@angular/core';
 import { apiUrl, generalLookupsApi } from '@constants/api.constant';
@@ -76,17 +75,11 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     'discount',
     'TotalPriceAfterVat',
   ];
-  set selectedColumns(val: any[]) {
-    this._selectedColumns = this.defaultSelected.filter((col: any) =>
-      val.includes(col)
-    );
-  }
 
   router = inject(Router);
   route = inject(ActivatedRoute);
   fb = inject(FormBuilder);
   toast = inject(ToastService);
-  renderer = inject(Renderer2);
   elementRef = inject(ElementRef);
   helpers = inject(HelpersService);
   dataService = inject(DataService);
@@ -476,25 +469,16 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
               this.checkForOffers(i);
               this.addNewLine();
               setTimeout(() => {
-                this.focusOnNextRow(i);
+                this.helpers.focusOnNextRow(
+                  i + 1,
+                  'productBarcode',
+                  this.elementRef
+                );
               });
             }
           })
         )
     );
-  }
-
-  focusOnNextRow(i: any): void {
-    const ngSelectElements = this.renderer
-      .selectRootElement(this.elementRef.nativeElement, true)
-      .querySelectorAll('#productBarcode');
-    const lastNgSelect = ngSelectElements[i + 1];
-    if (lastNgSelect) {
-      const inputElement = lastNgSelect.querySelector('input');
-      if (inputElement) {
-        inputElement.focus();
-      }
-    }
   }
 
   changeQuantity(ev: any, i: any): void {
@@ -520,9 +504,8 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
 
     if (offers?.ItemDiscount > 0) {
       if (quantity >= this.itemPriceList[i]?.offers.ItemQty) {
-        let discountValue = this.helpers.convertDiscountToValue(
+        let discountValue = this.convertDiscountToValue(
           form,
-          this.isRoundToTwoNumbers,
           this.itemPriceList[i]
         );
         form.patchValue({ discount: discountValue });
@@ -596,6 +579,24 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       }
     }
     this.runCalculations(i);
+  }
+
+  convertDiscountToValue(form: any, itemPriceObj: any): any {
+    let quantity = form.get('quantity')?.value;
+    let price = form.get('price')?.value;
+    let discountValue: any;
+
+    if (!this.isRoundToTwoNumbers) {
+      let p1 = Math.round(price * quantity);
+      let p2 = Math.round(itemPriceObj.offers.ItemDiscount / 100);
+      discountValue = Math.round(p1 * p2);
+    } else {
+      let part1 = Math.round(quantity * price * 100) / 100;
+      let part2 =
+        Math.round((itemPriceObj.offers.ItemDiscount / 100) * 100) / 100;
+      discountValue = Math.round(part1 * part2 * 100) / 100;
+    }
+    return discountValue;
   }
 
   runCalculations(i: number): void {
