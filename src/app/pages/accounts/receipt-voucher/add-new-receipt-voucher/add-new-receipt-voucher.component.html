@@ -170,13 +170,35 @@
           columnResizeMode="expand"
         >
           <ng-template pTemplate="caption">
-            <button
-              type="button"
-              class="btn btn-warning"
-              (click)="addNewLine()"
-            >
-              {{ "addRow" | translate }}
-            </button>
+            <div class="d-flex align-items-center">
+              <span class="p-input-icon-left">
+                <p-button (click)="tableService.openMultiselect(ms1)">{{
+                  "hideShowColumns" | translate
+                }}</p-button>
+                <p-multiSelect
+                  #ms1
+                  appendTo="body"
+                  [options]="allColumns"
+                  [(ngModel)]="changedColumns"
+                  [ngModelOptions]="{ standalone: true }"
+                  optionLabel="header"
+                  filterBy="translatedName"
+                  (onPanelHide)="helpers.showOverlay.set(false)"
+                  (onChange)="changeInHideShow($event)"
+                >
+                  <ng-template let-option pTemplate="Item">
+                    {{ option.translatedName }}
+                  </ng-template>
+                </p-multiSelect>
+              </span>
+              <button
+                type="button"
+                class="btn btn-warning ms-3"
+                (click)="addNewLine()"
+              >
+                {{ "addRow" | translate }}
+              </button>
+            </div>
           </ng-template>
           <ng-template pTemplate="header" let-columns>
             <tr>

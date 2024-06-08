@@ -88,6 +88,25 @@ export class AddNewManualRestrictionComponent implements OnInit {
       })
     );
   }
+  changeInHideShow(ev: any): void {
+    this._selectedColumns = ev.value;
+    this.helpers.setItemToLocalStorage(
+      this.defaultStorage,
+      this._selectedColumns
+    );
+    if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
+      let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
+      let tsIndex: any = ts?.columnOrder.findIndex(
+        (el: any) => el === ev.itemValue.header
+      );
+      if (tsIndex >= 0) {
+        ts.columnOrder.splice(tsIndex, 1);
+      } else {
+        ts.columnOrder.push(ev.itemValue.field);
+      }
+      this.helpers.setItemToLocalStorage(this.tableStorage, ts);
+    }
+  }
 
   getTreasuryTransactionInit(): void {
     firstValueFrom(
