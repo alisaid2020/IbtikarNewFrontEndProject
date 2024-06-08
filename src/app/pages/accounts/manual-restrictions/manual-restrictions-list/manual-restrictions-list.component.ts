@@ -2,13 +2,17 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { apiUrl, treasuryManagementApi } from '@constants/api.constant';
 import { PAGE_SIZE } from '@constants/general.constant';
+import { Toast } from '@enums/toast.enum';
 import { IPagination } from '@models/IPagination.model';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '@services/data.service';
 import { HelpersService } from '@services/helpers.service';
 import { TableService } from '@services/table.service';
+import { ToastService } from '@services/toast-service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription, firstValueFrom, map, tap } from 'rxjs';
+import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-manual-restrictions-list',
@@ -33,12 +37,14 @@ export class ManualRestrictionsListComponent implements OnInit {
     { field: 'Notes', header: 'Notes' },
   ];
 
-  dataService = inject(DataService);
+  modal = inject(NgbModal);
+  toast = inject(ToastService);
   route = inject(ActivatedRoute);
-  translate = inject(TranslateService);
   helpers = inject(HelpersService);
+  dataService = inject(DataService);
   tableService = inject(TableService);
   spinner = inject(NgxSpinnerService);
+  translate = inject(TranslateService);
 
   async ngOnInit() {
     firstValueFrom(
@@ -144,5 +150,44 @@ export class ManualRestrictionsListComponent implements OnInit {
           })
         )
     );
+  }
+
+  delete(item: any) {
+    let formData = {
+      status: 0,
+      docId: item.Id,
+      DocNo: 0,
+      type: '',
+      docDate: item.DocDate,
+      fromDate: new Date(),
+      toDate: new Date(),
+      creditValue: 0,
+    };
+    const modalRef = this.modal.open(ConfirmModalComponent);
+    modalRef.componentInstance.modalInfo = {
+      title: 'deleteManualRestriction',
+      description: 'areYouSureToDelete',
+      name: this.translate.instant('ManualRestrictionList'),
+    };
+    modalRef.result.then((res) => {
+      if (res) {
+        this.spinner.show();
+        firstValueFrom(
+          this.dataService
+            .post(`${apiUrl}/ExtraAndPOS_Gl/Delete`, formData)
+            .pipe(
+              tap((res) => {
+                if (res?.IsSuccess) {
+                  this.spinner.hide();
+                  this.toast.show(Toast.deleted, {
+                    classname: Toast.success,
+                  });
+                  this.getManualRestrictions();
+                }
+              })
+            )
+        );
+      }
+    });
   }
 }
