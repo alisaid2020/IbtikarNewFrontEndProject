@@ -232,6 +232,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
+                      id="client"
                       [customData]="clientsData[i]"
                       [apiUrl]="clientsApi"
                       [hasMultipleLabels]="true"
@@ -263,6 +264,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
+                      id="accTree"
                       [customData]="accTreeAccountsData[i]"
                       [apiUrl]="accountsApi"
                       [hasMultipleLabels]="true"
@@ -270,6 +272,7 @@
                       [searchBy]="'AccName'"
                       [bindValue]="'Id'"
                       [control]="linesArray.controls[i].get('accTreeId')!"
+                      (emitChanged)="selectAccTree($event, i)"
                     ></app-ebtikar-select>
                   </td>
                   <td
@@ -278,6 +281,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
+                      id="bank"
                       [items]="banksInLine"
                       [hasMultipleLabels]="true"
                       [placeholder]="'bank'"
@@ -292,6 +296,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
+                      id="treasury"
                       [items]="treasuriesInLine"
                       [hasMultipleLabels]="true"
                       [placeholder]="'safe'"
@@ -306,6 +311,7 @@
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
+                      id="supplier"
                       [items]="suppliers"
                       [hasMultipleLabels]="true"
                       [placeholder]="'supplier'"

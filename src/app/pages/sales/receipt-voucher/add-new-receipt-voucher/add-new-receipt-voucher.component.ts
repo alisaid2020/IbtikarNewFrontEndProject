@@ -549,6 +549,9 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     let formValue = {
       ...this.receiptVoucherForm.value,
       docDate: this.receiptVoucherForm.value.docDate.toISOString(),
+      treasuryTransactionDetails: this.helpers.removeEmptyLines(
+        this.linesArray
+      ),
     };
     if (this.receiptVoucher) {
       firstValueFrom(
