@@ -20,15 +20,16 @@ import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/c
 })
 export class ManualRestrictionsListComponent implements OnInit {
   pageNo = 1;
-  manualRestrictionsList: any;
   changedColumns: any;
-  subs: Subscription[] = [];
-  _selectedColumns: any[] = [];
-  pagination: IPagination;
   allColumns: any[] = [];
+  pagination: IPagination;
+  subs: Subscription[] = [];
+  manualRestrictionsList: any;
+  _selectedColumns: any[] = [];
   tableStorage = 'manual-restrictions-list-table';
   defaultStorage = 'manual-restrictions-list-default-selected';
   defaultSelected: any[] = [
+    { field: 'DocNo', header: 'serial' },
     { field: 'BranchName', header: 'BranchName' },
     { field: 'DocDate', header: 'DocDate' },
     { field: 'DocName', header: 'DocName' },
@@ -72,7 +73,8 @@ export class ManualRestrictionsListComponent implements OnInit {
   async initTableColumns() {
     delete this.manualRestrictionsList[0]?.DocNo;
     this.allColumns = this.tableService.tableColumns(
-      this.manualRestrictionsList[0]
+      this.manualRestrictionsList[0],
+      this.defaultSelected
     );
     [this.changedColumns, this._selectedColumns] =
       await this.tableService.storageFn(
@@ -91,7 +93,7 @@ export class ManualRestrictionsListComponent implements OnInit {
     if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
       let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
       let tsIndex: any = ts?.columnOrder.findIndex(
-        (el: any) => el === ev.itemValue.header
+        (el: any) => el === ev.itemValue.field
       );
       if (tsIndex >= 0) {
         ts.columnOrder.splice(tsIndex, 1);

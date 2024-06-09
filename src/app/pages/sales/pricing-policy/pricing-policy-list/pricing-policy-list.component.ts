@@ -26,15 +26,10 @@ export class PricingPolicyListComponent implements OnInit, OnDestroy {
   changedColumns: any;
   pricingPolicyList: any;
   defaultSelected: any[] = [
-    { field: 'CreatedDate', header: 'CreatedDate' },
     { field: 'NameAr', header: 'NameAr' },
+    { field: 'CreatedDate', header: 'CreatedDate' },
     { field: 'Notes', header: 'Notes' },
   ];
-  set selectedColumns(val: any[]) {
-    this._selectedColumns = this.defaultSelected.filter((col: any) =>
-      val.includes(col)
-    );
-  }
 
   translate = inject(TranslateService);
   helpers = inject(HelpersService);
@@ -70,7 +65,10 @@ export class PricingPolicyListComponent implements OnInit, OnDestroy {
   }
 
   async initTableColumns() {
-    this.allColumns = this.tableService.tableColumns(this.pricingPolicyList[0]);
+    this.allColumns = this.tableService.tableColumns(
+      this.pricingPolicyList[0],
+      this.defaultSelected
+    );
     [this.changedColumns, this._selectedColumns] =
       await this.tableService.storageFn(
         this.defaultSelected,
@@ -88,7 +86,7 @@ export class PricingPolicyListComponent implements OnInit, OnDestroy {
     if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
       let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
       let tsIndex: any = ts?.columnOrder.findIndex(
-        (el: any) => el === ev.itemValue.header
+        (el: any) => el === ev.itemValue.field
       );
       if (tsIndex >= 0) {
         ts.columnOrder.splice(tsIndex, 1);

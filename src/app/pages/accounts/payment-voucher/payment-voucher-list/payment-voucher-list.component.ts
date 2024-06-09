@@ -15,9 +15,9 @@ import { Subscription, firstValueFrom, map, tap } from 'rxjs';
   templateUrl: './payment-voucher-list.component.html',
 })
 export class PaymentVoucherListComponent implements OnInit {
+  pageNo: number = 1;
   changedColumns: any;
   pagination: IPagination;
-  pageNo: number = 1;
   allColumns: any[] = [];
   paymentVouchersList: any;
   subs: Subscription[] = [];
@@ -25,6 +25,7 @@ export class PaymentVoucherListComponent implements OnInit {
   tableStorage = 'payment-voucher-list-table';
   defaultStorage = 'payment-voucher-list-default-selected';
   defaultSelected: any[] = [
+    { field: 'DocNo', header: 'serial' },
     { field: 'BranchName', header: 'BranchName' },
     { field: 'DocDate', header: 'DocDate' },
     { field: 'TreasuryType', header: 'TreasuryType' },
@@ -65,7 +66,8 @@ export class PaymentVoucherListComponent implements OnInit {
   async initTableColumns() {
     delete this.paymentVouchersList[0]?.DocNo;
     this.allColumns = this.tableService.tableColumns(
-      this.paymentVouchersList[0]
+      this.paymentVouchersList[0],
+      this.defaultSelected
     );
     [this.changedColumns, this._selectedColumns] =
       await this.tableService.storageFn(
@@ -84,7 +86,7 @@ export class PaymentVoucherListComponent implements OnInit {
     if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
       let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
       let tsIndex: any = ts?.columnOrder.findIndex(
-        (el: any) => el === ev.itemValue.header
+        (el: any) => el === ev.itemValue.field
       );
       if (tsIndex >= 0) {
         ts.columnOrder.splice(tsIndex, 1);

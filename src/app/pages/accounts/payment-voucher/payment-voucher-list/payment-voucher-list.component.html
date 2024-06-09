@@ -30,14 +30,11 @@
               appendTo="body"
               [options]="allColumns"
               [(ngModel)]="changedColumns"
-              optionLabel="header"
+              optionLabel="translatedName"
               filterBy="translatedName"
               (onPanelHide)="helpers.showOverlay.set(false)"
               (onChange)="changeInHideShow($event)"
             >
-              <ng-template let-option pTemplate="Item">
-                {{ option.translatedName }}
-              </ng-template>
             </p-multiSelect>
           </span>
         </div>
