@@ -35,17 +35,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
   tableStorage = 'salesReturnLines-table';
   defaultStorage = 'salesReturnLines-default-selected';
   clientsApi = `${generalLookupsApi}/CustomerByTerm`;
-  invoiceLineKeys = [
-    'Price',
-    'Barcode',
-    'Item',
-    'Unit',
-    'Quantity',
-    'Balance',
-    'Vat',
-    'Discount',
-    'TotalPriceAfterVat',
-  ];
+  invoiceLineKeys: any[];
   defaultSelected: any[] = [
     { field: 'Barcode', header: 'Barcode' },
     { field: 'ItemID', header: 'ItemID' },
@@ -75,12 +65,6 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     this.isRoundToTwoNumbers = this.helpers.salesSettings()?.RoundToTwoNumbers;
     this.salesInvoiceInit();
     this.initForm();
-    await this.initTableColumns();
-    this.subs.push(
-      this.translate.onLangChange.subscribe(async () => {
-        await this.initTableColumns();
-      })
-    );
   }
 
   initForm(): void {
@@ -125,8 +109,20 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     });
   }
 
+  async InitTable() {
+    await this.initTableColumns();
+    this.subs.push(
+      this.translate.onLangChange.subscribe(async () => {
+        await this.initTableColumns();
+      })
+    );
+  }
+
   async initTableColumns() {
-    this.allColumns = this.tableService.tableColumns(this.invoiceLineKeys);
+    this.allColumns = this.tableService.tableColumns(
+      this.invoiceLineKeys,
+      this.defaultSelected
+    );
     [this.changedColumns, this._selectedColumns] =
       await this.tableService.storageFn(
         this.defaultSelected,
@@ -144,7 +140,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
     if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
       let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
       let tsIndex: any = ts?.columnOrder.findIndex(
-        (el: any) => el === ev.itemValue.header
+        (el: any) => el === ev.itemValue.field
       );
       if (tsIndex >= 0) {
         ts.columnOrder.splice(tsIndex, 1);
@@ -420,10 +416,12 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
 
   salesInvoiceInit(): void {
     firstValueFrom(
-      this.dataService.get(`${generalLookupsApi}/SalesInvoiceInit`).pipe(
-        tap((res) => {
+      this.dataService.get(`${generalLookupsApi}/SalesInvoiceInit?Trx=2`).pipe(
+        tap(async (res) => {
           if (res?.IsSuccess) {
             this.invoiceInitObj = res.Obj;
+            this.invoiceLineKeys = this.invoiceInitObj.DetailsColumns;
+            await this.InitTable();
             if (this.invoiceInitObj.isSalesPerson) {
               this.salesInvoiceForm.get('paymentType')?.setValue(2);
             }

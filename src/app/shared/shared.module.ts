@@ -39,6 +39,7 @@ import { FormatValuePipe } from './pipes/format-value.pipe';
 import { TableColumnDataPipe } from './pipes/table-column-data.pipe';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { TableFormColumnDataPipe } from './pipes/table-form-column-data.pipe';
 
 const sharedModules: any[] = [
   NgbNavModule,
@@ -84,6 +85,7 @@ const sharedComponents: any[] = [
   ScriptsInitComponent,
   FormatValuePipe,
   TableColumnDataPipe,
+  TableFormColumnDataPipe,
 ];
 
 @NgModule({

@@ -117,14 +117,11 @@
                   [options]="allColumns"
                   [(ngModel)]="changedColumns"
                   [ngModelOptions]="{ standalone: true }"
-                  optionLabel="header"
+                  optionLabel="translatedName"
                   filterBy="translatedName"
                   (onPanelHide)="helpers.showOverlay.set(false)"
                   (onChange)="changeInHideShow($event)"
                 >
-                  <ng-template let-option pTemplate="Item">
-                    {{ option.translatedName }}
-                  </ng-template>
                 </p-multiSelect>
               </span>
             </div>
@@ -161,7 +158,7 @@
                 <ng-container [ngSwitch]="col.header">
                   <td
                     *ngSwitchCase="'Barcode'"
-                    style="min-width: 200px"
+                    style="min-width: 190px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
@@ -193,7 +190,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'item'"
-                    style="min-width: 200px"
+                    style="min-width: 190px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
@@ -224,7 +221,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'unit'"
-                    style="min-width: 170px"
+                    style="min-width: 160px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
@@ -246,7 +243,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'quantity'"
-                    style="min-width: 170px"
+                    style="min-width: 160px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
@@ -290,9 +287,13 @@
                     ></app-ebtikar-input>
                   </td>
 
-                  <td *ngSwitchDefault style="min-width: 190px">
+                  <td *ngSwitchDefault style="min-width: 115px">
                     {{
-                      col?.field | tableColumnData : rowData.value | formatValue
+                      col?.field
+                        | tableFormColumnData
+                          : rowData.value
+                          : saleInvoice?.inv?.SaleInvoiceDetails[i]
+                        | formatValue
                     }}
                   </td>
                 </ng-container>

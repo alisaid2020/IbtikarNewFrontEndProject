@@ -5,20 +5,20 @@ import {
   OnInit,
   inject,
 } from '@angular/core';
-import { apiUrl, generalLookupsApi } from '@constants/api.constant';
+import { Toast } from '@enums/toast.enum';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { DataService } from '@services/data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TableService } from '@services/table.service';
+import { ToastService } from '@services/toast-service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { E_USER_ROLE } from '@constants/general.constant';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { HelpersService } from '@services/helpers.service';
 import { Subscription, firstValueFrom, map, tap } from 'rxjs';
+import { apiUrl, generalLookupsApi } from '@constants/api.constant';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ShiftDetailsDrawerComponent } from '../shift-details-drawer/shift-details-drawer.component';
-import { ToastService } from '@services/toast-service';
-import { Toast } from '@enums/toast.enum';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-new-sales-invoice',
@@ -28,6 +28,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   shiftData: any;
   saleInvoice: any;
   items: any[] = [];
+  invoiceLineKeys: any[];
   isRoundToTwoNumbers: any;
   invoiceInitObj: any;
   itemPriceList: any[] = [];
@@ -45,17 +46,6 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
   clientsApi = `${generalLookupsApi}/CustomerByTerm`;
   itemsByTermApi = `${generalLookupsApi}/GetItemsByTrim`;
   itemsByBarcodeApi = `${generalLookupsApi}/GetItemByBarcode`;
-  defaultSelected: any[] = [
-    { field: 'productBarcode', header: 'Barcode' },
-    { field: 'itemID', header: 'item' },
-    { field: 'uniteId', header: 'unit' },
-    { field: 'quantity', header: 'quantity' },
-    { field: 'price', header: 'price' },
-    { field: 'discount', header: 'discount' },
-    { field: 'balance', header: 'balance' },
-    { field: 'vat', header: 'vat' },
-    { field: 'totalPriceAfterVat', header: 'TotalPriceAfterVat' },
-  ];
   paymentTypes = [
     { name: 'cash', value: 1 },
     { name: 'debt', value: 2 },
@@ -64,27 +54,27 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     { name: 'Mada', value: 1 },
     { name: 'Transfer', value: 2 },
   ];
-  invoiceLineKeys = [
-    'price',
-    'barcode',
-    'item',
-    'unit',
-    'quantity',
-    'balance',
-    'vat',
-    'discount',
-    'TotalPriceAfterVat',
+  defaultSelected: any[] = [
+    { field: 'ProductBarcode', header: 'Barcode' },
+    { field: 'ItemID', header: 'item' },
+    { field: 'UniteId', header: 'unit' },
+    { field: 'Quantity', header: 'quantity' },
+    { field: 'Price', header: 'price' },
+    { field: 'Discount', header: 'discount' },
+    { field: 'Balance', header: 'balance' },
+    { field: 'Vat', header: 'vat' },
+    { field: 'TotalPriceAfterVat', header: 'TotalPriceAfterVat' },
   ];
 
   router = inject(Router);
-  route = inject(ActivatedRoute);
   fb = inject(FormBuilder);
   toast = inject(ToastService);
+  route = inject(ActivatedRoute);
   elementRef = inject(ElementRef);
   helpers = inject(HelpersService);
   dataService = inject(DataService);
-  tableService = inject(TableService);
   spinner = inject(NgxSpinnerService);
+  tableService = inject(TableService);
   translate = inject(TranslateService);
   offcanvasService = inject(NgbOffcanvas);
 
@@ -94,8 +84,8 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     firstValueFrom(
       this.route.data.pipe(
         map((res) => res.saleInvoice),
-        tap((res) => {
-          if (res) {
+        tap(async (res) => {
+          if (res?.IsSuccess) {
             this.saleInvoice = res?.Obj;
           }
         })
@@ -104,12 +94,77 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
     this.initForm();
     this.checkIfUserShiftOpened();
     this.getShiftInfo();
+  }
+
+  async InitTable() {
     await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
         await this.initTableColumns();
       })
     );
+  }
+
+  async initTableColumns() {
+    this.allColumns = this.tableService.tableColumns(
+      this.invoiceLineKeys,
+      this.defaultSelected
+    );
+    [this.changedColumns, this._selectedColumns] =
+      await this.tableService.storageFn(
+        this.defaultSelected,
+        this.defaultStorage,
+        this._selectedColumns
+      );
+  }
+
+  salesInvoiceInit(): void {
+    firstValueFrom(
+      this.dataService.get(`${generalLookupsApi}/SalesInvoiceInit?Trx=1`).pipe(
+        tap(async (res) => {
+          if (res?.IsSuccess) {
+            this.invoiceInitObj = res.Obj;
+            this.invoiceLineKeys = this.invoiceInitObj.DetailsColumns;
+            await this.InitTable();
+            this.salesInvoiceForm.patchValue({
+              treasuryId: this.invoiceInitObj.empTreasury,
+            });
+            if (!this.saleInvoice) {
+              let matchingStore = this.invoiceInitObj.stores.find(
+                (el: any) => el.Id === this.invoiceInitObj?.empStore
+              );
+              this.salesInvoiceForm.patchValue({
+                paymentType: this.invoiceInitObj.isSalesPerson ? 2 : 1,
+                storeId:
+                  this.invoiceInitObj?.empStore > 0 && matchingStore
+                    ? this.invoiceInitObj.empStore
+                    : null,
+              });
+            }
+          }
+        })
+      )
+    );
+  }
+
+  changeInHideShow(ev: any): void {
+    this._selectedColumns = ev.value;
+    this.helpers.setItemToLocalStorage(
+      this.defaultStorage,
+      this._selectedColumns
+    );
+    if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
+      let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
+      let tsIndex: any = ts?.columnOrder.findIndex(
+        (el: any) => el === ev.itemValue.field
+      );
+      if (tsIndex >= 0) {
+        ts.columnOrder.splice(tsIndex, 1);
+      } else {
+        ts.columnOrder.push(ev.itemValue.field);
+      }
+      this.helpers.setItemToLocalStorage(this.tableStorage, ts);
+    }
   }
 
   initForm(): void {
@@ -280,63 +335,6 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
       totalPriceAfterVat: [totalPriceAfterVat],
       isProductFree: [isProductFree],
     });
-  }
-
-  async initTableColumns() {
-    this.allColumns = this.tableService.tableColumns(this.invoiceLineKeys);
-    [this.changedColumns, this._selectedColumns] =
-      await this.tableService.storageFn(
-        this.defaultSelected,
-        this.defaultStorage,
-        this._selectedColumns
-      );
-  }
-
-  salesInvoiceInit(): void {
-    firstValueFrom(
-      this.dataService.get(`${generalLookupsApi}/SalesInvoiceInit`).pipe(
-        tap((res) => {
-          if (res?.IsSuccess) {
-            this.invoiceInitObj = res.Obj;
-            this.salesInvoiceForm.patchValue({
-              treasuryId: this.invoiceInitObj.empTreasury,
-            });
-            if (!this.saleInvoice) {
-              let matchingStore = this.invoiceInitObj.stores.find(
-                (el: any) => el.Id === this.invoiceInitObj?.empStore
-              );
-              this.salesInvoiceForm.patchValue({
-                paymentType: this.invoiceInitObj.isSalesPerson ? 2 : 1,
-                storeId:
-                  this.invoiceInitObj?.empStore > 0 && matchingStore
-                    ? this.invoiceInitObj.empStore
-                    : null,
-              });
-            }
-          }
-        })
-      )
-    );
-  }
-
-  changeInHideShow(ev: any): void {
-    this._selectedColumns = ev.value;
-    this.helpers.setItemToLocalStorage(
-      this.defaultStorage,
-      this._selectedColumns
-    );
-    if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
-      let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
-      let tsIndex: any = ts?.columnOrder.findIndex(
-        (el: any) => el === ev.itemValue.header
-      );
-      if (tsIndex >= 0) {
-        ts.columnOrder.splice(tsIndex, 1);
-      } else {
-        ts.columnOrder.push(ev.itemValue.field);
-      }
-      this.helpers.setItemToLocalStorage(this.tableStorage, ts);
-    }
   }
 
   changePaymentType(ev: any) {

@@ -42,7 +42,7 @@ export class TableService {
 
   tableColumns(element: any, defaultSelected?: any[]) {
     this.objectKeys = this.gekKeys(element)?.filter(
-      (el: any) => !/Guid|Id/gi.test(el)
+      (el: any) => !/Guid/gi.test(el)
     );
     this.allColumns = [];
     this.objectKeys?.forEach((el: any) => {
