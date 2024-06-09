@@ -124,7 +124,7 @@ export class AddNewSalesInvoiceComponent implements OnInit, OnDestroy {
         tap(async (res) => {
           if (res?.IsSuccess) {
             this.invoiceInitObj = res.Obj;
-            this.invoiceLineKeys = this.invoiceInitObj.DetailsColumns;
+            this.invoiceLineKeys = [...res.Obj.DetailsColumns, 'Balance'];
             await this.InitTable();
             this.salesInvoiceForm.patchValue({
               treasuryId: this.invoiceInitObj.empTreasury,

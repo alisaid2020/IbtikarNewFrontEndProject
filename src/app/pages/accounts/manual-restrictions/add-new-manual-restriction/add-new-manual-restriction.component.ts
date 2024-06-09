@@ -25,6 +25,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
   costCenters: any[];
   changedColumns: any;
   defaultCurrency: any;
+  invoiceLineKeys: any[];
   manualRestriction: any;
   allColumns: any[] = [];
   E_USER_ROLE = E_USER_ROLE;
@@ -39,19 +40,12 @@ export class AddNewManualRestrictionComponent implements OnInit {
   defaultStorage = 'manual-restriction-form-default-selected';
   treasuryTypesApi = `${generalLookupsApi}/GetSearchTreasuryTypesServiceTrim`;
   defaultSelected = [
-    { field: 'treasuryType', header: 'treasuryTypes' },
-    { field: 'treasureTypeName', header: 'treasureTypeName' },
+    { field: 'TreasuryType', header: 'treasuryTypes' },
+    { field: 'TreasureTypeName', header: 'treasureTypeName' },
     { field: 'Credit', header: 'CrAmount' },
     { field: 'Debit', header: 'DrAmount' },
     { field: 'CostCenterId', header: 'costCenter' },
     { field: 'Notes', header: 'notes' },
-  ];
-  invoiceLineKeys = [
-    'treasuryType',
-    'Debit',
-    'Credit',
-    'CostCenterId',
-    'Notes',
   ];
 
   router = inject(Router);
@@ -81,6 +75,9 @@ export class AddNewManualRestrictionComponent implements OnInit {
       )
     );
     this.getTreasuryTransactionInit();
+  }
+
+  async InitTable() {
     await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
@@ -88,6 +85,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
       })
     );
   }
+
   changeInHideShow(ev: any): void {
     this._selectedColumns = ev.value;
     this.helpers.setItemToLocalStorage(
@@ -116,8 +114,14 @@ export class AddNewManualRestrictionComponent implements OnInit {
         )
         .pipe(
           map((res) => res.Data),
-          tap((res) => {
+          tap(async (res) => {
             if (res?.IsSuccess) {
+              this.invoiceLineKeys = [
+                ...res.Obj.DetailsColumns,
+                'TreasuryType',
+                'TreasureTypeName',
+              ];
+              await this.InitTable();
               this.costCenters = res.Obj.CostCenters;
               this.currencies = res.Obj.Currencyies;
               if (!this.manualRestriction) {
@@ -140,7 +144,10 @@ export class AddNewManualRestrictionComponent implements OnInit {
   }
 
   async initTableColumns() {
-    this.allColumns = this.tableService.tableColumns(this.invoiceLineKeys);
+    this.allColumns = this.tableService.tableColumns(
+      this.invoiceLineKeys,
+      this.defaultSelected
+    );
     [this.changedColumns, this._selectedColumns] =
       await this.tableService.storageFn(
         this.defaultSelected,
