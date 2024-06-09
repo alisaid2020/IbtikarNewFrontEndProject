@@ -71,7 +71,6 @@ export class ManualRestrictionsListComponent implements OnInit {
   }
 
   async initTableColumns() {
-    delete this.manualRestrictionsList[0]?.DocNo;
     this.allColumns = this.tableService.tableColumns(
       this.manualRestrictionsList[0],
       this.defaultSelected

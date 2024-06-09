@@ -64,7 +64,6 @@ export class PaymentVoucherListComponent implements OnInit {
   }
 
   async initTableColumns() {
-    delete this.paymentVouchersList[0]?.DocNo;
     this.allColumns = this.tableService.tableColumns(
       this.paymentVouchersList[0],
       this.defaultSelected
