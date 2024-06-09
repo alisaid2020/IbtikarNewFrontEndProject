@@ -97,7 +97,9 @@
   "NameAr": "Arabic Name",
   "ModifyByName": "Modify By",
   "invoiceNumber": "Invoice Number",
-  "DocNo": "Invoice Number",
+  "salesInvoices": {
+    "DocNo": "Invoice Number"
+  },
   "TotalPriceAfterVat": "Total Price After Vat",
   "ReturnedQty": "Returned Qty",
   "CorrectQty": "Sold Qty",

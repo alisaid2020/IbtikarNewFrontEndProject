@@ -25,6 +25,7 @@ export class ReceiptVoucherListComponent implements OnInit {
   tableStorage = 'receipt-voucher-list-table';
   defaultStorage = 'receipt-voucher-list-default-selected';
   defaultSelected: any[] = [
+    { field: 'DocNo', header: 'serial' },
     { field: 'BranchName', header: 'BranchName' },
     { field: 'DocDate', header: 'DocDate' },
     { field: 'TreasuryType', header: 'TreasuryType' },
@@ -63,9 +64,9 @@ export class ReceiptVoucherListComponent implements OnInit {
   }
 
   async initTableColumns() {
-    delete this.receiptVouchersList[0]?.DocNo;
     this.allColumns = this.tableService.tableColumns(
-      this.receiptVouchersList[0]
+      this.receiptVouchersList[0],
+      this.defaultSelected
     );
     [this.changedColumns, this._selectedColumns] =
       await this.tableService.storageFn(
@@ -84,7 +85,7 @@ export class ReceiptVoucherListComponent implements OnInit {
     if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
       let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
       let tsIndex: any = ts?.columnOrder.findIndex(
-        (el: any) => el === ev.itemValue.header
+        (el: any) => el === ev.itemValue.field
       );
       if (tsIndex >= 0) {
         ts.columnOrder.splice(tsIndex, 1);

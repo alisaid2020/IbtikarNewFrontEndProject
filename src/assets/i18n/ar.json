@@ -97,7 +97,9 @@
   "NameAr": "الأسم باللغة العربية",
   "ModifyByName": "تم التعديل من قبل",
   "invoiceNumber": "رقم الفاتورة",
-  "DocNo": "رقم الفاتورة",
+  "salesInvoices": {
+    "DocNo": "رقم الفاتورة"
+  },
   "TotalPriceAfterVat": "إجمالي السعر بعد الضريبة",
   "ReturnedQty": "الكمية المسترجعه",
   "CorrectQty": "الكمية المباعة",

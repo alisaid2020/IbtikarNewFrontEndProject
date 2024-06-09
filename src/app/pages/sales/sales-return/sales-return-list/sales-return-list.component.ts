@@ -33,18 +33,13 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
   tableStorage = 'sales-return-table';
   defaultStorage = 'sales-return-default-selected';
   defaultSelected: any[] = [
-    { field: 'DocNo', header: 'DocNo' },
+    { field: 'DocNo', header: 'salesInvoices.DocNo' },
     { field: 'BranchName', header: 'BranchName' },
     { field: 'CreatedDate', header: 'CreatedDate' },
     { field: 'TotalInvoice', header: 'TotalInvoice' },
     { field: 'TotalDisc', header: 'TotalDisc' },
     { field: 'TotalInvoiceAfterVat', header: 'TotalInvoiceAfterVat' },
   ];
-  set selectedColumns(val: any[]) {
-    this._selectedColumns = this.defaultSelected.filter((col: any) =>
-      val.includes(col)
-    );
-  }
 
   modal = inject(NgbModal);
   toast = inject(ToastService);
@@ -90,7 +85,10 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
   }
 
   async initTableColumns() {
-    this.allColumns = this.tableService.tableColumns(this.salesReturnList[0]);
+    this.allColumns = this.tableService.tableColumns(
+      this.salesReturnList[0],
+      this.defaultSelected
+    );
     [this.changedColumns, this._selectedColumns] =
       await this.tableService.storageFn(
         this.defaultSelected,
@@ -108,7 +106,7 @@ export class SalesReturnListComponent implements OnInit, OnDestroy {
     if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
       let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
       let tsIndex: any = ts?.columnOrder.findIndex(
-        (el: any) => el === ev.itemValue.header
+        (el: any) => el === ev.itemValue.field
       );
       if (tsIndex >= 0) {
         ts.columnOrder.splice(tsIndex, 1);

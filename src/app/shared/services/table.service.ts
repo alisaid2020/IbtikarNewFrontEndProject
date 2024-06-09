@@ -30,7 +30,7 @@ export class TableService {
     Object.keys(element || {}).forEach((el) => {
       const currentPath = previousPath.length ? `${previousPath}.${el}` : el;
       if (!Array.isArray(element[el])) {
-        if (typeof element[el] === 'object') {
+        if (element[el] instanceof Object) {
           this.gekKeys(element[el], currentPath);
         } else {
           Keys.push(currentPath);
@@ -40,26 +40,28 @@ export class TableService {
     return Keys;
   }
 
-  tableColumns(element: any) {
+  tableColumns(element: any, defaultSelected?: any[]) {
     this.objectKeys = this.gekKeys(element)?.filter(
-      (el: any) => !/No|Guid|Id/gi.test(el)
+      (el: any) => !/Guid|Id/gi.test(el)
     );
     this.allColumns = [];
     this.objectKeys?.forEach((el: any) => {
+      let defaultItem = defaultSelected?.find((x) => x.field === el);
+      el = defaultItem?.header || el;
       this.subs.push(
         this.translate.get(`${el}`).subscribe((translatedValue: any) => {
           const isItemThere = this.allColumns.find((x) => x.field === el);
           const index = this.allColumns.indexOf(isItemThere);
           if (isItemThere) {
             this.allColumns[index] = {
-              field: el,
+              field: defaultItem?.field || el,
               translatedName: translatedValue,
               header: el,
             };
             return;
           }
           this.allColumns.push({
-            field: el,
+            field: defaultItem?.field || el,
             translatedName: translatedValue,
             header: el,
           });
@@ -84,7 +86,7 @@ export class TableService {
     this.changedColumns.forEach((item: any) => {
       this.subs.push(
         this.translate
-          .get(`${item.field}`)
+          .get(`${item.header}`)
           .pipe(
             tap((value) => {
               newArray.push({
