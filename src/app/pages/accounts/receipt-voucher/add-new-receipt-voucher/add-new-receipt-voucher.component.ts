@@ -1,20 +1,20 @@
-import { Component, ElementRef, OnInit, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import {
   apiUrl,
   generalLookupsApi,
   treasuryManagementApi,
 } from '@constants/api.constant';
-import { E_USER_ROLE, USER_PROFILE } from '@constants/general.constant';
 import { Toast } from '@enums/toast.enum';
-import { TranslateService } from '@ngx-translate/core';
-import { DataService } from '@services/data.service';
-import { HelpersService } from '@services/helpers.service';
-import { TableService } from '@services/table.service';
-import { ToastService } from '@services/toast-service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { DataService } from '@services/data.service';
+import { ToastService } from '@services/toast-service';
+import { TranslateService } from '@ngx-translate/core';
+import { TableService } from '@services/table.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HelpersService } from '@services/helpers.service';
 import { Subscription, firstValueFrom, map, tap } from 'rxjs';
+import { Component, ElementRef, OnInit, inject } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { E_USER_ROLE, USER_PROFILE } from '@constants/general.constant';
 
 @Component({
   selector: 'app-add-new-receipt-voucher',
@@ -30,22 +30,23 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   receiptVoucher: any;
   changedColumns: any;
   defaultCurrency: any;
-  clientInvoices: any[] = [];
   employeeTreasury: any;
+  invoiceLineKeys: any[];
   allColumns: any[] = [];
   clientsData: any[] = [];
   treasuriesInLine: any[];
-  supplierInvoices: any[] = [];
   subs: Subscription[] = [];
   E_USER_ROLE = E_USER_ROLE;
+  clientInvoices: any[] = [];
   USER_PROFILE = USER_PROFILE;
+  supplierInvoices: any[] = [];
   _selectedColumns: any[] = [];
   receiptVoucherForm: FormGroup;
   accTreeAccountsData: any[] = [];
   tableStorage = 'receipt-voucher-form-table';
-  defaultStorage = 'receipt-voucher-form-default-selected';
   clientsApi = `${generalLookupsApi}/CustomerByTerm`;
   accountsApi = `${generalLookupsApi}/GetAccountsByTrim`;
+  defaultStorage = 'receipt-voucher-form-default-selected';
   typeOfDealing = [
     { value: 1, name: 'bank' },
     { value: 2, name: 'safe' },
@@ -58,30 +59,23 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     { value: 5, name: 'suppliers' },
   ];
   defaultSelected = [
-    { field: 'clientId', header: 'clients' },
+    { field: 'ClientId', header: 'clients' },
     { field: 'SaleInvoiceId', header: 'invoices' },
     { field: 'Amount', header: 'amount' },
-    { field: 'costCenterId', header: 'costCenter' },
+    { field: 'CostCenterId', header: 'costCenter' },
     { field: 'Notes', header: 'notes' },
   ];
-  invoiceLineKeys = [
-    'AccTreeId',
-    'clientId',
-    'SaleInvoiceId',
-    'Amount',
-    'Notes',
-  ];
 
+  router = inject(Router);
   fb = inject(FormBuilder);
+  toast = inject(ToastService);
+  route = inject(ActivatedRoute);
+  elementRef = inject(ElementRef);
+  helpers = inject(HelpersService);
   dataService = inject(DataService);
   spinner = inject(NgxSpinnerService);
-  toast = inject(ToastService);
-  translate = inject(TranslateService);
   tableService = inject(TableService);
-  helpers = inject(HelpersService);
-  route = inject(ActivatedRoute);
-  router = inject(Router);
-  elementRef = inject(ElementRef);
+  translate = inject(TranslateService);
 
   async ngOnInit() {
     firstValueFrom(
@@ -102,6 +96,9 @@ export class AddNewReceiptVoucherComponent implements OnInit {
       )
     );
     this.getTreasuryTransactionInit();
+  }
+
+  async InitTable() {
     await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
@@ -118,8 +115,10 @@ export class AddNewReceiptVoucherComponent implements OnInit {
         )
         .pipe(
           map((res) => res.Data),
-          tap((res) => {
+          tap(async (res) => {
             if (res?.IsSuccess) {
+              this.invoiceLineKeys = res.Obj.DetailsColumns;
+              await this.InitTable();
               this.treasuries = res.Obj.treasuries;
               this.banks = res.Obj.Banks;
               this.costCenters = res.Obj.CostCenters;
@@ -148,33 +147,35 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   }
 
   async initTableColumns() {
-    this.allColumns = this.tableService.tableColumns(this.invoiceLineKeys);
+    this.allColumns = this.tableService.tableColumns(
+      this.invoiceLineKeys,
+      this.defaultSelected
+    );
     [this.changedColumns, this._selectedColumns] =
       await this.tableService.storageFn(
         this.defaultSelected,
         this.defaultStorage,
-        this._selectedColumns
+        this._selectedColumns,
+        this.receiptVoucherForm.get('treasuryType')!.value
       );
   }
 
   changeInHideShow(ev: any): void {
     this._selectedColumns = ev.value;
-    this.helpers.setItemToLocalStorage(
-      this.defaultStorage,
-      this._selectedColumns
+    let arr: any[] =
+      this.helpers.getItemFromLocalStorage(this.defaultStorage) || [];
+    let i = arr?.findIndex(
+      (el) => el?.type === this.receiptVoucherForm.get('treasuryType')!.value
     );
-    if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
-      let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
-      let tsIndex: any = ts?.columnOrder.findIndex(
-        (el: any) => el === ev.itemValue.header
-      );
-      if (tsIndex >= 0) {
-        ts.columnOrder.splice(tsIndex, 1);
-      } else {
-        ts.columnOrder.push(ev.itemValue.field);
-      }
-      this.helpers.setItemToLocalStorage(this.tableStorage, ts);
+    if (i >= 0) {
+      arr[i].selected = this._selectedColumns;
+    } else {
+      arr.push({
+        type: this.receiptVoucherForm.get('treasuryType')!.value,
+        selected: this._selectedColumns,
+      });
     }
+    this.helpers.setItemToLocalStorage(this.defaultStorage, arr);
   }
 
   initForm() {
@@ -365,43 +366,44 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     );
   }
 
-  changeTreasuryType(ev: any) {
+  async changeTreasuryType(ev: any) {
     let commonDefaultSelected = this.defaultSelected.slice(
       this.defaultSelected.length - 3
     );
     if (ev.value === 1) {
       this.defaultSelected = [
-        { field: 'accounts', header: 'accounts' },
+        { field: 'AccTreeId', header: 'accounts' },
         ...commonDefaultSelected,
       ];
     }
     if (ev.value === 2) {
       this.defaultSelected = [
-        { field: 'clients', header: 'clients' },
-        { field: 'invoices', header: 'invoices' },
+        { field: 'ClientId', header: 'clients' },
+        { field: 'SaleInvoiceId', header: 'invoices' },
         ...commonDefaultSelected,
       ];
     }
     if (ev.value === 3) {
       this.defaultSelected = [
-        { field: 'banks', header: 'banks' },
+        { field: 'BankId', header: 'banks' },
         ...commonDefaultSelected,
       ];
     }
     if (ev.value === 4) {
       this.defaultSelected = [
-        { field: 'safe', header: 'safe' },
+        { field: 'TreasuryId', header: 'safe' },
         ...commonDefaultSelected,
       ];
     }
     if (ev.value === 5) {
       this.defaultSelected = [
-        { field: 'suppliers', header: 'suppliers' },
-        { field: 'invoices', header: 'invoices' },
+        { field: 'SupplierId', header: 'suppliers' },
+        { field: 'SaleInvoiceId', header: 'invoices' },
         ...commonDefaultSelected,
       ];
     }
     this._selectedColumns = this.defaultSelected;
+    await this.InitTable();
     this.linesArray.clear();
     this.addNewLine();
     this.linesArray.controls.forEach((form, i: any) => {

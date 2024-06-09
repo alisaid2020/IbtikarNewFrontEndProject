@@ -74,10 +74,17 @@ export class TableService {
   async storageFn(
     defaultSelected: any,
     defaultStorage: any,
-    selectedColumns: any
+    selectedColumns: any,
+    type?: any
   ): Promise<any> {
     if (this.helpers.checkItemFromLocalStorage(defaultStorage)) {
-      selectedColumns = this.helpers.getItemFromLocalStorage(defaultStorage);
+      let arr = this.helpers.getItemFromLocalStorage(defaultStorage);
+      let i = arr?.findIndex((el: any) => el?.type === type);
+      if (type) {
+        selectedColumns = i >= 0 ? arr[i].selected : defaultSelected;
+      } else {
+        selectedColumns = arr;
+      }
     } else {
       selectedColumns = defaultSelected;
     }

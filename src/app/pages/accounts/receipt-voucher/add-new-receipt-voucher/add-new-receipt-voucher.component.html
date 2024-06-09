@@ -181,14 +181,11 @@
                   [options]="allColumns"
                   [(ngModel)]="changedColumns"
                   [ngModelOptions]="{ standalone: true }"
-                  optionLabel="header"
+                  optionLabel="translatedName"
                   filterBy="translatedName"
                   (onPanelHide)="helpers.showOverlay.set(false)"
                   (onChange)="changeInHideShow($event)"
                 >
-                  <ng-template let-option pTemplate="Item">
-                    {{ option.translatedName }}
-                  </ng-template>
                 </p-multiSelect>
               </span>
               <button
@@ -229,7 +226,7 @@
                 <ng-container [ngSwitch]="col.header">
                   <td
                     *ngSwitchCase="'clients'"
-                    style="min-width: 200px"
+                    style="min-width: 190px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
@@ -247,7 +244,7 @@
                   @if (receiptVoucherForm.get('treasuryType')!.value===2) {
                   <td
                     *ngSwitchCase="'invoices'"
-                    style="min-width: 200px"
+                    style="min-width: 190px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
@@ -261,7 +258,7 @@
                   }
                   <td
                     *ngSwitchCase="'accounts'"
-                    style="min-width: 200px"
+                    style="min-width: 190px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
@@ -278,7 +275,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'banks'"
-                    style="min-width: 200px"
+                    style="min-width: 190px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
@@ -293,7 +290,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'safe'"
-                    style="min-width: 200px"
+                    style="min-width: 190px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
@@ -308,7 +305,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'suppliers'"
-                    style="min-width: 200px"
+                    style="min-width: 190px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
@@ -324,7 +321,7 @@
                   @if (receiptVoucherForm.get('treasuryType')!.value===5) {
                   <td
                     *ngSwitchCase="'invoices'"
-                    style="min-width: 200px"
+                    style="min-width: 190px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
@@ -338,7 +335,7 @@
                   }
                   <td
                     *ngSwitchCase="'amount'"
-                    style="min-width: 200px"
+                    style="min-width: 160px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
@@ -350,7 +347,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'costCenter'"
-                    style="min-width: 200px"
+                    style="min-width: 190px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-select
@@ -363,7 +360,7 @@
                   </td>
                   <td
                     *ngSwitchCase="'notes'"
-                    style="min-width: 200px"
+                    style="min-width: 190px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
@@ -371,7 +368,7 @@
                       [control]="linesArray.controls[i].get('notes')!"
                     ></app-ebtikar-input>
                   </td>
-                  <td *ngSwitchDefault style="min-width: 200px">
+                  <td *ngSwitchDefault style="min-width: 115px">
                     {{
                       col?.field | tableColumnData : rowData.value | formatValue
                     }}

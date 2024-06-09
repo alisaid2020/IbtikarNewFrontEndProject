@@ -32,6 +32,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
   defaultCurrency: any;
   employeeTreasury: any;
   allColumns: any[] = [];
+  invoiceLineKeys: any[];
   treasuriesInLine: any[];
   clientsData: any[] = [];
   E_USER_ROLE = E_USER_ROLE;
@@ -58,20 +59,13 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     { value: 5, name: 'suppliers' },
   ];
   defaultSelected = [
-    { field: 'accounts', header: 'accounts' },
+    { field: 'AccTreeId', header: 'accounts' },
     { field: 'Amount', header: 'amount' },
-    { field: 'costCenterId', header: 'costCenter' },
+    { field: 'CostCenterId', header: 'costCenter' },
     { field: 'Notes', header: 'notes' },
     { field: 'IsVatchecked', header: 'includeVat' },
     { field: 'vatVal', header: 'vatValue' },
     { field: 'IsVatcheckedNotes', header: 'vatNotes' },
-  ];
-  invoiceLineKeys = [
-    'AccTreeId',
-    'clientId',
-    'BuyInvoiceId',
-    'Amount',
-    'Notes',
   ];
 
   fb = inject(FormBuilder);
@@ -104,6 +98,9 @@ export class AddNewPaymentVoucherComponent implements OnInit {
       )
     );
     this.getTreasuryTransactionInit();
+  }
+
+  async InitTable() {
     await this.initTableColumns();
     this.subs.push(
       this.translate.onLangChange.subscribe(async () => {
@@ -111,24 +108,23 @@ export class AddNewPaymentVoucherComponent implements OnInit {
       })
     );
   }
+
   changeInHideShow(ev: any): void {
     this._selectedColumns = ev.value;
-    this.helpers.setItemToLocalStorage(
-      this.defaultStorage,
-      this._selectedColumns
+    let arr: any[] =
+      this.helpers.getItemFromLocalStorage(this.defaultStorage) || [];
+    let i = arr?.findIndex(
+      (el) => el?.type === this.paymentVoucherForm.get('treasuryType')!.value
     );
-    if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
-      let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
-      let tsIndex: any = ts?.columnOrder.findIndex(
-        (el: any) => el === ev.itemValue.header
-      );
-      if (tsIndex >= 0) {
-        ts.columnOrder.splice(tsIndex, 1);
-      } else {
-        ts.columnOrder.push(ev.itemValue.field);
-      }
-      this.helpers.setItemToLocalStorage(this.tableStorage, ts);
+    if (i >= 0) {
+      arr[i].selected = this._selectedColumns;
+    } else {
+      arr.push({
+        type: this.paymentVoucherForm.get('treasuryType')!.value,
+        selected: this._selectedColumns,
+      });
     }
+    this.helpers.setItemToLocalStorage(this.defaultStorage, arr);
   }
 
   getTreasuryTransactionInit(): void {
@@ -139,8 +135,10 @@ export class AddNewPaymentVoucherComponent implements OnInit {
         )
         .pipe(
           map((res) => res.Data),
-          tap((res) => {
+          tap(async (res) => {
             if (res?.IsSuccess) {
+              this.invoiceLineKeys = res.Obj.DetailsColumns;
+              await this.InitTable();
               this.banks = res.Obj.Banks;
               this.treasuries = res.Obj.treasuries;
               this.costCenters = res.Obj.CostCenters;
@@ -169,12 +167,16 @@ export class AddNewPaymentVoucherComponent implements OnInit {
   }
 
   async initTableColumns() {
-    this.allColumns = this.tableService.tableColumns(this.invoiceLineKeys);
+    this.allColumns = this.tableService.tableColumns(
+      this.invoiceLineKeys,
+      this.defaultSelected
+    );
     [this.changedColumns, this._selectedColumns] =
       await this.tableService.storageFn(
         this.defaultSelected,
         this.defaultStorage,
-        this._selectedColumns
+        this._selectedColumns,
+        this.paymentVoucherForm.get('treasuryType')!.value
       );
   }
 
@@ -368,43 +370,44 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     }
   }
 
-  changeTreasuryType(ev: any): void {
+  async changeTreasuryType(ev: any): Promise<void> {
     let commonDefaultSelected = this.defaultSelected.slice(
       this.defaultSelected.length - 6
     );
     if (ev.value === 1) {
       this.defaultSelected = [
-        { field: 'accounts', header: 'accounts' },
+        { field: 'AccTreeId', header: 'accounts' },
         ...commonDefaultSelected,
       ];
     }
     if (ev.value === 2) {
       this.defaultSelected = [
-        { field: 'clients', header: 'clients' },
-        { field: 'invoices', header: 'invoices' },
+        { field: 'ClientId', header: 'clients' },
+        { field: 'BuyInvoiceId', header: 'invoices' },
         ...commonDefaultSelected,
       ];
     }
     if (ev.value === 3) {
       this.defaultSelected = [
-        { field: 'banks', header: 'banks' },
+        { field: 'BankId', header: 'banks' },
         ...commonDefaultSelected,
       ];
     }
     if (ev.value === 4) {
       this.defaultSelected = [
-        { field: 'safe', header: 'safe' },
+        { field: 'TreasuryId', header: 'safe' },
         ...commonDefaultSelected,
       ];
     }
     if (ev.value === 5) {
       this.defaultSelected = [
-        { field: 'suppliers', header: 'suppliers' },
-        { field: 'invoices', header: 'invoices' },
+        { field: 'SupplierId', header: 'suppliers' },
+        { field: 'BuyInvoiceId', header: 'invoices' },
         ...commonDefaultSelected,
       ];
     }
     this._selectedColumns = this.defaultSelected;
+    await this.InitTable();
     this.linesArray.clear();
     this.addNewLine();
     this.linesArray.controls.forEach((form, i: any) => {
