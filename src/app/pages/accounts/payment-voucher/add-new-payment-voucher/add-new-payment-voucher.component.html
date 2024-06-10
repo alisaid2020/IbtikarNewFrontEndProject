@@ -428,7 +428,11 @@
                   </td>
                   <td *ngSwitchDefault style="min-width: 115px">
                     {{
-                      col?.field | tableColumnData : rowData.value | formatValue
+                      col?.field
+                        | tableFormColumnData
+                          : rowData.value
+                          : paymentVoucher?.TreasuryTransactionOutDetails[i]
+                        | formatValue
                     }}
                   </td>
                 </ng-container>

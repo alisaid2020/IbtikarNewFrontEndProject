@@ -41,7 +41,7 @@ export class AddNewManualRestrictionComponent implements OnInit {
   treasuryTypesApi = `${generalLookupsApi}/GetSearchTreasuryTypesServiceTrim`;
   defaultSelected = [
     { field: 'TreasuryType', header: 'treasuryTypes' },
-    { field: 'TreasureTypeName', header: 'treasureTypeName' },
+    { field: 'TreasureTypeName', header: 'TreasureTypeName' },
     { field: 'Credit', header: 'CrAmount' },
     { field: 'Debit', header: 'DrAmount' },
     { field: 'CostCenterId', header: 'costCenter' },

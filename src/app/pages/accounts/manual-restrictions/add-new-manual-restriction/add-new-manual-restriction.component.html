@@ -195,14 +195,14 @@
                     ></app-ebtikar-select>
                   </td>
                   <td
-                    *ngSwitchCase="'treasureTypeName'"
-                    style="min-width: 100px"
+                    *ngSwitchCase="'TreasureTypeName'"
+                    style="min-width: 160px"
                     appAppArrowFocus
                   >
                     <app-ebtikar-input
                       class="disabled-form"
                       [readonly]="true"
-                      [placeholder]="'treasureTypeName'"
+                      [placeholder]="'TreasureTypeName'"
                       [control]="
                         linesArray.controls[i].get('treasureTypeName')!
                       "
@@ -257,7 +257,11 @@
                   </td>
                   <td *ngSwitchDefault style="min-width: 200px">
                     {{
-                      col?.field | tableColumnData : rowData.value | formatValue
+                      col?.field
+                        | tableFormColumnData
+                          : rowData.value
+                          : manualRestriction?.GlDetails[i]
+                        | formatValue
                     }}
                   </td>
                 </ng-container>

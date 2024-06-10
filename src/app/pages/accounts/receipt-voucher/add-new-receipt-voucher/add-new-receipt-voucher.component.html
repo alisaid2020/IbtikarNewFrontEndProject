@@ -370,7 +370,11 @@
                   </td>
                   <td *ngSwitchDefault style="min-width: 115px">
                     {{
-                      col?.field | tableColumnData : rowData.value | formatValue
+                      col?.field
+                        | tableFormColumnData
+                          : rowData.value
+                          : receiptVoucher?.TreasuryTransactionsDetails[i]
+                        | formatValue
                     }}
                   </td>
                 </ng-container>

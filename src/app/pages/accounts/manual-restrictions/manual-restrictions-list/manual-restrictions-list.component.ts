@@ -35,7 +35,6 @@ export class ManualRestrictionsListComponent implements OnInit {
     { field: 'DocName', header: 'DocName' },
     { field: 'CrAmount', header: 'CrAmount' },
     { field: 'DrAmount', header: 'DrAmount' },
-    { field: 'Notes', header: 'Notes' },
   ];
 
   modal = inject(NgbModal);
