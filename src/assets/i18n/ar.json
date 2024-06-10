@@ -285,5 +285,7 @@
   "IsVatchecked": "هل تم فحص الضريبة",
   "IsVatcheckedNotes": "ملاحظات فحص الضريبه",
   "VatVal": "قيمة الضريبة",
-  "CostCenterCode": "رمز مركز التكلفة"
+  "CostCenterCode": "رمز مركز التكلفة",
+  "warehouses": "المخازن",
+  "inventoryTransfers": "التحويلات المخزنية"
 }

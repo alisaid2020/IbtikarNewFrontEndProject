@@ -74,6 +74,17 @@ export class SidebarMenuComponent implements OnInit {
         },
       ],
     },
+    {
+      name: 'warehouses',
+      icon: 'fa-warehouse',
+      children: [
+        {
+          title: 'inventoryTransfers',
+          route: 'inventory-transfers',
+          // permission: 'SaleInvoice',
+        },
+      ],
+    },
   ];
 
   constructor(

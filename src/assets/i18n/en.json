@@ -285,5 +285,7 @@
   "IsVatchecked": "Is Vat checked",
   "IsVatcheckedNotes": "Is Vat checked Notes",
   "VatVal": "Vat Val",
-  "CostCenterCode": "Cost Center Code"
+  "CostCenterCode": "Cost Center Code",
+  "warehouses": "Warehouses",
+  "inventoryTransfers": "Inventory Transfers"
 }

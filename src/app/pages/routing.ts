@@ -68,6 +68,14 @@ const Routing: Routes = [
       ),
   },
   {
+    path: 'inventory-transfers',
+    loadChildren: () =>
+      import(
+        './warehouses/inventory-transfers/inventory-transfers.module'
+      ).then((m) => m.InventoryTransfersModule),
+  },
+
+  {
     path: '**',
     redirectTo: 'error/404',
   },
