@@ -287,5 +287,8 @@
   "VatVal": "قيمة الضريبة",
   "CostCenterCode": "رمز مركز التكلفة",
   "warehouses": "المخازن",
-  "inventoryTransfers": "التحويلات المخزنية"
+  "inventoryTransfers": "التحويلات المخزنية",
+  "applicationsUnderProcedure": "طلبات تحت الإجراء",
+  "approvedApplications": "الطلبات المعتمدة",
+  "rejectedApplications": "الطلبات المرفوضة"
 }

@@ -287,5 +287,8 @@
   "VatVal": "Vat Val",
   "CostCenterCode": "Cost Center Code",
   "warehouses": "Warehouses",
-  "inventoryTransfers": "Inventory Transfers"
+  "inventoryTransfers": "Inventory Transfers",
+  "applicationsUnderProcedure": "Applications Under Procedure",
+  "approvedApplications": "Approved Applications",
+  "rejectedApplications": "Rejected Applications"
 }
