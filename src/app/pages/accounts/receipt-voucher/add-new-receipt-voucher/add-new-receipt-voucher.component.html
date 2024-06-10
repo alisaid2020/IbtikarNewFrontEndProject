@@ -310,10 +310,12 @@
                   >
                     <app-ebtikar-select
                       id="supplier"
-                      [items]="suppliers"
+                      [customData]="suppliersData[i]"
+                      [apiUrl]="suppliersApi"
                       [hasMultipleLabels]="true"
                       [placeholder]="'supplier'"
                       [bindValue]="'Id'"
+                      [searchBy]="'term'"
                       [control]="linesArray.controls[i].get('supplierId')!"
                       (emitChanged)="selectSupplier($event, i)"
                     ></app-ebtikar-select>

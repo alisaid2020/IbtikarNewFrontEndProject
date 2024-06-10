@@ -35,6 +35,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
   invoiceLineKeys: any[];
   treasuriesInLine: any[];
   clientsData: any[] = [];
+  suppliersData: any[] = [];
   E_USER_ROLE = E_USER_ROLE;
   subs: Subscription[] = [];
   clientInvoices: any[] = [];
@@ -47,6 +48,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
   defaultStorage = 'payment-voucher-form-default-selected';
   clientsApi = `${generalLookupsApi}/CustomerByTerm`;
   accountsApi = `${generalLookupsApi}/GetAccountExpensessByTrim`;
+  suppliersApi = `${apiUrl}/XtraAndPOS_Global/SupplierByTerm`;
   typeOfDealing = [
     { value: 1, name: 'bank' },
     { value: 2, name: 'safe' },
@@ -83,11 +85,11 @@ export class AddNewPaymentVoucherComponent implements OnInit {
     firstValueFrom(
       this.route.data.pipe(
         map((res) => res.paymentVoucher),
-        tap((res) => {
+        tap(async (res) => {
           if (res?.IsSuccess) {
             this.paymentVoucher = res.Obj.TreasuryOut;
             this.initForm();
-            this.changeTreasuryType({
+            await this.changeTreasuryType({
               value: this.paymentVoucher.TreasuryType,
             });
             this.fillLinesFromApi();
@@ -144,7 +146,6 @@ export class AddNewPaymentVoucherComponent implements OnInit {
               this.costCenters = res.Obj.CostCenters;
               this.banksInLine = res.Obj.BankInMainBranch;
               this.treasuriesInLine = res.Obj.TreasuryInMainBranch;
-              this.suppliers = res.Obj.Suppliers;
               this.currencies = res.Obj.Currencyies;
               if (!this.paymentVoucher) {
                 this.defaultCurrency = this.currencies.find(
@@ -268,6 +269,13 @@ export class AddNewPaymentVoucherComponent implements OnInit {
           }
           if (this.paymentVoucher.TreasuryType === 5) {
             this.getInvoicesBySupplierId(line.SupplierId, i);
+            this.suppliersData[i] = [
+              {
+                Id: line.SupplierId,
+                NameAr: line.SupplierName,
+                NameEn: line.SupplierName,
+              },
+            ];
           }
         }
       );
@@ -325,12 +333,12 @@ export class AddNewPaymentVoucherComponent implements OnInit {
             Id: value.ClientId,
           }
         : null;
+      supplierId = value.SupplierId ? { Id: value.SupplierId } : null;
       clientName = value.ClientName;
       amount = value.Amount;
       notes = value.Notes;
       bankId = value.BankId || null;
       bankName = value.BankName;
-      supplierId = value.SupplierId || null;
       treasuryId = value.TreasuryId || null;
       treasuryName = value.TreasuryName;
       costCenterId = value.CostCenterId || null;
@@ -424,6 +432,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
         });
         this.clientsData[i] = [];
         this.clientInvoices[i] = [];
+        this.suppliersData[i] = [];
         this.supplierInvoices[i] = [];
       }
       if (ev.value === 2) {
@@ -437,6 +446,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
           treasuryName: null,
         });
         this.accTreeAccountsData[i] = [];
+        this.suppliersData[i] = [];
         this.supplierInvoices[i] = [];
       }
       if (ev.value === 3) {
@@ -452,6 +462,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
         this.clientsData[i] = [];
         this.accTreeAccountsData[i] = [];
         this.clientInvoices[i] = [];
+        this.suppliersData[i] = [];
         this.supplierInvoices[i] = [];
       }
       if (ev.value === 4) {
@@ -467,6 +478,7 @@ export class AddNewPaymentVoucherComponent implements OnInit {
         this.clientsData[i] = [];
         this.accTreeAccountsData[i] = [];
         this.clientInvoices[i] = [];
+        this.suppliersData[i] = [];
         this.supplierInvoices[i] = [];
       }
       if (ev.value === 5) {

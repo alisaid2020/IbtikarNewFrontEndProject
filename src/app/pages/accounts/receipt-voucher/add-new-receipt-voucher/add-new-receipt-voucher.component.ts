@@ -34,6 +34,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   invoiceLineKeys: any[];
   allColumns: any[] = [];
   clientsData: any[] = [];
+  suppliersData: any[] = [];
   treasuriesInLine: any[];
   subs: Subscription[] = [];
   E_USER_ROLE = E_USER_ROLE;
@@ -46,6 +47,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   tableStorage = 'receipt-voucher-form-table';
   clientsApi = `${generalLookupsApi}/CustomerByTerm`;
   accountsApi = `${generalLookupsApi}/GetAccountsByTrim`;
+  suppliersApi = `${apiUrl}/XtraAndPOS_Global/SupplierByTerm`;
   defaultStorage = 'receipt-voucher-form-default-selected';
   typeOfDealing = [
     { value: 1, name: 'bank' },
@@ -81,11 +83,11 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     firstValueFrom(
       this.route.data.pipe(
         map((res) => res.receiptVoucher),
-        tap((res) => {
+        tap(async (res) => {
           if (res?.IsSuccess) {
             this.receiptVoucher = res.Obj.Treasury;
             this.initForm();
-            this.changeTreasuryType({
+            await this.changeTreasuryType({
               value: this.receiptVoucher.TreasuryType,
             });
             this.fillLinesFromApi();
@@ -124,7 +126,6 @@ export class AddNewReceiptVoucherComponent implements OnInit {
               this.costCenters = res.Obj.CostCenters;
               this.banksInLine = res.Obj.BankInMainBranch;
               this.treasuriesInLine = res.Obj.TreasuryInMainBranch;
-              this.suppliers = res.Obj.Suppliers;
               this.currencies = res.Obj.Currencyies;
               if (!this.receiptVoucher) {
                 this.defaultCurrency = this.currencies.find(
@@ -236,7 +237,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   fillLinesFromApi(): void {
     if (this.receiptVoucher?.TreasuryTransactionsDetails?.length) {
       this.linesArray.clear();
-      this.receiptVoucher?.TreasuryTransactionsDetails.forEach(
+      this.receiptVoucher.TreasuryTransactionsDetails.forEach(
         (line: any, i: number) => {
           this.addNewLine(line);
           if (this.receiptVoucher.TreasuryType === 1) {
@@ -260,6 +261,13 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           }
           if (this.receiptVoucher.TreasuryType === 5) {
             this.getInvoicesBySupplierId(line.SupplierId, i);
+            this.suppliersData[i] = [
+              {
+                Id: line.SupplierId,
+                NameAr: line.SupplierName,
+                NameEn: line.SupplierName,
+              },
+            ];
           }
         }
       );
@@ -272,7 +280,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     ) as FormArray;
   }
 
-  addNewLine(value?: any) {
+  addNewLine(value?: any): void {
     if (value) {
       this.linesArray.push(this.newLine(value));
       return;
@@ -312,10 +320,10 @@ export class AddNewReceiptVoucherComponent implements OnInit {
             Id: value.ClientId,
           }
         : null;
+      supplierId = value.SupplierId ? { Id: value.SupplierId } : null;
       clientName = value.ClientName;
       saleInvoiceId = value.SaleInvoiceId ? value.SaleInvoiceId : null;
       amount = value.Amount;
-      supplierId = value.SupplierId || null;
       treasuryId = value.TreasuryId || null;
       costCenterId = value.CostCenterId || null;
       bankId = value.BankId || null;
@@ -323,7 +331,6 @@ export class AddNewReceiptVoucherComponent implements OnInit {
       bankName = value.BankName;
       notes = value.Notes;
     }
-
     return this.fb.group({
       clientId: [clientId],
       clientName: [clientName],
@@ -420,6 +427,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
         });
         this.clientsData[i] = [];
         this.clientInvoices[i] = [];
+        this.suppliersData[i] = [];
         this.supplierInvoices[i] = [];
       }
       if (ev.value === 2) {
@@ -433,6 +441,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
           treasuryName: null,
         });
         this.accTreeAccountsData[i] = [];
+        this.suppliersData[i] = [];
         this.supplierInvoices[i] = [];
       }
       if (ev.value === 3) {
@@ -448,6 +457,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
         this.clientsData[i] = [];
         this.accTreeAccountsData[i] = [];
         this.clientInvoices[i] = [];
+        this.suppliersData[i] = [];
         this.supplierInvoices[i] = [];
       }
       if (ev.value === 4) {
@@ -463,6 +473,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
         this.clientsData[i] = [];
         this.accTreeAccountsData[i] = [];
         this.clientInvoices[i] = [];
+        this.suppliersData[i] = [];
         this.supplierInvoices[i] = [];
       }
       if (ev.value === 5) {
