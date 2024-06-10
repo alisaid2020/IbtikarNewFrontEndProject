@@ -122,14 +122,11 @@
                     [options]="allColumns"
                     [(ngModel)]="changedColumns"
                     [ngModelOptions]="{ standalone: true }"
-                    optionLabel="header"
+                    optionLabel="translatedName"
                     filterBy="translatedName"
                     (onPanelHide)="helpers.showOverlay.set(false)"
                     (onChange)="changeInHideShow($event)"
                   >
-                    <ng-template let-option pTemplate="Item">
-                      {{ option.translatedName }}
-                    </ng-template>
                   </p-multiSelect>
                 </span>
               </div>
@@ -258,8 +255,10 @@
                   </td>
                   <td *ngSwitchDefault style="min-width: 115px">
                     {{
-                      col?.header
-                        | tableColumnData : rowData.value
+                      col?.field
+                        | tableFormColumnData
+                          : rowData.value
+                          : pricingPolicyLines[i]
                         | formatValue
                     }}
                   </td>

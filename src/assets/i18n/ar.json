@@ -290,5 +290,8 @@
   "inventoryTransfers": "التحويلات المخزنية",
   "applicationsUnderProcedure": "طلبات تحت الإجراء",
   "approvedApplications": "الطلبات المعتمدة",
-  "rejectedApplications": "الطلبات المرفوضة"
+  "rejectedApplications": "الطلبات المرفوضة",
+  "UniteOnePrice": "سعر الوحدة الأولى",
+  "UniteTwoPrice": "سعر الوحدة الثانية",
+  "UniteThreePrice": "سعر الوحدة الثالثة"
 }

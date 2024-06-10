@@ -290,5 +290,8 @@
   "inventoryTransfers": "Inventory Transfers",
   "applicationsUnderProcedure": "Applications Under Procedure",
   "approvedApplications": "Approved Applications",
-  "rejectedApplications": "Rejected Applications"
+  "rejectedApplications": "Rejected Applications",
+  "UniteOnePrice": "Unit One Price",
+  "UniteTwoPrice": "Unit Two Price",
+  "UniteThreePrice": "Unit Three Price"
 }

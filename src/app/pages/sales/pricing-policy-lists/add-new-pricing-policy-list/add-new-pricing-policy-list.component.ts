@@ -47,6 +47,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   priceListData: any;
   pricingPolicesObj: any;
   allColumns: any[] = [];
+  invoiceLineKeys: any[];
   pricingPolicyLines: any;
   pagination: IPagination;
   barcodeItems: any[] = [];
@@ -67,15 +68,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     { field: 'CommissionPercentage', header: 'CommissionPercentage' },
     { field: 'CommissionValue', header: 'CommissionValue' },
   ];
-  invoiceLineKeys = [
-    'ParCode',
-    'ItemUniteId',
-    'Price',
-    'PriceMax',
-    'PriceMin',
-    'CommissionPercentage',
-    'CommissionValue',
-  ];
+
   router = inject(Router);
   fb = inject(FormBuilder);
   toast = inject(ToastService);
@@ -115,7 +108,6 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
         .subscribe()
     );
     this.initForm();
-    await this.InitTable();
   }
 
   getPriceListInit(): void {
@@ -123,8 +115,12 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
       this.dataService
         .get(`${apiUrl}/XtraAndPos_PricePolicyList/PriceListInit`)
         .pipe(
-          tap((res) => {
-            this.pricingPolicesObj = res?.Obj;
+          tap(async (res) => {
+            if (res?.IsSuccess) {
+              this.pricingPolicesObj = res?.Obj;
+              this.invoiceLineKeys = res?.Obj?.Detailcolumns;
+              await this.InitTable();
+            }
           })
         )
     );
@@ -161,7 +157,10 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
   }
 
   async initTableColumns() {
-    this.allColumns = this.tableService.tableColumns(this.invoiceLineKeys);
+    this.allColumns = this.tableService.tableColumns(
+      this.invoiceLineKeys,
+      this.defaultSelected
+    );
     [this.changedColumns, this._selectedColumns] =
       await this.tableService.storageFn(
         this.defaultSelected,
@@ -179,7 +178,7 @@ export class AddNewPricingPolicyListComponent implements OnInit, OnDestroy {
     if (this.helpers.checkItemFromLocalStorage(this.tableStorage)) {
       let ts = this.helpers.getItemFromLocalStorage(this.tableStorage);
       let tsIndex: any = ts?.columnOrder.findIndex(
-        (el: any) => el === ev.itemValue.header
+        (el: any) => el === ev.itemValue.field
       );
       if (tsIndex >= 0) {
         ts.columnOrder.splice(tsIndex, 1);
