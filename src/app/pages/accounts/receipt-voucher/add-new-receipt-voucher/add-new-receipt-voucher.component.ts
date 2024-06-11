@@ -303,7 +303,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     let clientName;
     let clientCode;
     let saleInvoiceId;
-    let amount;
+    let amount = 0;
     let supplierId;
     let supplierName;
     let supplierCode;
