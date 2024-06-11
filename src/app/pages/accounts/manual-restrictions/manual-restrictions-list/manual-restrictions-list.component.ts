@@ -167,7 +167,7 @@ export class ManualRestrictionsListComponent implements OnInit {
     modalRef.componentInstance.modalInfo = {
       title: 'deleteManualRestriction',
       description: 'areYouSureToDelete',
-      name: this.translate.instant('ManualRestrictionList'),
+      name: this.translate.instant('manualRestrictionList'),
     };
     modalRef.result.then((res) => {
       if (res) {

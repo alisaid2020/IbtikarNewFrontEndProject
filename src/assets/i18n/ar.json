@@ -295,5 +295,7 @@
   "UniteTwoPrice": "سعر الوحدة الثانية",
   "UniteThreePrice": "سعر الوحدة الثالثة",
   "ClientCode": "كود العميل",
-  "SupplierCode": "كود المورد"
+  "SupplierCode": "كود المورد",
+  "deleteManualRestriction": "حذف قيد يدوى",
+  "manualRestrictionList": "القيد اليدوى"
 }

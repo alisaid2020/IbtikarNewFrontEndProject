@@ -295,5 +295,7 @@
   "UniteTwoPrice": "Unit Two Price",
   "UniteThreePrice": "Unit Three Price",
   "ClientCode": "Client Code",
-  "SupplierCode": "Supplier Code"
+  "SupplierCode": "Supplier Code",
+  "deleteManualRestriction": "Delete Manual Restriction",
+  "manualRestrictionList": "Manual RestrictionList"
 }

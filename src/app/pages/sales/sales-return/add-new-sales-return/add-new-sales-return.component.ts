@@ -37,7 +37,7 @@ export class AddNewSalesReturnComponent implements OnInit, OnDestroy {
   clientsApi = `${generalLookupsApi}/CustomerByTerm`;
   invoiceLineKeys: any[];
   defaultSelected: any[] = [
-    { field: 'Barcode', header: 'Barcode' },
+    { field: 'ProductBarcode', header: 'Barcode' },
     { field: 'ItemID', header: 'ItemID' },
     { field: 'CorrectQty', header: 'CorrectQty' },
     { field: 'ReturnedQty', header: 'ReturnedQty' },
