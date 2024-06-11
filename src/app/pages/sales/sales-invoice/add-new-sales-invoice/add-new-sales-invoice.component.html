@@ -48,6 +48,7 @@
         <div class="col-md-6">
           <app-ebtikar-select
             [hasStaticValues]="true"
+            [clearable]="false"
             [uid]="saleInvoice?.inv?.PaymentType"
             [items]="paymentTypes"
             [placeholder]="'paymentType'"
@@ -409,6 +410,7 @@
         <div class="col-md-4" *ngIf="salesInvoiceForm.get('visa')?.value">
           <app-ebtikar-select
             [hasStaticValues]="true"
+            [clearable]="false"
             [items]="visaTrxTypes"
             [placeholder]="'visaTrxType'"
             [label]="'visaTrxType'"

@@ -268,9 +268,9 @@
   "SaleInvoiceReturnId": "Sale Invoice Return Id",
   "SaleInvoiceReturn": "Sale Invoice Return",
   "ItemType_saleReturn": "Item Type sale Return",
-  "AccTreeCode": "Accounts Tree Code",
-  "AccTreeId": "Accounts Tree Id",
-  "AccTreeName": "Accounts Tree Name",
+  "AccTreeCode": "Account Code",
+  "AccTreeId": "Account Id",
+  "AccTreeName": "Account Name",
   "ClientId": "Client Id",
   "BankAccountNo": "Bank Account No",
   "BankId": "Bank Id",
@@ -293,5 +293,7 @@
   "rejectedApplications": "Rejected Applications",
   "UniteOnePrice": "Unit One Price",
   "UniteTwoPrice": "Unit Two Price",
-  "UniteThreePrice": "Unit Three Price"
+  "UniteThreePrice": "Unit Three Price",
+  "ClientCode": "Client Code",
+  "SupplierCode": "Supplier Code"
 }

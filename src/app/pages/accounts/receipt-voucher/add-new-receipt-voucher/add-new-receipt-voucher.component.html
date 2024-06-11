@@ -54,6 +54,7 @@
                 ?.IsSalesRepresentative
             "
             [hasStaticValues]="true"
+            [clearable]="false"
             [items]="typeOfDealing"
             [placeholder]="'Typeofpayment'"
             [label]="'Typeofpayment'"
@@ -95,6 +96,7 @@
         <div class="col-md-6">
           <app-ebtikar-select
             [hasStaticValues]="true"
+            [clearable]="false"
             [items]="treasuryTypes"
             [placeholder]="'treasuryTypes'"
             [label]="'treasuryTypes'"
@@ -225,6 +227,22 @@
                 @for (col of columns; track $index) {
                 <ng-container [ngSwitch]="col.header">
                   <td
+                    *ngSwitchCase="'ClientCode'"
+                    style="min-width: 190px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      id="clientCode"
+                      [apiUrl]="clientsApi"
+                      [placeholder]="'ClientCode'"
+                      [bindValue]="'ClientCode'"
+                      [bindLabel]="'ClientCode'"
+                      [searchBy]="'trim'"
+                      [control]="linesArray.controls[i].get('clientCode')!"
+                      (emitChanged)="selectClientCodeInLine($event, i)"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
                     *ngSwitchCase="'clients'"
                     style="min-width: 190px"
                     appAppArrowFocus
@@ -256,6 +274,22 @@
                     ></app-ebtikar-select>
                   </td>
                   }
+                  <td
+                    *ngSwitchCase="'AccTreeCode'"
+                    style="min-width: 190px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      id="accTreeCode"
+                      [apiUrl]="accountsApi"
+                      [placeholder]="'AccTreeCode'"
+                      [searchBy]="'AccName'"
+                      [bindLabel]="'AccCode'"
+                      [bindValue]="'AccCode'"
+                      [control]="linesArray.controls[i].get('accTreeCode')!"
+                      (emitChanged)="selectAccTreeCode($event, i)"
+                    ></app-ebtikar-select>
+                  </td>
                   <td
                     *ngSwitchCase="'accounts'"
                     style="min-width: 190px"
@@ -301,6 +335,22 @@
                       [bindValue]="'Id'"
                       [control]="linesArray.controls[i].get('treasuryId')!"
                       (emitChanged)="selectTreasuryInLine($event, i)"
+                    ></app-ebtikar-select>
+                  </td>
+                  <td
+                    *ngSwitchCase="'SupplierCode'"
+                    style="min-width: 190px"
+                    appAppArrowFocus
+                  >
+                    <app-ebtikar-select
+                      id="supplierCode"
+                      [apiUrl]="suppliersApi"
+                      [placeholder]="'SupplierCode'"
+                      [bindValue]="'SupplierCode'"
+                      [bindLabel]="'SupplierCode'"
+                      [searchBy]="'term'"
+                      [control]="linesArray.controls[i].get('supplierCode')!"
+                      (emitChanged)="selectSupplierCode($event, i)"
                     ></app-ebtikar-select>
                   </td>
                   <td

@@ -268,9 +268,9 @@
   "SaleInvoiceReturnId": "معرف إرجاع فاتورة البيع",
   "SaleInvoiceReturn": "إرجاع فاتورة البيع",
   "ItemType_saleReturn": "إرجاع نوع العنصر",
-  "AccTreeCode": "رمز شجرة الحسابات",
-  "AccTreeId": "معرف شجرة الحسابات",
-  "AccTreeName": "اسم شجرة الحسابات",
+  "AccTreeCode": "كود الحساب",
+  "AccTreeId": "معرف الحساب",
+  "AccTreeName": "اسم الحساب",
   "ClientId": "معرف العميل",
   "BankAccountNo": "رقم الحساب المصرفي",
   "BankId": "معرف البنك",
@@ -293,5 +293,7 @@
   "rejectedApplications": "الطلبات المرفوضة",
   "UniteOnePrice": "سعر الوحدة الأولى",
   "UniteTwoPrice": "سعر الوحدة الثانية",
-  "UniteThreePrice": "سعر الوحدة الثالثة"
+  "UniteThreePrice": "سعر الوحدة الثالثة",
+  "ClientCode": "كود العميل",
+  "SupplierCode": "كود المورد"
 }

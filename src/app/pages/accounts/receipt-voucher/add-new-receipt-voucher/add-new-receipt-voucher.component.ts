@@ -34,8 +34,8 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   invoiceLineKeys: any[];
   allColumns: any[] = [];
   clientsData: any[] = [];
-  suppliersData: any[] = [];
   treasuriesInLine: any[];
+  suppliersData: any[] = [];
   subs: Subscription[] = [];
   E_USER_ROLE = E_USER_ROLE;
   clientInvoices: any[] = [];
@@ -47,8 +47,8 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   tableStorage = 'receipt-voucher-form-table';
   clientsApi = `${generalLookupsApi}/CustomerByTerm`;
   accountsApi = `${generalLookupsApi}/GetAccountsByTrim`;
-  suppliersApi = `${apiUrl}/XtraAndPOS_Global/SupplierByTerm`;
   defaultStorage = 'receipt-voucher-form-default-selected';
+  suppliersApi = `${apiUrl}/XtraAndPOS_Global/SupplierByTerm`;
   typeOfDealing = [
     { value: 1, name: 'bank' },
     { value: 2, name: 'safe' },
@@ -61,6 +61,7 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     { value: 5, name: 'suppliers' },
   ];
   defaultSelected = [
+    { field: 'ClientCode', header: 'ClientCode' },
     { field: 'ClientId', header: 'clients' },
     { field: 'SaleInvoiceId', header: 'invoices' },
     { field: 'Amount', header: 'amount' },
@@ -297,11 +298,15 @@ export class AddNewReceiptVoucherComponent implements OnInit {
 
   newLine(value?: any) {
     let accTreeId;
+    let accTreeCode;
     let clientId;
     let clientName;
+    let clientCode;
     let saleInvoiceId;
     let amount;
     let supplierId;
+    let supplierName;
+    let supplierCode;
     let treasuryId;
     let costCenterId;
     let bankId;
@@ -330,31 +335,63 @@ export class AddNewReceiptVoucherComponent implements OnInit {
       treasuryName = value.TreasuryName;
       bankName = value.BankName;
       notes = value.Notes;
+      supplierName = value?.SupplierName;
+      clientCode = value?.ClientCode ? { ClientCode: value?.ClientCode } : null;
+      accTreeCode = value?.AccTreeCode ? { AccCode: value?.AccTreeCode } : null;
+      supplierCode = value?.SupplierCode
+        ? { SupplierCode: value?.SupplierCode }
+        : null;
     }
     return this.fb.group({
       clientId: [clientId],
       clientName: [clientName],
+      clientCode: [clientCode],
       saleInvoiceId: [saleInvoiceId],
       notes: [notes],
       amount: [amount],
       costCenterId: [costCenterId],
       accTreeId: [accTreeId],
+      accTreeCode: [accTreeCode],
       bankId: [bankId],
       bankName: [bankName],
       treasuryId: [treasuryId],
       treasuryName: [treasuryName],
       supplierId: [supplierId],
+      supplierName: [supplierName],
+      supplierCode: [supplierCode],
     });
   }
 
   selectClientInLine(ev: any, i: number): void {
     let form = this.linesArray.controls[i];
     if (ev) {
-      form.patchValue({ clientName: ev.NameAr });
+      form.patchValue({
+        clientName: ev.NameAr,
+        clientCode: ev?.ClientCode || null,
+      });
       this.getInvoicesByClientId(ev.Id, i);
       this.addNewLine();
       setTimeout(() => {
         this.helpers.focusOnNextRow(i + 1, 'client', this.elementRef);
+      });
+    }
+  }
+
+  selectClientCodeInLine(ev: any, i: number): void {
+    let form = this.linesArray.controls[i];
+    if (ev) {
+      form.patchValue({ clientId: ev.Id, clientName: ev.NameAr });
+      this.getInvoicesByClientId(ev.Id, i);
+      this.clientsData[i] = [
+        {
+          Id: ev.Id,
+          NameAr: ev.NameAr,
+          NameEn: ev.NameEn,
+        },
+      ];
+      this.addNewLine();
+      setTimeout(() => {
+        this.helpers.focusOnNextRow(i + 1, 'clientCode', this.elementRef);
       });
     }
   }
@@ -377,33 +414,36 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     let commonDefaultSelected = this.defaultSelected.slice(
       this.defaultSelected.length - 3
     );
-    if (ev.value === 1) {
+    if (ev?.value === 1) {
       this.defaultSelected = [
+        { field: 'AccTreeCode', header: 'AccTreeCode' },
         { field: 'AccTreeId', header: 'accounts' },
         ...commonDefaultSelected,
       ];
     }
-    if (ev.value === 2) {
+    if (ev?.value === 2) {
       this.defaultSelected = [
+        { field: 'ClientCode', header: 'ClientCode' },
         { field: 'ClientId', header: 'clients' },
         { field: 'SaleInvoiceId', header: 'invoices' },
         ...commonDefaultSelected,
       ];
     }
-    if (ev.value === 3) {
+    if (ev?.value === 3) {
       this.defaultSelected = [
         { field: 'BankId', header: 'banks' },
         ...commonDefaultSelected,
       ];
     }
-    if (ev.value === 4) {
+    if (ev?.value === 4) {
       this.defaultSelected = [
         { field: 'TreasuryId', header: 'safe' },
         ...commonDefaultSelected,
       ];
     }
-    if (ev.value === 5) {
+    if (ev?.value === 5) {
       this.defaultSelected = [
+        { field: 'SupplierCode', header: 'SupplierCode' },
         { field: 'SupplierId', header: 'suppliers' },
         { field: 'SaleInvoiceId', header: 'invoices' },
         ...commonDefaultSelected,
@@ -413,92 +453,38 @@ export class AddNewReceiptVoucherComponent implements OnInit {
     await this.InitTable();
     this.linesArray.clear();
     this.addNewLine();
-    this.linesArray.controls.forEach((form, i: any) => {
-      if (ev.value === 1) {
-        form.patchValue({
-          clientId: null,
-          clientName: null,
-          saleInvoiceId: null,
-          bankId: null,
-          bankName: null,
-          treasuryId: null,
-          supplierId: null,
-          treasuryName: null,
-        });
-        this.clientsData[i] = [];
-        this.clientInvoices[i] = [];
-        this.suppliersData[i] = [];
-        this.supplierInvoices[i] = [];
-      }
-      if (ev.value === 2) {
-        form.patchValue({
-          accTreeId: null,
-          bankId: null,
-          bankName: null,
-          treasuryId: null,
-          supplierId: null,
-          saleInvoiceId: null,
-          treasuryName: null,
-        });
-        this.accTreeAccountsData[i] = [];
-        this.suppliersData[i] = [];
-        this.supplierInvoices[i] = [];
-      }
-      if (ev.value === 3) {
-        form.patchValue({
-          accTreeId: null,
-          clientId: null,
-          clientName: null,
-          saleInvoiceId: null,
-          supplierId: null,
-          treasuryId: null,
-          treasuryName: null,
-        });
-        this.clientsData[i] = [];
-        this.accTreeAccountsData[i] = [];
-        this.clientInvoices[i] = [];
-        this.suppliersData[i] = [];
-        this.supplierInvoices[i] = [];
-      }
-      if (ev.value === 4) {
-        form.patchValue({
-          accTreeId: null,
-          clientId: null,
-          clientName: null,
-          saleInvoiceId: null,
-          supplierId: null,
-          bankId: null,
-          bankName: null,
-        });
-        this.clientsData[i] = [];
-        this.accTreeAccountsData[i] = [];
-        this.clientInvoices[i] = [];
-        this.suppliersData[i] = [];
-        this.supplierInvoices[i] = [];
-      }
-      if (ev.value === 5) {
-        form.patchValue({
-          accTreeId: null,
-          clientId: null,
-          clientName: null,
-          saleInvoiceId: null,
-          bankId: null,
-          bankName: null,
-          treasuryId: null,
-          treasuryName: null,
-        });
-        this.clientsData[i] = [];
-        this.accTreeAccountsData[i] = [];
-        this.clientInvoices[i] = [];
-      }
-    });
+    this.accTreeAccountsData = [];
+    this.suppliersData = [];
+    this.supplierInvoices = [];
+    this.clientsData = [];
+    this.clientInvoices = [];
   }
 
   selectAccTree(ev: any, i: any) {
+    let form = this.linesArray.controls[i];
     if (ev) {
+      form.patchValue({ accTreeCode: ev?.AccCode });
       this.addNewLine();
       setTimeout(() => {
         this.helpers.focusOnNextRow(i + 1, 'accTree', this.elementRef);
+      });
+    }
+  }
+
+  selectAccTreeCode(ev: any, i: any) {
+    let form = this.linesArray.controls[i];
+    if (ev) {
+      form.patchValue({ accTreeId: ev?.Id });
+      this.accTreeAccountsData[i] = [
+        {
+          Id: ev.Id,
+          NameAr: ev.NameAr,
+          NameEn: ev.NameEn,
+        },
+      ];
+      this.addNewLine();
+      setTimeout(() => {
+        this.helpers.focusOnNextRow(i + 1, 'accTreeCode', this.elementRef);
       });
     }
   }
@@ -515,11 +501,38 @@ export class AddNewReceiptVoucherComponent implements OnInit {
   }
 
   selectSupplier(ev: any, i: any): void {
+    let form = this.linesArray.controls[i];
     if (ev) {
+      form.patchValue({
+        supplierName: ev.NameAr,
+        supplierCode: ev?.SupplierCode || null,
+      });
       this.getInvoicesBySupplierId(ev.Id, i);
       this.addNewLine();
       setTimeout(() => {
         this.helpers.focusOnNextRow(i + 1, 'supplier', this.elementRef);
+      });
+    }
+  }
+
+  selectSupplierCode(ev: any, i: any) {
+    let form = this.linesArray.controls[i];
+    if (ev) {
+      form.patchValue({
+        supplierId: ev?.Id,
+        supplierName: ev.NameAr,
+      });
+      this.suppliersData[i] = [
+        {
+          Id: ev?.Id,
+          NameAr: ev.NameAr,
+          NameEn: ev.NameEn,
+        },
+      ];
+      this.getInvoicesBySupplierId(ev.Id, i);
+      this.addNewLine();
+      setTimeout(() => {
+        this.helpers.focusOnNextRow(i + 1, 'supplierCode', this.elementRef);
       });
     }
   }
