@@ -297,5 +297,6 @@
   "ClientCode": "كود العميل",
   "SupplierCode": "كود المورد",
   "deleteManualRestriction": "حذف قيد يدوى",
-  "manualRestrictionList": "القيد اليدوى"
+  "manualRestrictionList": "القيد اليدوى",
+  "transfersUnderProcedure": "تحويلات تحت الإجراء"
 }

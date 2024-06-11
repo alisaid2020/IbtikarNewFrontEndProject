@@ -297,5 +297,6 @@
   "ClientCode": "Client Code",
   "SupplierCode": "Supplier Code",
   "deleteManualRestriction": "Delete Manual Restriction",
-  "manualRestrictionList": "Manual RestrictionList"
+  "manualRestrictionList": "Manual RestrictionList",
+  "transfersUnderProcedure": "Transfers Under Procedure"
 }

@@ -1,5 +1,5 @@
-export const apiUrl = `https://innovationksa.ddns.net:9034`;
-// export const apiUrl = `http://localhost:7502`;
+// export const apiUrl = `https://innovationksa.ddns.net:9034`;
+export const apiUrl = `http://localhost:7502`;
 
 export const generalAccountsLink =
   'http://innovationksa.ddns.net:9035/Dashboard';

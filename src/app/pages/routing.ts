@@ -68,6 +68,13 @@ const Routing: Routes = [
       ),
   },
   {
+    path: 'transfers-under-procedure',
+    loadChildren: () =>
+      import(
+        './warehouses/transfers-under-procedure/transfers-under-procedure.module'
+      ).then((m) => m.TransfersUnderProcedureModule),
+  },
+  {
     path: 'inventory-transfers',
     loadChildren: () =>
       import(

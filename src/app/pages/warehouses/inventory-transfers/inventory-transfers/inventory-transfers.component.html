@@ -4,48 +4,4 @@
       {{ "inventoryTransfers" | translate }}
     </h1>
   </div>
-  <div class="ms-auto" routerLink="/inventory-transfers/add">
-    <a class="btn btn-primary">{{ "addNew" | translate }}</a>
-  </div>
-</div>
-<ul
-  ngbNav
-  #nav="ngbNav"
-  class="nav-tabs border-0 justify-content-center mb-3 mt-6"
->
-  <li ngbNavItem>
-    <a
-      ngbNavLink
-      class="nav-link btn btn-sm btn-color-muted btn-active-primary fw-bold px-4 me-1"
-      >{{ "applicationsUnderProcedure" | translate }}</a
-    >
-    <ng-template ngbNavContent>
-      <app-applications-under-procedure></app-applications-under-procedure>
-    </ng-template>
-  </li>
-  <li ngbNavItem>
-    <a
-      ngbNavLink
-      class="nav-link btn btn-sm btn-color-muted btn-active-primary fw-bold px-4 me-1"
-      >{{ "approvedApplications" | translate }}</a
-    >
-    <ng-template ngbNavContent>
-      <app-approved-applications></app-approved-applications>
-    </ng-template>
-  </li>
-  <li ngbNavItem>
-    <a
-      ngbNavLink
-      class="nav-link btn btn-sm btn-color-muted btn-active-primary fw-bold px-4 me-1"
-      >{{ "rejectedApplications" | translate }}</a
-    >
-    <ng-template ngbNavContent>
-      <app-rejected-applications></app-rejected-applications>
-    </ng-template>
-  </li>
-</ul>
-<div class="card mb-5 mb-xxl-8 mt-7">
-  <div class="card-body p-0">
-    <div [ngbNavOutlet]="nav"></div>
-  </div>
 </div>
